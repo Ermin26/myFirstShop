@@ -1,0 +1,76 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item m-2">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown m-2">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Categories
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/mens">Mens</a></li>
+            <li><a class="dropdown-item" href="/womens">Womens</a></li>
+            <li><a class="dropdown-item" href="/kids">Kids</a></li>
+            <li><a class="dropdown-item" href="/baby">Baby</a></li>
+            <li><a class="dropdown-item" href="/other">Other</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown m-2">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Men
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/men_Shirts">Shirts</a></li>
+            <li><a class="dropdown-item" href="/men_Jackets">Jackets</a></li>
+            <li><a class="dropdown-item" href="/men_Pants">Pants</a></li>
+            <li><a class="dropdown-item" href="/men_Underwear">Underwear</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown m-2">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Women
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/women_Shirts">Shirts</a></li>
+            <li><a class="dropdown-item" href="/women_Jackets">Jackets</a></li>
+            <li><a class="dropdown-item" href="/women_Pants">Pants</a></li>
+            <li><a class="dropdown-item" href="/women_UnderWear">Underwear</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown m-2">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Kids
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/kids_Shirts">Shirts</a></li>
+            <li><a class="dropdown-item" href="/kids_Jackets">Jackets</a></li>
+            <li><a class="dropdown-item" href="/kids_Pants">Pants</a></li>
+            <li><a class="dropdown-item" href="/kids_Underwear">Pants</a></li>
+            <li><a class="dropdown-item" href="/Baby">Baby</a></li>
+          </ul>
+        </li>
+        <div class="d-flex ms-5">
+          <% if(!logedUser) {%>
+            <li class="nav-item m-2">
+              <a class="nav-link" href="/login">Log in</a>
+            </li>
+            <li class="nav-item m-2">
+              <a class="nav-link" href="/register">Register</a>
+            </li>
+            <% }else {%>
+              <li class="nav-item m-2">
+                <a class="nav-link" href="/logout">Log out</a>
+              </li>
+              <% } %>
+        </div>
+      </ul>
+    </div>
+  </div>
+</nav>

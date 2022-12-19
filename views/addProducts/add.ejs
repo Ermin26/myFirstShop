@@ -1,0 +1,121 @@
+<% layout('layouts/boilerplate') %>
+
+    <!--enctype="multipart/form-data" dodaj ko naredis celi upload-->
+    <div class="container justify-content-center bg-info">
+        <form class="validated-form" action="/addProduct" method="post" enctype="multipart/form-data" novalidate>
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="p_name" name="p_name" placeholder="name" required>
+                        <label for="p_name">Product name</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="input-group mt-2">
+                        <label for="formFileMultiple" class="form-label custom-file-label"></label>
+                        <input class="form-control text-primary" type="file" id="formFileMultiple" name="image"
+                            multiple>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="input-group">
+                        <div class="form-floating">
+                            <select class="form-select" id="p_cat" name="p_cat"
+                                aria-label="Floating label select example">
+                                <option selected>Select Category</option>
+                                <option value="Mens">Mens</option>
+                                <option value="Womens">Womens</option>
+                                <option value="Kids">Kids</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label for="p_cat"></label>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <div class="form-floating">
+                            <select class="form-select" id="p_subcat" name="p_subcat"
+                                aria-label="Floating label select example">
+                                <option selected>Select Sub category</option>
+                                <option value="Shirts">Shirts</option>
+                                <option value="Jackets">Jackets</option>
+                                <option value="Underwear">Underwear</option>
+                                <option value="Pants">Pants</option>
+                            </select>
+                            <label for="p_subcat"></label>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="This customer see" id="p_desc" name="p_desc"
+                            required></textarea>
+                        <label for="p_desc">Description</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="This customer see when open product info"
+                            id="p_fulldescription" name="p_fulldescription" required></textarea>
+                        <label for="p_fulldescription">Full description</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="p_price" name="p_price" placeholder="29,99 €"
+                            required>
+                        <label for="p_price">Price</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="p_qty" name="p_qty" placeholder="100" required>
+                        <label for="p_qty">Quantity</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="footer text-center mt-5">
+                <button class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="/public/js/validateForm.js"></script>

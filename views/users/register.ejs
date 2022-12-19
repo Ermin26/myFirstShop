@@ -1,0 +1,53 @@
+<% layout('layouts/boilerplate') %>
+
+
+    <h1>Register</h1>
+
+    <%- include('../../flash') %>
+
+        <form action="/register" method="post" novalidate>
+
+            <div class="labels">
+                <label for="fname">First Name:</label>
+                <input type="text" name="fname" id="fname" placeholder="John">
+            </div>
+
+            <div class="labels">
+                <label for="lname">Last Name:</label>
+                <input type="text" name="lname" id="lname" placeholder="Wick">
+            </div>
+
+            <div class="labels">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" placeholder="example@gmail.com">
+            </div>
+
+            <div class="labels">
+                <label for="country">Country:</label>
+                <input type="text" name="country" id="country" placeholder="Slovenia">
+            </div>
+
+            <div class="labels">
+                <label for="city">City:</label>
+                <input type="text" name="city" id="city" placeholder="Ljubljana">
+            </div>
+
+            <div class="labels">
+                <label for="zip">Zip code:</label>
+                <input type="text" name="zip" id="zip" placeholder="1000">
+            </div>
+
+            <div class="labels">
+                <label for="address">Street:</label>
+                <input type="text" name="address" id="address" placeholder="Trg Tivoli">
+            </div>
+            <div class="labels">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" placeholder="Enter password">
+            </div>
+
+            <div class="btn">
+                <button>Submit</button>
+            </div>
+
+        </form>

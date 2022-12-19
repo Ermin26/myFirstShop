@@ -1,0 +1,17 @@
+<% layout("layouts/boilerplate") %>
+
+        <div class="form mt-5">
+            <form action="/userLogin" method="post" novalidate>
+
+                <div class="labels">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" placeholder="example@gmail.com">
+                </div>
+                <div class="labels">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" placeholder="Enter your password">
+                </div>
+                <button class="btn btn-outline-primary">Submit</button>
+            </form>
+
+        </div>
