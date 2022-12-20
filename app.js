@@ -139,23 +139,27 @@ app.use((req, res, next) => {
 })
 
 
-/*
-app.get('/create', async (req, res) => {
-    try {
-        await conn.query("CREATE TABLE bills (id Bigserial PRIMARY KEY,product_id INTEGER NOT NULL, user_id INTEGER NOT NULL, order_id INTEGER NOT NULL, bill_price NUMERIC NOT NULL, sendDate VARCHAR(50) NOT NULL, courier VARCHAR(50))");
-        res.redirect('login')
-    }
-    catch (e) {
-        console.log(e.message)
-        res.redirect('/register')
-    }
-});
- 
-*/
 
-app.get('/', (req, res) => {
-    res.render('pages/home')
 
+app.get('/', async (req, res) => {
+    await conn.query(`SELECT * FROM products`, async (err, result) => {
+        console.log(result.rows)
+        let shirts = result.rows
+        let allimgs = []
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('add')
+        } else {
+            if (!err) {
+                for (imgs of shirts) {
+                    let img = imgs.p_imgdestination.toString()
+                    let allImg = img.split(',')
+                    allimgs.push(allImg)
+                }
+                res.render('pages/home', { shirts, allimgs })
+            }
+        }
+    })
 })
 
 app.get('/register', async (req, res) => {
@@ -228,112 +232,202 @@ app.get('/add', (req, res) => {
 app.post('/addProduct', upload.array('image'), async (req, res) => {
     const product = req.body;
     let imgsUrl = []
-    /*
-    for (urls of req.files) {
-        imgsUrl.append(urls.path)
-    }
-    */
-    //let image = await imgsUrl.forEach(img => image = img)
     for (let i = 0; i < req.files.length; i++) {
         imgsUrl.push(req.files[i].path.split("["))
     }
-    console.log(imgsUrl, ' i am 1')
-    //const images = await req.files.map(f => ({ p_image: f.path }));
-
-    //console.log(images.p_image)
-    /*
-    for (imgs of images) {
-        imgsUrl.push(imgs)
-    }
-    */
-    //console.log(req.body)
-
-
     await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',ARRAY['${imgsUrl}'])`)
-
-
-
-
     res.redirect('add')
-    //ARRAY[['${imgsUrl}']]
 })
 
 // ARTICL PAGES
 
 //! MENS
-app.get('/mens', isLoged, async (req, res) => {
-    await conn.query(`SELECT * FROM products`, (err, result) => {
-        let products = result
+app.get('/mens', async (req, res) => {
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Mens'`, async (err, result) => {
+        //console.log(result.rows.length)
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+
         if (!err) {
-            res.render('artikli/mens/mensAll', { products })
-        } else {
-            res.send(err.message)
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/mens/mensAll', { shirts, allImg })
+            }
         }
     })
 
 })
 
 app.get('/men_Shirts', async (req, res) => {
-    res.render('artikli/mens/mensShirts')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Mens' AND products.p_subcat = 'Shirts'`, async (err, result) => {
+        console.log(result.rows.length)
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/mens')
+        }
+
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/mens/mensShirts', { shirts, allImg })
+            }
+        }
+    })
+
 })
 
 app.get('/men_Jackets', async (req, res) => {
-    await conn.query(`SELECT * FROM products WHERE p_subcat LIKE 'Jacket'`, (err, result) => {
-        let products = result
-        console.log(products.rows)
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Mens' AND products.p_subcat = 'Jackets'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
         if (!err) {
-            res.render('artikli/mens/mensJackets', { products })
-        } else {
-            res.send(err.message)
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/mens/mensJackets', { shirts, allImg })
+            }
         }
     })
 
 })
 
 app.get('/men_Pants', async (req, res) => {
-    res.render('artikli/mens/mensPants')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Mens' AND products.p_subcat = 'Pants'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/mens/mensPants', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/men_Underwear', async (req, res) => {
-    res.render('artikli/mens/mensUnderwear')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Mens' AND products.p_subcat = 'Underwear'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/mens/mensUnderwear', { shirts, allImg })
+            }
+        }
+    })
 })
 
 //! WOMENS
 
 app.get('/womens', async (req, res) => {
-    res.render('artikli/womens/womenAll')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Womens'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/womens/womenAll', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/women_Shirts', async (req, res) => {
-    await conn.query(`SELECT * FROM products WHERE products.p_subcat = 'Shirts'`, async (err, result) => {
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Womens' AND products.p_subcat = 'Shirts'`, async (err, result) => {
 
         let shirts = result.rows
-        let imagess = []
-        for (imgs of shirts) {
-            let img = imgs.p_imgdestination.toString()
-            console.log(img)
-            imagess.push(img.split(','))
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
         }
-        //console.log(imagess[0].)
         if (!err) {
-            res.render('artikli/womens/womenShirts', { shirts })
-        } else {
-            res.send(err)
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/womens/womenShirts', { shirts, allImg })
+            }
         }
     })
 
 })
 
 app.get('/women_Jackets', async (req, res) => {
-    res.render('artikli/womens/womenJackets')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Womens' AND products.p_subcat = 'Jackets'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/womens/womenJackets', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/women_Pants', async (req, res) => {
-    res.render('artikli/womens/womenPants')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Womens' AND products.p_subcat = 'Pants'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/womens/womenPants', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/women_Underwear', async (req, res) => {
-    res.render('artikli/womens/womensUnderwear')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Womens' AND products.p_subcat = 'Underwear'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/womens/womenUnderwear', { shirts, allImg })
+            }
+        }
+    })
 })
 
 //! KIDS
@@ -342,23 +436,94 @@ app.get('/baby', async (req, res) => {
     res.render('artikli/kids/kidsBaby')
 })
 app.get('/kids', async (req, res) => {
-    res.render('artikli/kids/kidsAll')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Kids'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/kids/kidsAll', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/kids_Shirts', async (req, res) => {
-    res.render('artikli/kids/kidsShirts')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Kids' AND products.p_subcat = 'Shirts'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/kids/kidsShirts', { shirts, allImg })
+            }
+        }
+    })
+
 })
 
 app.get('/kids_Jackets', async (req, res) => {
-    res.render('artikli/kids/kidsJackets')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Kids' AND products.p_subcat = 'Jackets'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/kids/kidsJackets', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/kids_Pants', async (req, res) => {
-    res.render('artikli/kids/kidsPants')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Kids' AND products.p_subcat = 'Pants'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/kids/kidsPants', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/kids_Underwear', async (req, res) => {
-    res.render('artikli/kids/kidsUnderwear')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Kids' AND products.p_subcat = 'Underwear'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        }
+        if (!err) {
+            for (imgs of shirts) {
+                let img = imgs.p_imgdestination.toString()
+                let allImg = img.split(',')
+                res.render('artikli/kids/kidsUnderwear', { shirts, allImg })
+            }
+        }
+    })
 })
 
 app.get('/other', async (req, res) => {

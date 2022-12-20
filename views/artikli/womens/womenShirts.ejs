@@ -2,11 +2,7 @@
     <title> Yasemin-Shop</title>
 
 
-    <div class="text-light">
-        <%= shirts.p_name %>
-
-
-    </div>
+    
 
     <div class="row">
         <% if(shirts.length) {%>
@@ -14,10 +10,7 @@
                 <div class="col-md-6 col-4 mt-5">
                     <div class="card" style="width: 22rem;">
                         <div class="card-header text-center">
-                            <% for(img of info.p_imgdestination) {%>
-                                <%= img %>
-                                    <img src="<%= img[0] %>" alt="Here goes product img" style="width: 18rem;">
-                                    <% } %>
+                            <img src="<%= allImg[0] %>" alt="Here goes product img" style="width: 18rem;">
                         </div>
                         <div class="card-body">
                             <h3>
