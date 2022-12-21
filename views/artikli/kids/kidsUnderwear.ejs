@@ -3,31 +3,35 @@
 
 
     <div class="row">
-        <% if(shirts.length) {%>
-            <% for(let info of shirts) {%>
-                <div class="col-md-6 col-4 mt-5">
-                    <div class="card" style="width: 22rem;">
-                        <div class="card-header text-center">
-                            <img src="<%= allImg[1] %>" alt="Here goes product img" style="width: 18rem;">
-                        </div>
-                        <div class="card-body">
-                            <h3>
-                                <%= info.p_name %>
-                            </h3>
-                            <p>
-                                <%= info.p_desc %>
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <h4>
-                                <%= info.p_price %> €
-                            </h4>
 
-                        </div>
+        <% for(let info of shirts) {%>
+            <div class="col-md-6 col-4 mt-5">
+                <div class="card" style="width: 22rem;">
+                    <div class="card-header text-center">
+                        <%= info.id %>
+                            <% for (let info of shirts) {%>
+                                <img src="<%= info.p_imgdestination[0] %>" alt="Here goes product img"
+                                    style="width: 18rem;">
+                                <% } %>
+                    </div>
+                    <div class="card-body">
+                        <h3>
+                            <%= info.p_name %>
+                        </h3>
+                        <p>
+                            <%= info.p_desc %>
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <h4>
+                            <%= info.p_price %> €
+                        </h4>
+                        <p>
+                            <%= info.p_cat %>
+                        </p>
+
                     </div>
                 </div>
-                <% } %>
-                    <% } %>
-
-
+            </div>
+            <% } %>
     </div>

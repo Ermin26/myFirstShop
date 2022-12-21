@@ -8,9 +8,11 @@
             <div class="col-md-6 col-4 mt-5">
                 <div class="card" style="width: 22rem;">
                     <div class="card-header text-center">
-
-                        <img src="<%= allimgs[0][0] %>" alt="Here goes product img" style="width: 18rem;">
-
+                        <%= info.id %>
+                            <% for (let info of shirts) {%>
+                                <img src="<%= info.p_imgdestination[0] %>" alt="Here goes product img"
+                                    style="width: 18rem;">
+                                <% } %>
                     </div>
                     <div class="card-body">
                         <h3>
