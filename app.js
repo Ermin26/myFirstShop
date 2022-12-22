@@ -235,6 +235,17 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
     res.redirect('add')
 })
 
+app.get('/product/:id', async (req, res) => {
+    let { id } = req.params
+    await conn.query(`SELECT * FROM products WHERE id = '${id}'`, async (err, result) => {
+        if (!err) {
+            let shirts = result.rows
+            res.render('pages/productShow', { shirts })
+        } else {
+            res.send(err)
+        }
+    })
+})
 // ARTICL PAGES
 
 //! MENS

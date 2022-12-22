@@ -1,0 +1,34 @@
+<% layout('layouts/boilerplate') %>
+    <title> Yasemin-Shop</title>
+
+
+    <div class="row row-cols-2">
+
+        <div class="col">
+            <% for(let info of shirts) {%>
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <div class="card" style="width: 28rem;">
+                        <div class="card-header text-center">
+                            <img src="<%= info.p_imgdestination[0] %>" alt="Here goes product img"
+                                style="width: 26rem;">
+                        </div>
+                        <div class="card-footer">
+                            <h1>
+                                <%= info.p_price %> €
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <% } %>
+            <div class="col">
+                <% for(let info of shirts) {%>
+                    bilo kaj
+                    <h1>
+                        <%= info.p_name %>
+                    </h1>
+                    <%= info.p_fulldesc %>
+                    <% } %>
+            </div>
+
+    </div>
