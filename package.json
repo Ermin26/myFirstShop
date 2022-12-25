@@ -21,5 +21,25 @@
     "passport-local": "^1.0.0",
     "pg": "^8.7.3",
     "postgres": "^3.2.4"
-  }
+  },
+  "name": "shop",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ermin26/myFirstShop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ermin26/myFirstShop/issues"
+  },
+  "homepage": "https://github.com/Ermin26/myFirstShop#readme",
+  "description": ""
 }
