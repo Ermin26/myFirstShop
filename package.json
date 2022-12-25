@@ -30,6 +30,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
+  "engines": {
+    "node": "19.3.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ermin26/myFirstShop.git"
