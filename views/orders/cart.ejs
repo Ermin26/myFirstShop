@@ -1,0 +1,33 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="container">
+        <% if(items.length) {%>
+            <% for (products of items) { %>
+                <% for (product of products) { %>
+                    <div class="card shadow-lg mt-3" style="max-height: 350px;">
+                        <div class="row">
+                            <div class=" col-md-4" id="img1">
+                                <img class="img-fluid" alt="" src="<%= product.p_imgdestination[0] %>"
+                                    style=" max-height: 350px">
+                            </div>
+                            <div class=" col-md-8">
+                                <div class="card-body">
+                                    <h1 class="card-title">
+                                        <%= product.p_name%>
+                                    </h1>
+                                    <h3 class="card-text">
+                                        <small class="text-muted">
+                                            <%= product.p_price %> €
+                                        </small>
+                                    </h3>
+
+                                    <a class="btn btn-primary mt-5" href="/product/<%=product.id %> ">Remove</a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%} %>
+                        <%} %>
+                            <%} %>
+    </div>

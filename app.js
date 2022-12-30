@@ -76,7 +76,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        maxAge: 1 * 24 * 60 * 60 * 1000
+        maxAge: 2 * 24 * 60 * 60 * 1000
     }, // 1 day
     //returnTo: req.originalUrl
     // Insert express-session options here
@@ -218,6 +218,53 @@ app.get("/users", async (req, res) => {
         else return res.send(err.message)
     })
 })
+
+app.get("/cart", async (req, res) => {
+    let items = [];
+    let count = 0
+    conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
+        if (!err) {
+            let data = result.rows
+            //console.log('first data')
+            //console.log(data.length)
+            for (products of data) {
+                await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
+                    if (!err) {
+                        count += 1;
+                        items.push(product.rows)
+                        if (data.length === count) {
+                            res.render('orders/cart', { items })
+                        }
+                    } else {
+                        req.flash('error', 'Nothing in the cart?')
+                        res.render('orders/cart', { items })
+                    }
+                })
+            }
+        } else {
+            req.flash('error', 'Nothing in the cart?')
+            res.render('orders/cart', { items })
+        }
+    })
+
+})
+
+app.get('/add-to-cart/:id', async (req, res) => {
+    let product = req.params.id
+
+    if (!req.user) {
+        conn.query(`INSERT INTO cart (user_id, product_id) VALUES('${req.sessionID}','${product}')`, async (err, result) => {
+            if (!err) {
+                req.flash('success', 'Successfully added to cart')
+                res.redirect(`/product/${product}`)
+            } else {
+                res.send(err.message)
+            }
+        })
+
+    }
+
+});
 
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
@@ -420,7 +467,18 @@ app.get('/women_Underwear', async (req, res) => {
 //! KIDS
 
 app.get('/baby', async (req, res) => {
-    res.render('artikli/kids/kidsBaby')
+    await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Baby'`, async (err, result) => {
+
+        let shirts = result.rows
+        if (!shirts.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/all_products')
+        } else {
+            if (!err) {
+                res.render('artikli/kids/kidsBaby', { shirts })
+            }
+        }
+    })
 })
 app.get('/kids', async (req, res) => {
     await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Kids'`, async (err, result) => {
@@ -515,6 +573,6 @@ app.get('/other', async (req, res) => {
 
 
 
-app.listen(3000, () => {
-    console.log("Sever is now listening at port 3000");
-})
+const port = process.env.PORT || 5000
+app.listen(port,
+    console.log(`listening on ${port}`))

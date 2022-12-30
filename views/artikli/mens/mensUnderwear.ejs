@@ -5,31 +5,24 @@
     <div class="row">
 
         <% for(let info of shirts) {%>
-            <div class="col-md-6 col-4 mt-5">
-                <div class="card" style="width: 22rem;">
+            <div class="col-lg-4 col-md-6 mt-5">
+                <div class="card">
                     <div class="card-header text-center">
-                        <%= info.id %>
-                            <% for (let info of shirts) {%>
-                                <img src="<%= info.p_imgdestination[0] %>" alt="Here goes product img"
-                                    style="width: 18rem;">
-                                <% } %>
+                        <a href="/product/<%= info.id %> "> <img class="img-fluid" src="<%= info.p_imgdestination[0] %>"
+                                alt="Here goes product img" style="width: 22rem; height: 28rem;"></a>
                     </div>
-                    <div class="card-body">
-                        <h3>
+                    <div class="card-body p-3">
+                        <h3 class="d-inline">
                             <%= info.p_name %>
                         </h3>
-                        <p>
-                            <%= info.p_desc %>
-                        </p>
+                        <h5 class="d-inline">
+                            - <%= info.p_desc %>
+                        </h5>
                     </div>
-                    <div class="card-footer">
-                        <h4>
+                    <div class="card-footer p-3">
+                        <h2>
                             <%= info.p_price %> €
-                        </h4>
-                        <p>
-                            <%= info.p_cat %>
-                        </p>
-
+                        </h2>
                     </div>
                 </div>
             </div>
