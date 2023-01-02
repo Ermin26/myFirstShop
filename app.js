@@ -52,10 +52,10 @@ connectToDB();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.engine('ejs', layouts);
-//app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(override('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 
 const forSession = process.env.DB_PASS
@@ -177,6 +177,8 @@ app.post("/userLogin", passport.authenticate('local', { failureFlash: true, fail
 
 app.post('/register', async (req, res, next) => {
     const users = req.body;
+    console.log(users)
+
     await conn.query(`SELECT * FROM users WHERE users.email='${users.email}'`, async (notExists, exists) => {
         if (exists.rows.length) {
             console.log("User with that email already exists, please enter other email or log in!")
@@ -198,6 +200,7 @@ app.post('/register', async (req, res, next) => {
             })
         }
     })
+
 })
 
 app.get('/logout', (req, res, next) => {
@@ -226,24 +229,23 @@ app.get("/cart", async (req, res) => {
         if (!err) {
             let data = result.rows
             //console.log('first data')
-            //console.log(data.length)
-            for (products of data) {
-                await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
-                    if (!err) {
-                        count += 1;
-                        items.push(product.rows)
-                        if (data.length === count) {
-                            res.render('orders/cart', { items })
+            console.log(data.length)
+            if (data.length) {
+                for (products of data) {
+                    await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
+                        if (!err) {
+                            count += 1;
+                            items.push(product.rows)
+                            if (data.length === count) {
+                                res.render('orders/cart', { items })
+                            }
                         }
-                    } else {
-                        req.flash('error', 'Nothing in the cart?')
-                        res.render('orders/cart', { items })
-                    }
-                })
+                    })
+                }
+            } else {
+                req.flash('error', 'Nothing in the cart?')
+                res.render('orders/cart', { items })
             }
-        } else {
-            req.flash('error', 'Nothing in the cart?')
-            res.render('orders/cart', { items })
         }
     })
 
@@ -296,7 +298,7 @@ app.get('/product/:id', async (req, res) => {
 // ARTICL PAGES
 
 //! MENS
-app.get('/mens', async (req, res) => {
+app.get('/mens', isLoged, async (req, res) => {
     await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Mens'`, async (err, result) => {
         //console.log(result.rows.length)
         let shirts = result.rows
