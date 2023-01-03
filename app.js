@@ -132,6 +132,7 @@ app.use(flash());
 app.use((req, res, next) => {
     //console.log('-----i am session-----', req.user)
     //console.log(req.sessionID)
+    console.log(req.sessionID)
     res.locals.logedUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
@@ -139,9 +140,11 @@ app.use((req, res, next) => {
 })
 
 
-
-
 app.get('/all_products', async (req, res) => {
+    let date = new Date();
+    let day = date.getDay()
+
+    await conn.query(`DELETE FROM cart WHERE expiring = '${day}'`)
     await conn.query(`SELECT * FROM products`, async (err, result) => {
         //console.log(result.rows)
         let shirts = result.rows
@@ -166,9 +169,10 @@ app.get("/login", (req, res) => {
 
 //? WORKING ALL!!
 app.post("/userLogin", passport.authenticate('local', { failureFlash: true, failureRedirect: 'login', keepSessionInfo: true }), async (req, res) => {
-
-    const redirect = req.session.returnTo || '/';
-    req.flash('success', 'Successfully loged', req.user.fname)
+    const redirect = req.session.returnTo || '/all_products';
+    req.flash('success', 'Successfully logged', req.user.fname)
+    console.log(req.sessionID)
+    await conn.query(`UPDATE users SET usersessid = '${req.sessionID}' WHERE id = '${req.user.id}'`)
     delete req.session.returnTo;
     res.redirect(redirect)
 })
@@ -181,12 +185,11 @@ app.post('/register', async (req, res, next) => {
 
     await conn.query(`SELECT * FROM users WHERE users.email='${users.email}'`, async (notExists, exists) => {
         if (exists.rows.length) {
-            console.log("User with that email already exists, please enter other email or log in!")
+            req.flash('error', "User with that email already exists, please enter other email or log in!")
             res.redirect('/register')
         } else {
             const userPassword = await bcrypt.hash(users.password, 10)
-
-            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password ) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}')`, async (err, user) => {
+            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password, userSessId ) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}', '${req.sessionID}')`, async (err, user) => {
                 if (!err) {
                     passport.authenticate('local')(req, res, () => {
                         req.flash('success', `Successfully register ${users.fname}`);
@@ -209,7 +212,7 @@ app.get('/logout', (req, res, next) => {
             return next(err);
         } else {
             req.flash('success', 'Logged out. Now you cannot make any changes.');
-            res.redirect('/');
+            res.redirect('/all_products');
         }
     });
 });
@@ -225,37 +228,58 @@ app.get("/users", async (req, res) => {
 app.get("/cart", async (req, res) => {
     let items = [];
     let count = 0
-    conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
-        if (!err) {
-            let data = result.rows
-            //console.log('first data')
-            console.log(data.length)
-            if (data.length) {
-                for (products of data) {
-                    await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
-                        if (!err) {
-                            count += 1;
-                            items.push(product.rows)
-                            if (data.length === count) {
-                                res.render('orders/cart', { items })
+    if (!req.user) {
+        conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
+            if (!err) {
+                let data = result.rows
+                if (data.length) {
+                    for (products of data) {
+                        await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
+                            if (!err) {
+                                count += 1;
+                                items.push(product.rows)
+                                if (data.length === count) {
+                                    res.render('orders/cart', { items })
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
+                } else {
+                    res.render('orders/cart', { items })
                 }
-            } else {
-                req.flash('error', 'Nothing in the cart?')
-                res.render('orders/cart', { items })
             }
-        }
-    })
-
+        })
+    } else {
+        conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
+            if (!err) {
+                let data = result.rows
+                if (data.length) {
+                    for (products of data) {
+                        await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
+                            if (!err) {
+                                count += 1;
+                                items.push(product.rows)
+                                if (data.length === count) {
+                                    res.render('orders/cart', { items })
+                                }
+                            }
+                        })
+                    }
+                } else {
+                    res.render('orders/cart', { items })
+                }
+            }
+        })
+    }
 })
 
 app.get('/add-to-cart/:id', async (req, res) => {
     let product = req.params.id
-
+    let date = new Date();
+    let day = date.getDay()
+    let expiring = parseInt(day) + 2;
     if (!req.user) {
-        conn.query(`INSERT INTO cart (user_id, product_id) VALUES('${req.sessionID}','${product}')`, async (err, result) => {
+        conn.query(`INSERT INTO cart (user_id, product_id, expiring) VALUES('${req.sessionID}','${product}', '${expiring}')`, async (err, result) => {
             if (!err) {
                 req.flash('success', 'Successfully added to cart')
                 res.redirect(`/product/${product}`)
@@ -263,10 +287,31 @@ app.get('/add-to-cart/:id', async (req, res) => {
                 res.send(err.message)
             }
         })
-
+    } else {
+        conn.query(`INSERT INTO cart (user_id, product_id, expiring) VALUES('${req.sessionID}','${product}', '${expiring}')`, async (err, result) => {
+            if (!err) {
+                req.flash('success', 'Successfully added to cart')
+                res.redirect(`/product/${product}`)
+            } else {
+                res.send(err.message)
+            }
+        })
     }
-
 });
+
+app.get('/remove/:id', async (req, res) => {
+    const { id } = req.params;
+    await conn.query(`DELETE FROM cart WHERE product_id = '${id}'`, async (err, result) => {
+        if (!err) {
+            req.flash('success', 'Successfully removed from cart')
+            res.redirect('/cart')
+        }
+        else {
+            req.flash('error', 'Product is not removed. Please try again.')
+            res.redirect('/cart')
+        }
+    })
+})
 
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
