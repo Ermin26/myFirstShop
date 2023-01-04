@@ -132,7 +132,6 @@ app.use(flash());
 app.use((req, res, next) => {
     //console.log('-----i am session-----', req.user)
     //console.log(req.sessionID)
-    console.log(req.sessionID)
     res.locals.logedUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
@@ -144,7 +143,7 @@ app.get('/all_products', async (req, res) => {
     let date = new Date();
     let day = date.getDay()
 
-    await conn.query(`DELETE FROM cart WHERE expiring = '${day}'`)
+    //await conn.query(`DELETE FROM cart WHERE expiring = '${day}'`)
     await conn.query(`SELECT * FROM products`, async (err, result) => {
         //console.log(result.rows)
         let shirts = result.rows
@@ -171,8 +170,6 @@ app.get("/login", (req, res) => {
 app.post("/userLogin", passport.authenticate('local', { failureFlash: true, failureRedirect: 'login', keepSessionInfo: true }), async (req, res) => {
     const redirect = req.session.returnTo || '/all_products';
     req.flash('success', 'Successfully logged', req.user.fname)
-    console.log(req.sessionID)
-    await conn.query(`UPDATE users SET usersessid = '${req.sessionID}' WHERE id = '${req.user.id}'`)
     delete req.session.returnTo;
     res.redirect(redirect)
 })
@@ -181,7 +178,6 @@ app.post("/userLogin", passport.authenticate('local', { failureFlash: true, fail
 
 app.post('/register', async (req, res, next) => {
     const users = req.body;
-    console.log(users)
 
     await conn.query(`SELECT * FROM users WHERE users.email='${users.email}'`, async (notExists, exists) => {
         if (exists.rows.length) {
@@ -211,7 +207,7 @@ app.get('/logout', (req, res, next) => {
         if (err) {
             return next(err);
         } else {
-            req.flash('success', 'Logged out. Now you cannot make any changes.');
+            req.flash('success', 'Logged out.');
             res.redirect('/all_products');
         }
     });
@@ -228,89 +224,99 @@ app.get("/users", async (req, res) => {
 app.get("/cart", async (req, res) => {
     let items = [];
     let count = 0
-    if (!req.user) {
-        conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
-            if (!err) {
-                let data = result.rows
-                if (data.length) {
-                    for (products of data) {
-                        await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
-                            if (!err) {
-                                count += 1;
-                                items.push(product.rows)
-                                if (data.length === count) {
-                                    res.render('orders/cart', { items })
-                                }
-                            }
-                        })
+    let cart = req.session.cart;
+    if (cart) {
+        if (!cart.length) {
+            res.render('orders/cart', { items })
+        } else {
+            for (products of cart) {
+                await conn.query(`SELECT * FROM products WHERE id = '${products}'`, async (err, product) => {
+                    if (!err) {
+                        count += 1;
+                        items.push(product.rows);
+                        if (cart.length === count) {
+                            res.render('orders/cart', { items })
+                        }
                     }
-                } else {
-                    res.render('orders/cart', { items })
-                }
+                })
             }
-        })
+        }
     } else {
-        conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
-            if (!err) {
-                let data = result.rows
-                if (data.length) {
-                    for (products of data) {
-                        await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
-                            if (!err) {
-                                count += 1;
-                                items.push(product.rows)
-                                if (data.length === count) {
-                                    res.render('orders/cart', { items })
-                                }
-                            }
-                        })
-                    }
-                } else {
-                    res.render('orders/cart', { items })
-                }
-            }
-        })
+        res.render('orders/cart', { items })
     }
+    /*
+        if (!req.user) {
+            conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
+                if (!err) {
+                    let data = result.rows
+                    if (data.length) {
+                        for (products of data) {
+                            await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
+                                if (!err) {
+                                    count += 1;
+                                    items.push(product.rows)
+                                    if (data.length === count) {
+                                        res.render('orders/cart', { items })
+                                    }
+                                }
+                            })
+                        }
+                    } else {
+                        res.render('orders/cart', { items })
+                    }
+                }
+            })
+        } else {
+            conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
+                if (!err) {
+                    let data = result.rows
+                    if (data.length) {
+                        for (products of data) {
+                            await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
+                                if (!err) {
+                                    count += 1;
+                                    items.push(product.rows)
+                                    if (data.length === count) {
+                                        res.render('orders/cart', { items })
+                                    }
+                                }
+                            })
+                        }
+                    } else {
+                        res.render('orders/cart', { items })
+                    }
+                }
+            })
+        }
+        */
 })
 
 app.get('/add-to-cart/:id', async (req, res) => {
     let product = req.params.id
-    let date = new Date();
-    let day = date.getDay()
-    let expiring = parseInt(day) + 2;
-    if (!req.user) {
-        conn.query(`INSERT INTO cart (user_id, product_id, expiring) VALUES('${req.sessionID}','${product}', '${expiring}')`, async (err, result) => {
-            if (!err) {
-                req.flash('success', 'Successfully added to cart')
-                res.redirect(`/product/${product}`)
-            } else {
-                res.send(err.message)
-            }
-        })
+    if (req.session.cart) {
+        let cart = req.session.cart;
+        cart.push(product)
+        req.flash('success', 'Successfully added to cart')
+        res.redirect(`/product/${product}`)
     } else {
-        conn.query(`INSERT INTO cart (user_id, product_id, expiring) VALUES('${req.sessionID}','${product}', '${expiring}')`, async (err, result) => {
-            if (!err) {
-                req.flash('success', 'Successfully added to cart')
-                res.redirect(`/product/${product}`)
-            } else {
-                res.send(err.message)
-            }
-        })
+        req.session.cart = [product]
+        let cart = req.session.cart;
+        req.flash('success', 'Successfully added to cart')
+        res.redirect(`/product/${product}`)
     }
 });
 
 app.get('/remove/:id', async (req, res) => {
     const { id } = req.params;
-    await conn.query(`DELETE FROM cart WHERE product_id = '${id}'`, async (err, result) => {
-        if (!err) {
-            req.flash('success', 'Successfully removed from cart')
-            res.redirect('/cart')
+    let cart = req.session.cart;
+    for (let i = 0; i < cart.length; i++) {
+        console.log(cart[i])
+        if (cart[i] == id) {
+            cart.splice(cart.indexOf(cart[i]), 1)
         }
-        else {
-            req.flash('error', 'Product is not removed. Please try again.')
-            res.redirect('/cart')
-        }
-    })
+    }
+    res.redirect('/cart')
+    
 })
 
 app.get('/add', (req, res) => {
