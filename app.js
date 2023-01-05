@@ -316,7 +316,7 @@ app.get('/remove/:id', async (req, res) => {
         }
     }
     res.redirect('/cart')
-    
+
 })
 
 app.get('/add', (req, res) => {
