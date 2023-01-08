@@ -1,17 +1,18 @@
-Add to cart - Done, save items into session. Log in/Log out vse stima.
 
 NEXT ----
-    Add slide show for image on cart page
+    //Add slide show for image on cart page
     Change QTY in cart for each product
     Total price counter
     Make/save order
     Send order on mail (Company/User)
     
 
-UPDATED -------
+DOING -------
 
-    Added slide show but must fix prev - next btn;
 
 
 
 DONE -----
+Save products to session 
+Fixed slide show on the cart page
+Added slide show to product show page
