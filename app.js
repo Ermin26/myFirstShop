@@ -310,7 +310,6 @@ app.get('/remove/:id', async (req, res) => {
     const { id } = req.params;
     let cart = req.session.cart;
     for (let i = 0; i < cart.length; i++) {
-        console.log(cart[i])
         if (cart[i] == id) {
             cart.splice(cart.indexOf(cart[i]), 1)
         }
@@ -349,24 +348,18 @@ app.get('/product/:id', async (req, res) => {
 // ARTICL PAGES
 
 //! MENS
-app.get('/mens', isLoged, async (req, res) => {
+app.get('/mens', async (req, res) => {
     await conn.query(`SELECT * FROM products WHERE products.p_cat = 'Mens'`, async (err, result) => {
-        //console.log(result.rows.length)
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/all_products')
-        }
-
-        if (!err) {
-            for (imgs of shirts) {
-                let img = imgs.p_imgdestination.toString()
-                let allImg = img.split(',')
-                res.render('artikli/mens/mensAll', { shirts, allImg })
+        } else {
+            if (!err) {
+                res.render('artikli/womens/womenAll', { shirts })
             }
         }
     })
-
 })
 
 app.get('/men_Shirts', async (req, res) => {

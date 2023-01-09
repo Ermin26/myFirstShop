@@ -9,6 +9,7 @@ NEXT ----
 
 DOING -------
 
+Added table to the cart for show products in the cart
 
 
 

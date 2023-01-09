@@ -3,65 +3,87 @@
 
     <% if(items.length) {%>
         <div class="myCart mt-5 mb-5">
-            <% for (products of items) { %>
-                <% for (product of products) { %>
-                    <div class="card col-8 col-md-11 shadow-lg mt-3 ms-auto me-auto">
-                        <div class="row col">
-                            <div class="col-8 col-md-5" id="img1">
-                                <div id="carousel<%= product.id %>" class="carousel slide">
-                                    <div class="carousel-inner">
-                                        <% product.p_imgdestination.forEach((img, i)=>{%>
-                                            <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
-                                                <img class="img-fluid col" alt="" src="<%= img %>"
-                                                    style="height: 400px; width: 300px;">
+            <table class="table">
+                <thead>
+                    <tr class="text-center">
+                        <th class="col bg-primary">Product</td>
+                        <th class="col bg-success">Quantity</td>
+                        <th class="col bg-primary">Subtotal</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (products of items) { %>
+                        <% for (product of products) { %>
+                            <tr>
+                                <td class="">
+                                    <div class="row row-cols-2">
+                                        <div class="col-4 bg-info">
+                                            <div id="carousel<%= product.id %>"
+                                                class="carousel slide col d-inline-block bg-dark">
+                                                <div class="carousel-inner">
+                                                    <% product.p_imgdestination.forEach((img, i)=>{%>
+                                                        <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                                                            <img class="img-fluid" alt="" src="<%= img %>"
+                                                                style="height: 100px; width: 100px; border-radius: 50%">
+                                                        </div>
+                                                        <% }) %>
+                                                </div>
+
+                                                <% if(product.p_imgdestination.length> 1) {%>
+                                                    <button class="carousel-control-prev" type="button"
+                                                        data-bs-target="#carousel<%= product.id %>"
+                                                        data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"
+                                                            aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Previous</span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button"
+                                                        data-bs-target="#carousel<%= product.id %>"
+                                                        data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"
+                                                            aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Next</span>
+                                                    </button>
+                                                    <% } %>
                                             </div>
-                                            <% }) %>
+                                        </div>
+                                        <div class="col">
+                                            <h1 class="d-inline-block">
+                                                <%= product.p_name %>
+                                            </h1>
+                                            <h5 class="card-title">
+                                                <%= product.p_desc%>
+                                            </h5>
+
+                                        </div>
                                     </div>
+                                </td>
+                                <td class="col-4 text-center align-bottom">
+                                    <input type="hidden" value=" <%= product.id %>  ">
+                                    <input type="submit" name="minus" value="-">
+                                    <input type="text" class="col-1 text-center" id="qty" name="qty" value="1" readonly>
+                                    <input type="submit" name="plus" value="+">
+                                </td>
+                                <td class="col-4 text-center align-bottom">
+                                    <div class="row row-cols-2">
+                                        <div class="col-8">
+                                            <h3 class="card-text">
+                                                <%= product.p_price %> €
+                                            </h3>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="btn btn-primary" href="/remove/<%=product.id %> ">Remove</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% } %>
+                                <% } %>
+                </tbody>
+            </table>
+            <%}else { %>
+                <h1 class="text-center mt-5">Your cart is empty.</h1>
+                <%} %>
 
-                                    <% if(product.p_imgdestination.length> 1) {%>
-                                        <button class="carousel-control-prev" type="button"
-                                            data-bs-target="#carousel<%= product.id %>" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button"
-                                            data-bs-target="#carousel<%= product.id %>" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
-                                        <% } %>
-                                </div>
-                                <div class="card-footer">
-                                    <h1 class="card-title">
-                                        <%= product.p_name%>
-                                    </h1>
-                                    <h3 class="card-text">
-                                        <small class="text-muted">
-                                            <%= product.p_price %> €
-                                        </small>
-                                    </h3>
-                                </div>
 
-                            </div>
-                            <div class="col-4 col-md-6 ms-4">
-                                <div class="card-body">
-                                    <h1 class="card-title">
-                                        <%= product.p_desc%>
-                                    </h1>
-                                    <h3 class="card-text">
-                                        <small class="text-muted">
-                                            <%= product.p_fulldesc %>
-                                        </small>
-                                    </h3>
-                                    <a class="btn btn-primary mt-5" href="/remove/<%=product.id %> ">Remove</a>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <% } %>
-                        <% } %>
-                            <%}else { %>
-                                <h1>Your cart is empty.</h1>
-                                <%} %>
         </div>
