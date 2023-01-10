@@ -265,7 +265,7 @@ app.get("/cart", async (req, res) => {
     } else {
         res.render('orders/cart', { items })
     }
-
+    calculateTotal(cart, req)
 })
 
 app.post('/add-to-cart', async (req, res) => {
@@ -327,6 +327,7 @@ app.post('/edit_qty', async (req, res) => {
             }
         }
     }
+    calculateTotal(cart, req)
 
 })
 
