@@ -15,9 +15,9 @@
                     <% for (products of items) { %>
                         <% for (product of products) { %>
                             <tr>
-                                <td class="">
+                                <td>
                                     <div class="row row-cols-2">
-                                        <div class="col-4 bg-info">
+                                        <div class="col-3 bg-info">
                                             <div id="carousel<%= product.id %>"
                                                 class="carousel slide col d-inline-block bg-dark">
                                                 <div class="carousel-inner">
@@ -28,7 +28,6 @@
                                                         </div>
                                                         <% }) %>
                                                 </div>
-
                                                 <% if(product.p_imgdestination.length> 1) {%>
                                                     <button class="carousel-control-prev" type="button"
                                                         data-bs-target="#carousel<%= product.id %>"
@@ -59,10 +58,16 @@
                                     </div>
                                 </td>
                                 <td class="col-4 text-center align-bottom">
-                                    <input type="hidden" value=" <%= product.id %>  ">
-                                    <input type="submit" name="minus" value="-">
-                                    <input type="text" class="col-1 text-center" id="qty" name="qty" value="1" readonly>
-                                    <input type="submit" name="plus" value="+">
+                                    <form action="/edit_qty" method="post">
+                                        <input type="hidden" value="<%= product.id %>" name="id">
+                                        <input type="submit" id="minus" name="minus" value="-">
+
+                                        <input type="text" class="col-1 text-center" id="qty" name="qty" value="1"
+                                            readonly>
+
+
+                                        <input type="submit" id="plus" name="plus" value="+">
+                                    </form>
                                 </td>
                                 <td class="col-4 text-center align-bottom">
                                     <div class="row row-cols-2">
@@ -87,3 +92,27 @@
 
 
         </div>
+
+        <script>
+            function minus() {
+                let minusQty = document.getElementById('qty').value;
+                if (minusQty == 1) {
+                    window.alert("Quantity can't be lower than 1.")
+                    console.log(minusQty);
+                } else {
+                    document.getElementById('qty').value = parseInt(minusQty) - 1;
+                    console.log(parseInt(minusQty) - 1);
+                }
+
+            }
+
+            function plus() {
+                let plusQty = document.getElementById('qty').value;
+
+                document.getElementById('qty').value = parseInt(plusQty) + 1;
+                //console.log(products);
+
+
+            }
+
+        </script>

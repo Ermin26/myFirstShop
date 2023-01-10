@@ -138,6 +138,7 @@ app.use((req, res, next) => {
     next();
 })
 
+let subtotal = [];
 
 app.get('/all_products', async (req, res) => {
     let date = new Date();
@@ -221,20 +222,40 @@ app.get("/users", async (req, res) => {
     })
 })
 
+function isProductInCart(cart, id) {
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i].id == id) { return true; }
+    } return false;
+}
+
+function calculateTotal(cart, req) {
+    total = 0;
+    for (let i = 0; i < cart.length; i++) {
+        total = total + (cart[i].price * cart[i].qty)
+    }
+    console.log(total)
+    req.session.total = total;
+    return total;
+}
+
+
 app.get("/cart", async (req, res) => {
     let items = [];
     let count = 0
     let cart = req.session.cart;
+    let total = req.session.total;
+    console.log(cart)
     if (cart) {
         if (!cart.length) {
             res.render('orders/cart', { items })
         } else {
-            for (products of cart) {
-                await conn.query(`SELECT * FROM products WHERE id = '${products}'`, async (err, product) => {
+            for (let i = 0; i < cart.length; i++) {
+                await conn.query(`SELECT * FROM products WHERE id = '${cart[i].product_id}'`, async (err, product) => {
                     if (!err) {
                         count += 1;
                         items.push(product.rows);
                         if (cart.length === count) {
+
                             res.render('orders/cart', { items })
                         }
                     }
@@ -244,66 +265,27 @@ app.get("/cart", async (req, res) => {
     } else {
         res.render('orders/cart', { items })
     }
-    /*
-        if (!req.user) {
-            conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
-                if (!err) {
-                    let data = result.rows
-                    if (data.length) {
-                        for (products of data) {
-                            await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
-                                if (!err) {
-                                    count += 1;
-                                    items.push(product.rows)
-                                    if (data.length === count) {
-                                        res.render('orders/cart', { items })
-                                    }
-                                }
-                            })
-                        }
-                    } else {
-                        res.render('orders/cart', { items })
-                    }
-                }
-            })
-        } else {
-            conn.query(`SELECT * FROM cart WHERE  user_id = '${req.sessionID}'`, async (err, result) => {
-                if (!err) {
-                    let data = result.rows
-                    if (data.length) {
-                        for (products of data) {
-                            await conn.query(`SELECT * FROM products WHERE id = '${products.product_id}'`, async (err, product) => {
-                                if (!err) {
-                                    count += 1;
-                                    items.push(product.rows)
-                                    if (data.length === count) {
-                                        res.render('orders/cart', { items })
-                                    }
-                                }
-                            })
-                        }
-                    } else {
-                        res.render('orders/cart', { items })
-                    }
-                }
-            })
-        }
-        */
+
 })
 
-app.get('/add-to-cart/:id', async (req, res) => {
-    let product = req.params.id
+app.post('/add-to-cart', async (req, res) => {
+    let id = req.body.product_id;
+    let price = req.body.product_price;
+    let product = { product_id: id, qty: 1, price: price };
+    console.log(product);
     if (req.session.cart) {
         let cart = req.session.cart;
         cart.push(product)
         req.flash('success', 'Successfully added to cart')
-        res.redirect(`/product/${product}`)
+        res.redirect(`/product/${id}`)
     } else {
         req.session.cart = [product]
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')
-        res.redirect(`/product/${product}`)
+        res.redirect(`/product/${id}`)
     }
+
+
 });
 
 app.get('/remove/:id', async (req, res) => {
@@ -315,6 +297,36 @@ app.get('/remove/:id', async (req, res) => {
         }
     }
     res.redirect('/cart')
+
+})
+
+app.post('/edit_qty', async (req, res) => {
+    let id = req.body.id;
+    let qty = req.body.qty;
+    let plus_btn = req.body.plus;
+    let minus_btn = req.body.minus;
+    let cart = req.session.cart;
+
+    if (plus_btn) {
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].product_id === id) {
+                if (cart[i].qty > 0) {
+                    console.log(cart[0].qty > 0)
+                    cart[i].qty = parseInt(cart[i].qty) + 1;
+                    res.redirect('/cart');
+                }
+            }
+        }
+    }
+    if (minus_btn) {
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].product_id === id) {
+                subtotal.pop();
+                subtotal.push(parseInt(qty) - 1);
+                res.redirect('/cart');
+            }
+        }
+    }
 
 })
 

@@ -44,11 +44,15 @@
 
                         <div class="testMe mt-5">
                             <form action="/add-to-cart" method="post">
-                                <input type="hidden" id="p_id" name="product_id" value="<%= info.id %> ">
+                                <input type="hidden" id="p_id" name="product_id" value="<%= info.id %>">
+                                <input type="hidden" id="p_price" name="product_price" value="<%= info.p_price %>">
+                                <button class="btn btn-primary">Add to cart</button>
                             </form>
-                            <a href="/add-to-cart/<%= info.id %> ">
+                            <!--
+                            <a href="/add-to-cart/<%# info.id %> ">
                                 <button class="btn btn-primary">Add to cart</button>
                             </a>
+                            -->
                         </div>
                         <% } %>
             </div>
