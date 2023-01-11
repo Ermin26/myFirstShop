@@ -233,7 +233,6 @@ function calculateTotal(cart, req) {
     for (let i = 0; i < cart.length; i++) {
         total = total + (cart[i].price * cart[i].qty)
     }
-    console.log(total)
     req.session.total = total;
     return total;
 }
@@ -241,10 +240,12 @@ function calculateTotal(cart, req) {
 
 app.get("/cart", async (req, res) => {
     let items = [];
+    let cartItems = []
     let count = 0
     let cart = req.session.cart;
     let total = req.session.total;
-    console.log(cart)
+
+
     if (cart) {
         if (!cart.length) {
             res.render('orders/cart', { items })
@@ -255,8 +256,7 @@ app.get("/cart", async (req, res) => {
                         count += 1;
                         items.push(product.rows);
                         if (cart.length === count) {
-
-                            res.render('orders/cart', { items })
+                            res.render('orders/cart', { items, cart })
                         }
                     }
                 })
@@ -265,6 +265,7 @@ app.get("/cart", async (req, res) => {
     } else {
         res.render('orders/cart', { items })
     }
+
     calculateTotal(cart, req)
 })
 
@@ -272,7 +273,6 @@ app.post('/add-to-cart', async (req, res) => {
     let id = req.body.product_id;
     let price = req.body.product_price;
     let product = { product_id: id, qty: 1, price: price };
-    console.log(product);
     if (req.session.cart) {
         let cart = req.session.cart;
         cart.push(product)
@@ -291,8 +291,9 @@ app.post('/add-to-cart', async (req, res) => {
 app.get('/remove/:id', async (req, res) => {
     const { id } = req.params;
     let cart = req.session.cart;
+
     for (let i = 0; i < cart.length; i++) {
-        if (cart[i] == id) {
+        if (cart[i].product_id == id) {
             cart.splice(cart.indexOf(cart[i]), 1)
         }
     }
@@ -311,7 +312,6 @@ app.post('/edit_qty', async (req, res) => {
         for (let i = 0; i < cart.length; i++) {
             if (cart[i].product_id === id) {
                 if (cart[i].qty > 0) {
-                    console.log(cart[0].qty > 0)
                     cart[i].qty = parseInt(cart[i].qty) + 1;
                     res.redirect('/cart');
                 }
@@ -321,9 +321,13 @@ app.post('/edit_qty', async (req, res) => {
     if (minus_btn) {
         for (let i = 0; i < cart.length; i++) {
             if (cart[i].product_id === id) {
-                subtotal.pop();
-                subtotal.push(parseInt(qty) - 1);
-                res.redirect('/cart');
+                if (cart[i].qty > 1) {
+                    cart[i].qty = parseInt(cart[i].qty) - 1;
+                    res.redirect('/cart');
+                } else {
+                    req.flash('error', "Quantity can't be smaller than 1")
+                    res.redirect('/cart');
+                }
             }
         }
     }

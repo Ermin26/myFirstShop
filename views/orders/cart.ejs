@@ -47,9 +47,9 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <h1 class="d-inline-block">
+                                            <h2 class="d-inline-block">
                                                 <%= product.p_name %>
-                                            </h1>
+                                            </h2>
                                             <h5 class="card-title">
                                                 <%= product.p_desc%>
                                             </h5>
@@ -59,26 +59,33 @@
                                 </td>
                                 <td class="col-4 text-center align-bottom">
                                     <form action="/edit_qty" method="post">
-                                        <input type="hidden" value="<%= product.id %>" name="id">
-                                        <input type="submit" id="minus" name="minus" value="-">
 
-                                        <input type="text" class="col-1 text-center" id="qty" name="qty" value="1"
-                                            readonly>
+                                        <% for(qty of cart) {%>
+                                            <% if(qty.product_id===product.id) {%>
+                                                <input type="hidden" value="<%= product.id %>" name="id">
+                                                <input type="submit" id="minus" name="minus" value="-">
+                                                <input type="text" class="col-1 text-center" id="qty" name="qty"
+                                                    value="<%= qty.qty %>" readonly>
+                                                <input type="submit" id="plus" name="plus" value="+">
 
 
-                                        <input type="submit" id="plus" name="plus" value="+">
+
+
                                     </form>
                                 </td>
                                 <td class="col-4 text-center align-bottom">
                                     <div class="row row-cols-2">
                                         <div class="col-8">
                                             <h3 class="card-text">
-                                                <%= product.p_price %> €
+                                                <%= qty.qty * product.p_price %> €
                                             </h3>
                                         </div>
-                                        <div class="col-4">
-                                            <a class="btn btn-primary" href="/remove/<%=product.id %> ">Remove</a>
-                                        </div>
+                                        <% } %>
+                                            <% } %>
+                                                <div class="col-4">
+                                                    <a class="btn btn-primary"
+                                                        href="/remove/<%=product.id %> ">Remove</a>
+                                                </div>
                                     </div>
                                 </td>
                             </tr>
@@ -88,7 +95,9 @@
                                         <td>Total</td>
                                         <td></td>
                                         <td>
-                                            <%= total %>
+                                            <h1>
+                                                <%= total.toFixed(2) %> €
+                                            </h1>
                                         </td>
                                     </tr>
                 </tbody>
@@ -99,27 +108,3 @@
 
 
         </div>
-
-        <script>
-            function minus() {
-                let minusQty = document.getElementById('qty').value;
-                if (minusQty == 1) {
-                    window.alert("Quantity can't be lower than 1.")
-                    console.log(minusQty);
-                } else {
-                    document.getElementById('qty').value = parseInt(minusQty) - 1;
-                    console.log(parseInt(minusQty) - 1);
-                }
-
-            }
-
-            function plus() {
-                let plusQty = document.getElementById('qty').value;
-
-                document.getElementById('qty').value = parseInt(plusQty) + 1;
-                //console.log(products);
-
-
-            }
-
-        </script>
