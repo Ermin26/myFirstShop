@@ -138,6 +138,10 @@ app.use((req, res, next) => {
     next();
 })
 
+let todayDate = new Date();
+let date = todayDate.toLocaleDateString()
+
+
 let subtotal = [];
 
 app.get('/all_products', async (req, res) => {
@@ -261,12 +265,13 @@ app.get("/cart", async (req, res) => {
                     }
                 })
             }
+            calculateTotal(cart, req)
         }
     } else {
         res.render('orders/cart', { items })
     }
 
-    calculateTotal(cart, req)
+
 })
 
 app.post('/add-to-cart', async (req, res) => {
@@ -333,6 +338,37 @@ app.post('/edit_qty', async (req, res) => {
     }
     calculateTotal(cart, req)
 
+})
+
+app.get('/checkout', async (req, res) => {
+    let total = req.session.total.toFixed(2);
+    res.render('orders/checkout', { total })
+})
+
+app.post('/checkoutToPay', async (req, res) => {
+    let { name, lastName, email, country, city, zip, street, phone } = req.body
+    let costs = req.session.total.toFixed(2)
+    let orderDate = date;
+    let product_ids = "";
+    let cart = req.session.cart;
+    for (let i = 0; i < cart.length; i++) {
+        product_ids = cart[i].product_id
+    }
+
+    try {
+        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, status,date, costs, products) VALUES('${req.body.name}', '${req.body.lastName}', '${req.body.email}', '${req.body.country}', '${req.body.city}', '${req.body.zip}', '${req.body.street}', '${req.body.phone}','false','${orderDate}', '${costs}', '${product_ids}')`)
+        req.flash('success', "Your order sucessfully placed. Choose payment method")
+        res.redirect('/payment')
+    } catch (e) {
+        console.log("error", e)
+        res.redirect('/checkout')
+    }
+
+})
+
+app.get('/payment', async (req, res) => {
+    let total = req.session.total.toFixed(2)
+    res.render('orders/pay', { total })
 })
 
 app.get('/add', (req, res) => {

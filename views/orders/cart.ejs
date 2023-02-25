@@ -92,16 +92,25 @@
                             <% } %>
                                 <% } %>
                                     <tr>
-                                        <td>Total</td>
+                                        <td>
+                                            <h1>Total</h1>
+                                        </td>
                                         <td></td>
                                         <td>
-                                            <h1>
+                                            <h2 class="text-center">
                                                 <%= total.toFixed(2) %> €
-                                            </h1>
+                                            </h2>
                                         </td>
                                     </tr>
+
                 </tbody>
             </table>
+            <div class="pay">
+                <form action="/checkout" method="get">
+                    <button class="btn btn-outline-primary">Checkout</button>
+
+                </form>
+            </div>
             <%}else { %>
                 <h1 class="text-center mt-5">Your cart is empty.</h1>
                 <%} %>

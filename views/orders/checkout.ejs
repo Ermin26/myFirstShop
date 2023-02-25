@@ -1,0 +1,74 @@
+<% layout('layouts/boilerplate') %>
+
+
+    <div class="preBuyIt mt-5">
+        <form action="checkoutToPay" method="post">
+            <div class="group-item ms-auto me-auto">
+                <div class="row row-cols-2 text-center">
+                    <div class="col-6">
+                        <div class="mb-2">
+                            <label for="name">First name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="James" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="example@gmail.com" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Wien" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="street">Street</label>
+                            <input type="text" class="form-control" id="street" name="street" placeholder="Lebelstraße"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-2">
+                            <label for="lastName">Last name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Mccanzie"
+                                required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="country">Country</label>
+                            <input type="text" class="form-control" id="country" name="country" placeholder="Austria"
+                                required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="zip">Zip code</label>
+                            <input type="number" class="form-control" id="zip" name="zip" placeholder="1100" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="+38670755355"
+                                required>
+                        </div>
+                    </div>
+
+                </div>
+                <p>Total amount: <%= total %> €</p>
+                <div class="button">
+                    <button class="btn btn-primary">Checkout</button>
+                </div>
+        </form>
+
+
+    </div>
+
+
+
+
+    </div>
+    <div class="col">
+
+
+    </div>
+    <div class="col">
+
+
+    </div>
+    <div class="col">
+
+    </div>
