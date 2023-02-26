@@ -149,7 +149,7 @@ let date = todayDate.toLocaleDateString()
 
 let subtotal = [];
 
-app.get('/all_products', async (req, res) => {
+app.get('/', async (req, res) => {
     let date = new Date();
     let day = date.getDay()
 
@@ -178,7 +178,7 @@ app.get("/login", (req, res) => {
 
 //? WORKING ALL!!
 app.post("/userLogin", passport.authenticate('local', { failureFlash: true, failureRedirect: 'login', keepSessionInfo: true }), async (req, res) => {
-    const redirect = req.session.returnTo || '/all_products';
+    const redirect = req.session.returnTo || '/';
     req.flash('success', 'Successfully logged', req.user.fname)
     delete req.session.returnTo;
     res.redirect(redirect)
@@ -218,7 +218,7 @@ app.get('/logout', (req, res, next) => {
             return next(err);
         } else {
             req.flash('success', 'Logged out.');
-            res.redirect('/all_products');
+            res.redirect('/');
         }
     });
 });
@@ -388,7 +388,7 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
     }
     //await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',ARRAY['${imgsUrl}'])`)
     await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',array_to_json('{${imgsUrl}}'::text[]))`)
-
+    req, flash('success', 'Successfully added new product')
     res.redirect('add')
 })
 
@@ -411,7 +411,7 @@ app.get('/mens', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
                 res.render('artikli/womens/womenAll', { shirts })
@@ -441,7 +441,7 @@ app.get('/men_Jackets', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
                 res.render('artikli/mens/mensJackets', { shirts })
@@ -457,7 +457,7 @@ app.get('/men_Pants', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -474,7 +474,7 @@ app.get('/men_Underwear', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -493,7 +493,7 @@ app.get('/womens', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -509,7 +509,7 @@ app.get('/women_Shirts', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
                 res.render('artikli/womens/womenShirts', { shirts })
@@ -525,7 +525,7 @@ app.get('/women_Jackets', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -542,7 +542,7 @@ app.get('/women_Pants', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -559,7 +559,7 @@ app.get('/women_Underwear', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
                 res.render('artikli/womens/womenUnderwear', { shirts })
@@ -576,7 +576,7 @@ app.get('/baby', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
                 res.render('artikli/kids/kidsBaby', { shirts })
@@ -590,7 +590,7 @@ app.get('/kids', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
                 res.render('artikli/kids/kidsAll', { shirts })
@@ -605,7 +605,7 @@ app.get('/kids_Shirts', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -623,7 +623,7 @@ app.get('/kids_Jackets', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -640,7 +640,7 @@ app.get('/kids_Pants', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
@@ -657,7 +657,7 @@ app.get('/kids_Underwear', async (req, res) => {
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/all_products')
+            res.redirect('/')
         } else {
             if (!err) {
 
