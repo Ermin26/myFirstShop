@@ -15,6 +15,7 @@ const LocalStrategy = require('passport-local')
 const helmet = require('helmet')
 const bodyParser = require("body-parser");
 const path = require('path');
+const fs = require('fs');
 const override = require('method-override');
 const PostgreSQLStore = require('connect-pg-simple')(session)
 const bcrypt = require('bcrypt')
@@ -33,6 +34,10 @@ const client = new Client({
     database: process.env.DB_DB,
     password: process.env.DB_PASS,
     port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: true,
+        ca: fs.readFileSync('./root.crt').toString()
+    },
 });
 
 const conn = client;
