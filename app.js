@@ -195,7 +195,7 @@ app.post('/register', async (req, res, next) => {
             res.redirect('/register')
         } else {
             const userPassword = await bcrypt.hash(users.password, 10)
-            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password, userSessId ) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}', '${req.sessionID}')`, async (err, user) => {
+            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}')`, async (err, user) => {
                 if (!err) {
                     passport.authenticate('local')(req, res, () => {
                         req.flash('success', `Successfully register ${users.fname}`);
@@ -204,7 +204,8 @@ app.post('/register', async (req, res, next) => {
                 }
                 else {
                     console.log(err.message)
-                    res.redirect('/register')
+                    res.send(err)
+                   // res.redirect('/register')
                 }
             })
         }

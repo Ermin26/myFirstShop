@@ -12,6 +12,7 @@ const path = require('path');
 const fs = require('fs');
 const bodyParser = require("body-parser");
 const override = require('method-override');
+const uuid = require('uuid');
 const PostgreSQLStore = require('connect-pg-simple')(session)
 const { Client } = require('pg')
 
@@ -67,19 +68,28 @@ conn.query("CREATE TABLE IF NOT EXISTS demo(id serial PRIMARY KEY,fName VARCHAR(
 const create = async (req, res) => {
 
     try {
+        await conn.query("DROP TABLE products");
+        //await conn.query("DROP TABLE orders");
+        //await conn.query("DROP TABLE bills");
+        //await conn.query("DROP TABLE sended");
+        //await conn.query("DROP TABLE users");
+        //await conn.query("DROP TABLE session");
+        
+        //await conn.query("CREATE TABLE users (id BIGSERIAL,fname VARCHAR(15),lname VARCHAR(15),email VARCHAR(50),country VARCHAR(25),city VARCHAR(15),zip VARCHAR(10),address VARCHAR(20),password VARCHAR(60), PRIMARY KEY (ID), UNIQUE (email))");
+       // await conn.query("CREATE UNIQUE INDEX users_email ON users (email)");
+        //await conn.query("ALTER TABLE users ALTER COLUMN id SERIAL PRIMARY KEY NOT NULL");
 
-        //await conn.query("CREATE TABLE users IF DON'T EXISTS (id UUID PRIMARY KEY NOT NULL,fname VARCHAR(15),lname VARCHAR(15),email VARCHAR(50),country VARCHAR(25),city VARCHAR(15),zip VARCHAR(10),address VARCHAR(20),password VARCHAR(60))");
 
-        //await conn.query("CREATE TABLE products (id UUID PRIMARY KEY NOT NULL,p_name VARCHAR(25),p_qty NUMERIC,p_price FLOAT,p_cat VARCHAR(15),p_subcat VARCHAR(15),p_size VARCHAR(20),p_color VARCHAR(20),p_desc VARCHAR(50),p_fulldesc VARCHAR(300),p_imgdestination VARCHAR(100))");
+        await conn.query("CREATE TABLE products (id BIGSERIAL ,p_name VARCHAR,p_qty NUMERIC,p_price FLOAT,p_cat VARCHAR(15),p_subcat VARCHAR(15),p_size VARCHAR(20),p_color TEXT[],p_desc VARCHAR(150),p_fulldesc VARCHAR(300),p_imgdestination json, PRIMARY KEY (ID), UNIQUE (p_name))");
+        //await conn.query("ALTER TABLE products ALTER COLUMN p_name VARCHAR")
+        //await conn.query("CREATE TABLE orders (id BIGSERIAL,ordernumber INTEGER , name VARCHAR(50),lastname VARCHAR(50),email VARCHAR(50),country VARCHAR(50),city VARCHAR(50),zip BIGINT,street VARCHAR(50),phone VARCHAR(50),products_ids TEXT,costs VARCHAR(50),status boolean DEFAULT FALSE,date TIMESTAMP,PRIMARY KEY (ID))");
 
-        //await conn.query("CREATE TABLE orders (id SERIAL NOT NULL,ordernumber UUID PRIMARY KEY NOT NULL, name VARCHAR(50),lastname VARCHAR(50),email VARCHAR(50),country VARCHAR(50),city VARCHAR(50),zip BIGINT,street VARCHAR(50),phone VARCHAR(50),products_ids TEXT,costs VARCHAR(50),status VARCHAR(50),date VARCHAR(50))");
+        //await conn.query("CREATE TABLE bills (id BIGSERIAL NOT NULL,bill_number SERIAL NOT NULL, order_number_id VARCHAR(50),orders_product_ids TEXT,price VARCHAR(50),billDate VARCHAR(25), PRIMARY KEY(ID))");
 
-        //await conn.query("CREATE TABLE bills (id UUID PRIMARY KEY NOT NULL,bill_number SERIAL NOT NULL, order_number_id VARCHAR(50),orders_product_ids TEXT,price VARCHAR(50),billDate VARCHAR(25))");
-
-        //await conn.query("CREATE TABLE session(sid CHARACTER(100),expire TIMESTAMP WITH TIME ZONE, sess json)");
+        //await conn.query("CREATE TABLE session(sid CHARACTER(100),expire TIMESTAMP, sess json)");
         //await conn.query("ALTER TABLE session ADD COLUMN expire TIMESTAMP WITH TIME ZONE");
 
-        //await conn.query("CREATE TABLE sended (id UUID PRIMARY KEY NOT NULL, sended_number SERIAL NOT NULL, order_id VARCHAR(50), bill_id VARCHAR(50), send_date VARCHAR(50), courier VARCHAR(50))")
+        //await conn.query("CREATE TABLE sended (id serial, sended_number SERIAL, order_id VARCHAR(50), bill_id VARCHAR(50), send_date VARCHAR(50), courier VARCHAR(50), PRIMARY KEY (id), UNIQUE(sended_number))")
 
         console.log('Successfully created dbs')
     } catch (e) {
