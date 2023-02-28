@@ -39,7 +39,16 @@ const client = new Client({
         ca: fs.readFileSync('./root.crt').toString()
     },
 });
+/*
+const client = new Client({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'YaseminShop',
+    password: 'ermin',
+    port: 5432,
 
+});
+*/
 const conn = client;
 
 const connectToDB = async (req, res) => {
@@ -69,9 +78,10 @@ const nothingSpecial = process.env.IGNORE_ME
 
 
 
+
 app.use(session({
     store: new PostgreSQLStore({
-        pool: client,                // Connection pool
+        pool: client,             // Connection pool
         //tableName: 'session'   // Use another table-name than the default "session" one
         // Insert connect-pg-simple options here
     }),
@@ -82,13 +92,15 @@ app.use(session({
     cookie: {
         httpOnly: true,
         maxAge: 2 * 24 * 60 * 60 * 1000
-    }, // 1 day
+    },
+    // 1 day
     //returnTo: req.originalUrl
     // Insert express-session options here
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.use('local', new LocalStrategy(({
     usernameField: 'email',
     passwordField: 'password',
@@ -131,6 +143,7 @@ passport.deserializeUser((id, done) => {
         return done(null, results.rows[0]);
     });
 });
+
 app.use(flash());
 
 
@@ -149,13 +162,13 @@ let date = todayDate.toLocaleDateString()
 
 let subtotal = [];
 
+
 app.get('/', async (req, res) => {
     let date = new Date();
     let day = date.getDay()
 
     //await conn.query(`DELETE FROM cart WHERE expiring = '${day}'`)
     await conn.query(`SELECT * FROM products`, async (err, result) => {
-        //console.log(result.rows)
         let shirts = result.rows
         if (!shirts.length) {
             req.flash('error', ' Nothing to display.')
@@ -195,7 +208,7 @@ app.post('/register', async (req, res, next) => {
             res.redirect('/register')
         } else {
             const userPassword = await bcrypt.hash(users.password, 10)
-            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}')`, async (err, user) => {
+            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}') ON CONFLICT (email) DO NOTHING`, async (err, user) => {
                 if (!err) {
                     passport.authenticate('local')(req, res, () => {
                         req.flash('success', `Successfully register ${users.fname}`);
@@ -205,7 +218,7 @@ app.post('/register', async (req, res, next) => {
                 else {
                     console.log(err.message)
                     res.send(err)
-                   // res.redirect('/register')
+                    // res.redirect('/register')
                 }
             })
         }
@@ -388,7 +401,7 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
         imgsUrl.push(req.files[i].path.split("["))
     }
     //await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',ARRAY['${imgsUrl}'])`)
-    await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',array_to_json('{${imgsUrl}}'::text[]))`)
+    await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',array_to_json('{${imgsUrl}}'::text[]) ON CONFLICT (p_name) DO NOTHING)`)
     req, flash('success', 'Successfully added new product')
     res.redirect('add')
 })
