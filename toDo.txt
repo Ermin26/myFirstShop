@@ -14,6 +14,10 @@ Added table to the cart for show products in the cart
 
 
 DONE -----
+    pushed on 1.3.2023 at 18:20
+    fixed insert product into product + sizes to size table
+    created tables for kids clothes/shoes and adult
+_________________________________________
 Save products to session 
 Fixed slide show on the cart page
 Added slide show to product show page
