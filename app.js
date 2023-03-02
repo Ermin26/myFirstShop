@@ -159,7 +159,7 @@ app.use((req, res, next) => {
 let todayDate = new Date();
 let date = todayDate.toLocaleDateString()
 let year = todayDate.getFullYear();
-
+console.log(date)
 
 let subtotal = [];
 
@@ -368,7 +368,7 @@ app.get('/checkout', async (req, res) => {
 app.post('/checkoutToPay', async (req, res) => {
     let { name, lastName, email, country, city, zip, street, phone } = req.body
     let costs = req.session.total.toFixed(2)
-    let orderDate = date;
+    let orderDate = todayDate.toLocaleString();
     let product_ids = "";
     let cart = req.session.cart;
     for (let i = 0; i < cart.length; i++) {
@@ -376,7 +376,7 @@ app.post('/checkoutToPay', async (req, res) => {
     }
 
     try {
-        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, status,date, costs, products) VALUES('${req.body.name}', '${req.body.lastName}', '${req.body.email}', '${req.body.country}', '${req.body.city}', '${req.body.zip}', '${req.body.street}', '${req.body.phone}','false','${orderDate}', '${costs}', '${product_ids}')`)
+        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, status,orderdate, costs, products_ids) VALUES('${req.body.name}', '${req.body.lastName}', '${req.body.email}', '${req.body.country}', '${req.body.city}', '${req.body.zip}', '${req.body.street}', '${req.body.phone}','false','${orderDate}', '${costs}', '${product_ids}')`)
         req.flash('success', "Your order sucessfully placed. Choose payment method")
         res.redirect('/payment')
     } catch (e) {
@@ -417,7 +417,7 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
     }
     if (product.p_cat == 'Kids' && product.p_subcat == 'Jackets' || product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
         await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}') RETURNING id,p_name, p_sku`, async (err, doNext) => {
-            
+
             if (!err) {
                 await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color) VALUES('${doNext.rows[0].id}','${doNext.rows[0].p_name}','${req.body.size_56}','${req.body.size_62}','${req.body.size_68}','${req.body.size_74}','${req.body.size_86}','${req.body.size_92}','${req.body.size_104}','${req.body.size_110}','${req.body.size_116}','${req.body.size_128}','${req.body.size_134}','${req.body.size_140}','${req.body.size_146}','${req.body.size_152}','${req.body.size_158}','${req.body.size_164}','${req.body.size_170}','${req.body.size_176}','${doNext.rows[0].p_sku}', 'white')`)
                 req.flash('success', 'Successfully added new product')
