@@ -1,30 +1,32 @@
 <% layout('layouts/boilerplate') %>
+    <link rel="stylesheet" href="/css/show.css">
     <div class="row row-cols-2 mt-5 no-gutters m-0 p-0 justify-content-center">
-        <div class="col col-md-5  ms-auto me-auto">
+        <div id="col" class="col col-md-6 ms-auto me-auto">
             <% for(let info of shirts) {%>
-                <div class="card">
-                    <div id="carouselExampleControls" class="carousel slide">
+                <div id="card" class="card col-10">
+                    <div id="body" class="card-body">
+                        <div id="carouselExampleControls" class="carousel slide">
+                            <div id="carousel" class="carousel-inner">
+                                <% info.p_imgdestination.forEach((img, i)=>{%>
+                                    <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
+                                        <img class="img-fluid" alt="" src="<%= img %>">
+                                    </div>
+                                    <% }) %>
+                            </div>
 
-                        <div class="carousel-inner">
-                            <% info.p_imgdestination.forEach((img, i)=>{%>
-                                <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
-                                    <img class="img-fluid" alt="" src="<%= img %>" style=" max-height: 350px">
-                                </div>
-                                <% }) %>
+                            <% if(info.p_imgdestination.length> 1) {%>
+                                <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                                <% } %>
                         </div>
-
-                        <% if(info.p_imgdestination.length> 1) {%>
-                            <button class="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button"
-                                data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                            <% } %>
                     </div>
                     <div class="card-footer">
                         <h1 id="p_price">
@@ -34,7 +36,7 @@
                 </div>
         </div>
         <% } %>
-            <div class="col col-md-5 bg-danger ms-auto me-auto">
+            <div class="col col-md-6 bg-danger ms-auto me-auto">
                 <% for(let info of shirts) {%>
                     bilo kaj
                     <h1 id="p_name">

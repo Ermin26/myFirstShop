@@ -1,0 +1,16 @@
+#card,
+#col {
+    height: auto;
+}
+
+#body,
+#carouselExampleControls,
+#carousel {
+    height: auto;
+}
+
+#carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
