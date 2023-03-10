@@ -1,0 +1,23 @@
+
+NEXT ----
+  ☐ //Add slide show for image on cart page
+    ☐ Change QTY in cart for each product
+    ☐ Total price counter
+    ☐ Make/save order
+    ☐ Send order on mail (Company/User) 
+
+DOING -------
+
+
+
+'
+
+DONE -----
+    ✔ Added table to the cart for show products in the cart @done(23-03-10 19:05)
+    ✔ pushed on 1.3.2023 at 18:20 @done(23-03-10 19:02)
+    ✔ fixed insert product into product + sizes to size table @done(23-03-10 19:02)
+    ✔ created tables for kids clothes/shoes and adult @done(23-03-10 19:02)
+_________________________________________
+✔ Save products to session @done(23-03-10 19:02)
+✔ Fixed slide show on the cart page @done(23-03-10 19:02)
+✔ Added slide show to product show page @done(23-03-10 19:02)
