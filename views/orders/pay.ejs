@@ -7,11 +7,11 @@
         <div class="info mt-3 mb-4">
 
         </div>
+        <div class="method m-0 p-0 text-center">
+            <h3 class="d-inline-flex align-middle p-1">Choose payment method</h3>
 
-
-
-            <h3>Choose payment method</h1>
-            <div id="paypal-button-container" class="d-flex m-2 p-2 bg-danger mt-5"></div>
+        </div>
+            <div id="paypal-button-container" class="d-flex m-2 p-2 mt-5"></div>
 
     </div>
 
@@ -76,7 +76,16 @@
                         amount: {
                             value: '<%= total %>'
                         }
-                    }]
+                    }],
+                    body: JSON.stringify({
+                        cart:[
+                            { 
+                                product: '<%= product.name %>',
+                                qty: '<%= product.qty %>',
+                                price: '<%= product.price %>',
+                        
+                    },]
+                    }),
                 });
             },
             // Finalize the transaction on the server after payer approval
