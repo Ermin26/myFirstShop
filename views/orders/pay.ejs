@@ -1,17 +1,66 @@
 <% layout('layouts/boilerplate') %>
 
 
-    <div class="payment">
-        <div class="pay">
-            <h1>Choose payment method</h1>
-            <h2>
-                <%= total %>
-            </h2>
+ 
+<div class="row row-cols-2 mt-5 g-0">
+    <div class="col-7 ms-auto me-auto bg-info">
+        <div class="info mt-3 mb-4">
+
         </div>
 
-        <div id="paypal-button-container"></div>
+
+
+            <h3>Choose payment method</h1>
+            <div id="paypal-button-container" class="d-flex m-2 p-2 bg-danger mt-5"></div>
 
     </div>
+
+        <div class="col-5">
+            <div class="card">
+                <div class="d-flex justify-content-between p-2">
+                    <h3 class="d-inlines">Shipping Cart</h3>
+                    <p class="d-inline-flex"><a href="/cart">Edit</a></p>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <% for(product of cart) {%>
+                            <tr>
+                                <td><%= product.name%></td>
+                                <td><%= product.qty %></td>
+                                <td><%= product.price %> €</td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <div class="col-8 text-start">
+                    <ul>
+                        <li>Subtotal:</li>
+                        <li>Shipping Fee</li>
+                        <li><strong>Order Total</strong></li>
+                    </ul>
+                </div>
+                <div class="col-4 d-flex flex-column text-end">
+                    <strong>0.00 €</strong>
+                    <strong>0.00 €</strong>
+                    <strong><%= total %> €</strong>
+                </div>
+                </div>
+                </div>
+            </div>
+
+        </div>
+</div>
 
     <!-- Replace "test" with your own sandbox Business account app client ID -->
     <script

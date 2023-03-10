@@ -1,10 +1,10 @@
 <% layout('layouts/boilerplate') %>
     <link rel="stylesheet" href="/css/show.css">
+
     <div class="row row-cols-2 mt-5 no-gutters m-0 p-0 justify-content-center">
-        <div id="col" class="col col-md-6 ms-auto me-auto">
+        <div id="col" class="col col-md-5 ms-auto me-auto">
             <% for(let info of shirts) {%>
-                <div id="card" class="card col-10">
-                    <div id="body" class="card-body">
+                <div id="card" class="card">
                         <div id="carouselExampleControls" class="carousel slide">
                             <div id="carousel" class="carousel-inner">
                                 <% info.p_imgdestination.forEach((img, i)=>{%>
@@ -27,7 +27,7 @@
                                 </button>
                                 <% } %>
                         </div>
-                    </div>
+                   
                     <div class="card-footer">
                         <h1 id="p_price">
                             <%= info.p_price %> €
@@ -50,11 +50,6 @@
                                 <input type="hidden" id="p_price" name="product_price" value="<%= info.p_price %>">
                                 <button class="btn btn-primary">Add to cart</button>
                             </form>
-                            <!--
-                            <a href="/add-to-cart/<%# info.id %> ">
-                                <button class="btn btn-primary">Add to cart</button>
-                            </a>
-                            -->
                         </div>
                         <% } %>
             </div>

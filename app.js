@@ -387,7 +387,29 @@ app.post('/checkoutToPay', async (req, res) => {
 
 app.get('/payment', async (req, res) => {
     let total = req.session.total.toFixed(2)
-    res.render('orders/pay', { total })
+    let cart = req.session.cart;
+    let items = [];
+    let cartItems = []
+    let count = 0
+    for (let i = 0; i < cart.length; i++) {
+        await conn.query(`SELECT * FROM products WHERE id = '${cart[i].product_id}'`, async (err, product) => {
+            if (!err) {
+                count += 1;
+                items.push(product.rows);
+                if (cart.length === count) {
+                 await conn.query(`SELECT * FROM orders WHERE user_id = '${cart[0].user_id} RETURNING *`, async(error, order) =>{
+                    if(!error){
+                     console.log(order)   
+                     res.render('orders/pay', { total,items, cart })
+                    }else{
+                        res.redirect('payment')
+                     }
+                 })
+                }
+            }
+        })
+    }
+
 })
 
 app.get('/add', (req, res) => {
