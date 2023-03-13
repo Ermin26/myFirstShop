@@ -1,15 +1,12 @@
 <% layout('layouts/boilerplate') %>
-    <link rel="stylesheet" href="/css/show.css">
-
-    <div class="row row-cols-2 mt-5 no-gutters m-0 p-0 justify-content-center">
-        <div id="col" class="col col-md-5 ms-auto me-auto">
+    <div class="row row-cols-2 mt-5 no-gutters m-0 p-0">
+        <div id="col" class="col-lg-5 col-md-5">
             <% for(let info of shirts) {%>
-                <div id="card" class="card">
                         <div id="carouselExampleControls" class="carousel slide">
                             <div id="carousel" class="carousel-inner">
                                 <% info.p_imgdestination.forEach((img, i)=>{%>
                                     <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
-                                        <img class="img-fluid" alt="" src="<%= img %>">
+                                        <img class="img-fluid" alt="" src="<%= img %>" style="max-height: 32rem; width: 500px; object-fit:cover; object-position: center;">
                                     </div>
                                     <% }) %>
                             </div>
@@ -27,39 +24,46 @@
                                 </button>
                                 <% } %>
                         </div>
-                   
-                    <div class="card-footer">
-                        <h1 id="p_price">
-                            <%= info.p_price %> €
-                        </h1>
-                    </div>
-                </div>
+                
         </div>
         <% } %>
-            <div class="col col-md-6 bg-danger ms-auto me-auto">
+            <div class="col-lg-7 col-md-6 ms-auto me-auto">
+                <div class="infoData ms-5 mt-5">
                 <% for(let info of shirts) {%>
-                    bilo kaj
+                    
                     <h1 id="p_name">
                         <%= info.p_name %>
                     </h1>
-                    <%= info.p_fulldesc %>
-
+                    <h3>
+                        <%= info.p_fulldesc %>
+                    </h3>
+                    <div class="priceBtn d-flex flex-row mt-5 align-items-center">
+                        <h2 id="p_price" class="d-inline-flex">
+                            <%= info.p_price %> €
+                        </h2> <p class="d-flex m-0"> + Brezplačna poštnina</p>
+                    </div>
                         <div class="testMe mt-5">
                             <form action="/add-to-cart" method="post">
                                 <input type="hidden" id="p_id" name="product_id" value="<%= info.id %>">
                                 <input type="hidden" id="p_name" name="product_name" value="<%= info.p_name %>">
                                 <input type="hidden" id="p_price" name="product_price" value="<%= info.p_price %>">
-                                <button class="btn btn-primary">Add to cart</button>
+                                <button class="btn btn-primary">Dodaj v Košarico</button>
                             </form>
                         </div>
                         <% } %>
+                    </div>
             </div>
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
-        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+
+
+
+
+   

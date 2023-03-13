@@ -2,9 +2,7 @@
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Salester</a>
     <div class="icon ms-right me-2">
-      <a href="/cart" class="bg-info text-light ms-right">
-        <i class="fa-regular fa-cart-shopping">Cart</i>
-      </a>
+     
     </div>
 
     <button class="navbar-toggler ms-right" type="button" data-bs-toggle="collapse"
@@ -12,8 +10,8 @@
       aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <div class="collapse navbar-collapse justify-content-evenly" id="navbarSupportedContent">
+      <ul class="navbar-nav d-flex w-100 me-auto mb-2 mb-lg-0">
         <li class="nav-item m-2">
           <a class="nav-link active" aria-current="page" href="/">Home</a>
         </li>
@@ -63,7 +61,13 @@
             <li><a class="dropdown-item" href="/Baby">Baby</a></li>
           </ul>
         </li>
-        <div class="d-flex ms-5">
+          <li class="nav-item m-3 ms-auto">
+            <a href="/cart">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-cart" viewBox="0 0 18 18">
+                <path d="M11.5 4v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5ZM8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1Zm0 6.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z"/>
+              </svg>
+            </a>
+          </li>
           <% if(!logedUser) {%>
             <li class="nav-item m-2">
               <a class="nav-link" href="/login">Log in</a>
@@ -72,11 +76,11 @@
               <a class="nav-link" href="/register">Register</a>
             </li>
             <% }else {%>
-              <li class="nav-item m-2">
+              <li class="nav-item m-2 ms-auto">
                 <a class="nav-link" href="/logout">Log out</a>
               </li>
               <% } %>
-        </div>
+        
       </ul>
     </div>
   </div>
