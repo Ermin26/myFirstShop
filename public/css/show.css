@@ -1,3 +1,15 @@
-#col{
-    height: 100%;
+@media(max-width: 900){
+    body{
+        background-color: blueviolet !important;
+    }
+    .test{
+        background-color: aqua;
+        color: blue;
+    }
+
+    #row{
+        display: flex;
+        flex-direction: column;
+        background-color: blueviolet;
+    }
 }

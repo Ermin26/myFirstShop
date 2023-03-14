@@ -462,9 +462,16 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM products WHERE id = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows
-            res.render('pages/productShow', { shirts })
+            if (shirts[0].p_cat == 'Kids' && shirts[0].p_subcat != 'Shoes') {
+                await conn.query(`SELECT * FROM kids_clothes WHERE id = '${id}'`, async (e, sizes) => {
+                    let size = sizes.rows[0];
+                    res.render('pages/productShow', { shirts, size })
+                 })
+                
+            }
         } else {
-            res.send(err)
+            req.flash('error', err.message)
+            res.redirect('/')
         }
     })
 })
