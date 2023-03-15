@@ -1,11 +1,15 @@
 html{
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 body{
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon{
+    filter: invert(100%);
 }

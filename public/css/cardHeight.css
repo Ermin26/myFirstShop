@@ -9,6 +9,13 @@ body{
     overflow-x: hidden;
 }
 
+#imgSize{
+    transition: all 0.3s ease-in-out;
+}
+
+#imgSize:hover{
+    transform: scale(1.1);
+}
 #body {
     box-sizing: border-box;
     height: 4rem;
@@ -19,6 +26,7 @@ body{
 
 a{
     text-decoration: none;
+    color: black;
 }
 
 
