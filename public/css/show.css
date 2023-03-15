@@ -1,15 +1,11 @@
-@media(max-width: 900){
-    body{
-        background-color: blueviolet !important;
-    }
-    .test{
-        background-color: aqua;
-        color: blue;
-    }
+html{
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+}
 
-    #row{
-        display: flex;
-        flex-direction: column;
-        background-color: blueviolet;
-    }
+body{
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
 }

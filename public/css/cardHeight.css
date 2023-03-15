@@ -11,9 +11,28 @@ body{
 
 #body {
     box-sizing: border-box;
-    height: 6rem;
+    height: 4rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 a{
     text-decoration: none;
+}
+
+
+
+@media(max-width: 3000px){
+    #imgSize{
+        width: 22rem;
+        height: 28rem;
+    }
+}
+
+@media(max-width: 800px){
+    #imgSize{
+        width: 20rem;
+        height: 16rem;
+    }
 }
