@@ -12,7 +12,8 @@ DOING -------
 '
 
 DONE -----
-
+    ✔ Fixed media screen on product show page @done(23-03-15 10:28)
+    ✔ Fixed footer and added some info links @done(23-03-15 10:27)
     ✔ Tested paying order @done(23-03-14 10:47)
     ✔ Added sizes on the product show page @done(23-03-14 10:46)
 ____________________________________________________________________

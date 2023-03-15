@@ -1,8 +1,8 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/css/show.css">
 
-<div class="row row-cols-2 d-flex flex-column flex-lg-row ms-auto me-auto">
-    <div class="col w-100 col-lg-5 bg-info">
+<div class="row row-cols-2 d-flex flex-column flex-md-row ms-auto me-auto">
+    <div class="col-12 col-lg-5">
         <% for(let info of shirts) {%>
             <div id="carouselExampleControls" class="carousel slide">
                 <div id="carousel" class="carousel-inner text-center">
@@ -30,7 +30,7 @@
             <% } %>
     </div>
 
-    <div class="col w-100 col-lg-7 bg-warning justify-content-center">
+    <div class="col-12 col-lg-7 justify-content-center">
         <div class="infoData mt-5 text-center">
             <% for(let info of shirts) {%>
                 
