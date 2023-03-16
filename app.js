@@ -433,7 +433,7 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
     let sku_num = parseInt(Math.random(12 * 15637) * 10000)
     let sku = sku_year + sku_num;
     let imgsUrl = []
-  
+  /*
     for (let i = 0; i < req.files.length; i++) {
         imgsUrl.push(req.files[i].path.split("["))
     }
@@ -465,6 +465,8 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
     if (product.p_cat == 'Kids' && product.p_subcat == 'Shoes') {
 
     }
+    */
+    res.send(req.body)
 })
 
 app.get('/product/:id', async (req, res) => {

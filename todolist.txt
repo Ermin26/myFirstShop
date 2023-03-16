@@ -1,6 +1,6 @@
 
 NEXT ----
-    ☐  Calculate Neto price + DDV + delivery costs! - NUJNO
+    ☐  Make new rows for products with colors @started(23-03-16 14:19)
     ☐  Change size in DB to # 104 etc. for every table
     ☐  Add size to table 104-116.
     ☐  Make size to be availible for select
@@ -9,10 +9,11 @@ NEXT ----
     ☐  Send order on mail (Company/User) 
 
 DOING -------
-
+    ☐ Prioriteta, display ne dela
+    ☐  Make new rows for products with colors @started(23-03-16 14:19)
+    
 
     ☐  Working on sending mail after customer pay. @started(23-03-16 11:32)
-'
 
 DONE -----
     ✔  Calculate Neto price + DDV + delivery costs! - NUJNO @done(23-03-16 10:11)
