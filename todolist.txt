@@ -1,8 +1,8 @@
 
 NEXT ----
     ☐  Change size in DB to # 104 etc. for every table
+    ☐  Add size to table 104-116.
     ☐  Make size to be availible for select
-    ☐ //Add slide show for image on cart page
     ☐ Send order on mail (Company/User) 
 
 DOING -------
@@ -12,6 +12,7 @@ DOING -------
 '
 
 DONE -----
+    ✔ Added scale on hover @done(23-03-15 14:52)
     ✔ Fixed media screen on product show page @done(23-03-15 10:28)
     ✔ Fixed footer and added some info links @done(23-03-15 10:27)
     ✔ Tested paying order @done(23-03-14 10:47)

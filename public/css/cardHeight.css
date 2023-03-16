@@ -9,11 +9,11 @@ body{
     overflow-x: hidden;
 }
 
-#imgSize{
+.card{
     transition: all 0.3s ease-in-out;
 }
 
-#imgSize:hover{
+.card:hover{
     transform: scale(1.1);
 }
 #body {
@@ -38,7 +38,7 @@ a{
     }
 }
 
-@media(max-width: 800px){
+@media(max-width: 1240px){
     #imgSize{
         width: 20rem;
         height: 16rem;
