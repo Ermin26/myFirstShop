@@ -60,6 +60,10 @@
             </div>
 
         </div>
+
+        <%= userData.city %>
+            <%# userD %>
+            <%# } %>
 </div>
 
     <!-- Replace "test" with your own sandbox Business account app client ID -->
@@ -83,6 +87,7 @@
                                 product: '<%= product.name %>',
                                 qty: '<%= product.qty %>',
                                 price: '<%= product.price %>',
+                                total: '<%= total%>',
                         
                     },]
                     }),
@@ -91,6 +96,32 @@
             // Finalize the transaction on the server after payer approval
             onApprove: (data, actions) => {
                 return actions.order.capture().then(function (orderData) {
+                    
+
+                    let emailTemplate = 'Hello <%= userData.name %> \n thank you for your order!'
+        
+                    let mailTransporter = nodemailer.createTransport({
+                        service: "gmail",
+                         auth: {
+                            user: "a@gmail.com",
+                            pass: "sq"
+                            }
+                    });
+
+                    let details = {
+                      from: "jolda.ermin@gmail.com",
+                      to: `${userData.email}`,
+                      subject: "SalesterShop - order",
+                      text: emailTemplate
+                    };
+                    mailTransporter.sendMail(details, err => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log("email sent");
+                      }
+                    })
+         
                     // Successful capture! For dev/demo purposes:
                     console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
                     const transaction = orderData.purchase_units[0].payments.captures[0];

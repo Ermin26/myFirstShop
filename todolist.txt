@@ -11,7 +11,7 @@ NEXT ----
 DOING -------
 
 
-
+    ☐  Working on sending mail after customer pay. @started(23-03-16 11:32)
 '
 
 DONE -----

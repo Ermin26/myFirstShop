@@ -77,7 +77,7 @@ const create = async (req, res) => {
         //await conn.query("CREATE TABLE users (id BIGSERIAL,fname VARCHAR(30),lname VARCHAR(30),email VARCHAR(100),country VARCHAR(50),city VARCHAR(30),zip VARCHAR(15),address VARCHAR(50),password VARCHAR(80), PRIMARY KEY (ID))");
         //
         //await conn.query("CREATE TABLE products (id BIGSERIAL ,p_name VARCHAR,p_qty NUMERIC,p_price FLOAT,p_cat VARCHAR(15),p_subcat VARCHAR(15),p_size VARCHAR(20),p_color TEXT[],p_desc VARCHAR(150),p_fulldesc VARCHAR(300),p_imgdestination json, PRIMARY KEY (ID))");
-        await conn.query("CREATE TABLE orders (id BIGSERIAL ,ordernumber BIGSERIAL, name VARCHAR(50),lastname VARCHAR(50),email VARCHAR(50),country VARCHAR(50),city VARCHAR(50),zip INTEGER,street VARCHAR(50),phone VARCHAR(50),products_ids TEXT,costs VARCHAR(50),status boolean DEFAULT FALSE,date TEXT, product_qtys TEXT,PRIMARY KEY (ID))");
+        await conn.query("CREATE TABLE orders (id BIGSERIAL ,ordernumber BIGSERIAL, name VARCHAR(50),lastname VARCHAR(50),email VARCHAR(50),country VARCHAR(50),city VARCHAR(50),zip INTEGER,street VARCHAR(50),phone VARCHAR(50),products_ids TEXT,costs VARCHAR(50),status boolean DEFAULT FALSE,date TEXT, product_qtys TEXT, user_id TEXT,PRIMARY KEY (ID))");
 
        // await conn.query("CREATE TABLE bills (id BIGSERIAL,bill_number SERIAL, order_number_id VARCHAR(50),orders_product_ids TEXT,price VARCHAR(50),billDate TIMESTAMP, PRIMARY KEY(ID))");
 

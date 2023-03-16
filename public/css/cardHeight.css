@@ -12,7 +12,7 @@ body{
 .card{
     transition: all 0.3s ease-in-out;
     border: none;
-    background-color: white !important;
+    background-color: white;
 }
 
 .card:hover{

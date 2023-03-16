@@ -377,13 +377,14 @@ app.post('/checkoutToPay', async (req, res) => {
     let product_qtys = "";
     let cart = req.session.cart;
     let user_id = cart[0].user_id;
+    console.log(user_id)
     for (let i = 0; i < cart.length; i++) {
         product_ids =  cart[i].product_id + ',' + product_ids
         product_qtys = cart[i].qty + ',' + product_qtys;
     }
 
     try {
-        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, status,date, costs, products_ids, product_qtys) VALUES('${req.body.name}', '${req.body.lastName}', '${req.body.email}', '${req.body.country}', '${req.body.city}', '${req.body.zip}', '${req.body.street}', '${req.body.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}')`)
+        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, status,date, costs, products_ids, product_qtys, user_id) VALUES('${req.body.name}', '${req.body.lastName}', '${req.body.email}', '${req.body.country}', '${req.body.city}', '${req.body.zip}', '${req.body.street}', '${req.body.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
         req.flash('success', "Your order sucessfully placed. Choose payment method")
         res.redirect('/payment')
     } catch (e) {
@@ -406,7 +407,11 @@ app.get('/payment', async (req, res) => {
                 count += 1;
                 items.push(product.rows);
                 if (cart.length === count) {
-                    res.render('orders/pay', {total,cart});
+                    await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {  
+                        let userData = user.rows[0]
+                        console.log(userData)
+                        res.render('orders/pay', { total, cart, userData });
+                    })
                 }
             } else {
                 req.flash('error',`Error ${err.message}`);
