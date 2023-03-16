@@ -10,8 +10,8 @@
         {
             "pgOptions": {
                 "ssl": {
-                    "cert": "C:\\Users\\jolda\\OneDrive\\Namizje\\JavaScript projects\\shop\\root.crt",
-                    "ca": "C:\\Users\\jolda\\OneDrive\\Namizje\\JavaScript projects\\shop\\root.crt"
+                    "cert": "C:\\Users\\lerve\\OneDrive\\Namizje\\myFirstShop\\root.crt",
+                    "ca": "C:\\Users\\lerve\\OneDrive\\Namizje\\myFirstShop\\root.crt"
                 }
             },
             "previewLimit": 50,

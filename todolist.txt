@@ -1,9 +1,12 @@
 
 NEXT ----
+    ☐  Calculate Neto price + DDV + delivery costs! - NUJNO
     ☐  Change size in DB to # 104 etc. for every table
     ☐  Add size to table 104-116.
     ☐  Make size to be availible for select
-    ☐ Send order on mail (Company/User) 
+    ☐  Make table for addOns
+    ☐  Make fuction to work on stock after user make order
+    ☐  Send order on mail (Company/User) 
 
 DOING -------
 
@@ -12,6 +15,7 @@ DOING -------
 '
 
 DONE -----
+    ✔  Calculate Neto price + DDV + delivery costs! - NUJNO @done(23-03-16 10:11)
     ✔ Added scale on hover @done(23-03-15 14:52)
     ✔ Fixed media screen on product show page @done(23-03-15 10:28)
     ✔ Fixed footer and added some info links @done(23-03-15 10:27)

@@ -25,6 +25,7 @@ const { cloudinary } = require('./cloudinary/cloudConfig');
 const multer = require('multer');
 const { storage } = require('./cloudinary/cloudConfig');
 const { randomUUID } = require('crypto');
+const { parse } = require('path');
 const upload = multer({ storage })
 //const upload = multer({ dest: 'uploads/' })
 
@@ -420,9 +421,10 @@ app.get('/add', (req, res) => {
 })
 app.post('/addProduct', upload.array('image'), async (req, res) => {
     const product = req.body;
+    let brutoPrice = parseInt(product.p_price * 0.22 + 1.99)
+    let netoPrice = brutoPrice;
     let sku_year = year + "-";
     let sku_num = parseInt(Math.random(12 * 15637) * 10000)
-
     let sku = sku_year + sku_num;
     //console.log(sku);
     let imgsUrl = []
@@ -440,7 +442,7 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
 
     }
     if (product.p_cat == 'Kids' && product.p_subcat == 'Jackets' || product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
-        await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${product.p_price}','${product.p_qty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}') RETURNING id,p_name, p_sku`, async (err, doNext) => {
+        await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${netoPrice}','${product.p_qty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}') RETURNING id,p_name, p_sku`, async (err, doNext) => {
             console.log("first")
             if (!err) {
                 await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color) VALUES('${doNext.rows[0].id}','${doNext.rows[0].p_name}','${req.body.size_56}','${req.body.size_62}','${req.body.size_68}','${req.body.size_74}','${req.body.size_86}','${req.body.size_92}','${req.body.size_104}','${req.body.size_110}','${req.body.size_116}','${req.body.size_128}','${req.body.size_134}','${req.body.size_140}','${req.body.size_146}','${req.body.size_152}','${req.body.size_158}','${req.body.size_164}','${req.body.size_170}','${req.body.size_176}','${doNext.rows[0].p_sku}', 'white')`)

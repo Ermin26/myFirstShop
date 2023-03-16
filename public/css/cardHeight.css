@@ -11,6 +11,8 @@ body{
 
 .card{
     transition: all 0.3s ease-in-out;
+    border: none;
+    background-color: white !important;
 }
 
 .card:hover{
@@ -22,6 +24,8 @@ body{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    border: none;
+    background-color: transparent;
 }
 
 a{
