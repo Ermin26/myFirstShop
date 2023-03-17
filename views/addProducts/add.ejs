@@ -61,8 +61,7 @@
             <!-- KIDS -->
 
 
-            <div id="kidsClothesSizes" class="">
-                
+            <div id="kidsClothesSizes" class="">           
                     <div class="mb-3 group-item d-flex flex-column">
                         <label for="num_56">56</label>
                         <input type="number" class="text-center" id="num_56" name="size_56" placeholder="Količina" min="0" value="0">
@@ -152,30 +151,31 @@
                     </div>
                     
                         <div class="mb-3 group-item d-flex flex-column">
-                            <label for="p_qty">Skupna količina</label>
-                            <input type="number" id="p_qty" name="p_qty" placeholder="100" required>
+                            <label for="p_qty">Skupnaj</label>
+                            <input type="number" id="p_qty" class="" name="p_qty[]" placeholder="100" required>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
-                        <div class="col W-100">
-                            <div class="input-group mt-2">
+                        <div class="col-4">
+                            <div class="input-group-sm">
                                 <label for="formFileMultiple" class="form-label custom-file-label"></label>
                                 <input class="form-control text-primary" type="file" id="formFileMultiple" name="image"
                                     multiple>
-                                <div class="valid-feedback">
+                                <div class="invalid-feedback">
                                     Looks good!
                                 </div>
                             </div>
                         </div>
                     
                 
-            </div>
+                        <div class="col">
+                            <div class="btn btn-primary mt-3" onclick="window.alert('Yooo noooo')">Add row</div>
+                        </div>
+                    </div>
 
-            <div class="btn btn-primary" onclick="window.alert('Yooo noooo')">Add row</div>
-
-            <div id="kidsShoesSizes" class="row mt-4 bg-success">
-                <div class="col text-center">
+            <div id="kidsShoes" class="">
+                <div class="text-center">
                     <div class="mb-3 group-item d-flex flex-column">
                         <label for="num_18">18</label>
                         <input type="number" id="num_18" name="size_18" placeholder="Količina" value="0">
@@ -189,7 +189,7 @@
                         <input type="number" id="num_20" name="size_20" placeholder="Količina" value="0">
                     </div>
                 </div>
-                <div class="col text-center">
+                <div class="text-center">
                     <div class="mb-3 group-item d-flex flex-column">
                         <label for="num_21">21</label>
                         <input type="number" id="num_21" name="size_21" placeholder="Količina" value="0">
@@ -203,7 +203,7 @@
                         <input type="number" id="num_23" name="size_23" placeholder="Količina" value="0">
                     </div>
                 </div>
-                <div class="col text-center">
+                <div class="text-center">
                     <div class="mb-3 group-item d-flex flex-column">
                         <label for="num_24">24</label>
                         <input type="number" id="num_24" name="size_24" placeholder="Količina" value="0">
@@ -217,7 +217,7 @@
                         <input type="number" id="num_26" name="size_26" placeholder="Količina" value="0">
                     </div>
                 </div>
-                <div class="col text-center">
+                <div class="text-center">
                     <div class="mb-3 group-item d-flex flex-column">
                         <label for="num_27">27</label>
                         <input type="number" id="num_27" name="size_27" placeholder="Količina" value="0">
@@ -232,7 +232,7 @@
                     </div>
                 </div>
 
-                <div class="col text-center">
+                <div class="text-center">
                     <div class="mb-3 group-item d-flex flex-column">
                         <label for="num_30">30</label>
                         <input type="number" id="num_30" name="size_30" placeholder="Količina" value="0">
@@ -246,7 +246,7 @@
                         <input type="number" id="num_32" name="size_32" placeholder="Količina" value="0">
                     </div>
                 </div>
-                <div class="col text-center">
+                <div class="text-center">
                     <div class="mb-3 group-item d-flex flex-column">
                         <label for="num_33">33</label>
                         <input type="number" id="num_33" name="size_33" placeholder="Količina" value="0">
@@ -415,12 +415,16 @@
     <script src="../public/js/validateForm.js"></script>
 -->
     <script>
+        document.getElementById('adultClothesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
         document.getElementById('adultClothesSizes').style.display = 'none';
+        document.getElementById('adultShoesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
         document.getElementById('adultShoesSizes').style.display = 'none';
-        document.getElementById('kidsShoesSizes').style.display = 'none';
+        //document.getElementById('kidsShoesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
+        //document.getElementById('kidsShoesSizes').style.display = 'none';
+        document.getElementById('kidsClothesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
         document.getElementById('kidsClothesSizes').style.display = 'none';
         function subSelected() {
-            console.log( document.getElementById('p_subcat'))
+            console.log(document.getElementById('p_subcat').value)
             category = document.getElementById('p_cat').value;
             subcategory = document.getElementById('p_subcat').value;
             if (category == 'Mens' || category == 'Womens') {
@@ -428,6 +432,7 @@
                     document.getElementById('adultClothesSizes').style.display = 'flex';
                     document.getElementById('adultShoesSizes').style.display = 'none';
                     document.getElementById('kidsShoesSizes').style.display = 'none';
+                    document.getElementById('kidsShoesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
                     document.getElementById('kidsClothesSizes').style.display = 'none';
                     document.getElementById('kidsClothesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
 
@@ -444,16 +449,17 @@
                 if (subcategory == 'Jackets' || subcategory == 'Shirts') {
                     document.getElementById('adultClothesSizes').style.display = 'none';
                     document.getElementById('adultShoesSizes').style.display = 'none';
-                    document.getElementById('kidsShoesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');;
+                    document.getElementById('kidsShoesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
                     document.getElementById('kidsClothesSizes').classList.add('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
 
                 }
                 if (subcategory == 'Shoes') {
+                    console.log('yooo')
                     document.getElementById('adultClothesSizes').style.display = 'none';
                     document.getElementById('adultShoesSizes').style.display = 'none';
-                    document.getElementById('kidsShoesSize').style.display = 'flex';
-                    // document.getElementById('kidsShoesSize').classList.add('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
                     document.getElementById('kidsClothesSizes').classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
+                    document.getElementById('kidsShoesSize').style.display = 'flex';
+                    document.getElementById('kidsShoesSize').classList.add('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
                 }
             }
 

@@ -1,6 +1,7 @@
 
 NEXT ----
     ☐  Make new rows for products with colors @started(23-03-16 14:19)
+    ☐  Add function to check selected category than on category unlock sub_category
     ☐  Change size in DB to # 104 etc. for every table
     ☐  Add size to table 104-116.
     ☐  Make size to be availible for select
@@ -9,13 +10,14 @@ NEXT ----
     ☐  Send order on mail (Company/User) 
 
 DOING -------
-    ☐ Prioriteta, display ne dela
-    ☐  Make new rows for products with colors @started(23-03-16 14:19)
+    ✔ Prioriteta, display ne dela @done(23-03-17 10:29)
+    ☐  Make new rows for products with colors- new rows added must do for every category... fix save products and move imgDestination to SIZES table @started(23-03-16 14:19) - 
     
 
     ☐  Working on sending mail after customer pay. @started(23-03-16 11:32)
 
 DONE -----
+    ✔ Prioriteta, display ne dela @done(23-03-17 10:29)
     ✔  Calculate Neto price + DDV + delivery costs! - NUJNO @done(23-03-16 10:11)
     ✔ Added scale on hover @done(23-03-15 14:52)
     ✔ Fixed media screen on product show page @done(23-03-15 10:28)

@@ -422,8 +422,10 @@ app.get('/payment', async (req, res) => {
 })
 
 app.get('/add', (req, res) => {
-    res.render('addProducts/add')
+    res.render('addProducts/addProduct')
 })
+
+
 app.post('/addProduct', upload.array('image'), async (req, res) => {
     const product = req.body;
     let brutoPrice = Math.round(product.p_price * 0.22 + 1.99)
@@ -466,7 +468,9 @@ app.post('/addProduct', upload.array('image'), async (req, res) => {
 
     }
     */
-    res.send(req.body)
+    console.log(req.body)
+    req.flash('success', req.body)
+    res.redirect('add')
 })
 
 app.get('/product/:id', async (req, res) => {
