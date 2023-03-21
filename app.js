@@ -299,7 +299,9 @@ app.post('/add-to-cart', async (req, res) => {
     let id = req.body.product_id;
     let price = req.body.product_price;
     let name = req.body.product_name;
+    let size = req.body.size
     let user_id = randomUUID();
+    console.log(req.body)
     if (req.session.cart) {
         let product = { product_id: id, name: name, qty: 1, price: price };
         let cart = req.session.cart;
@@ -420,7 +422,6 @@ app.get('/payment', async (req, res) => {
     }
 
 })
-
 app.get('/add', (req, res) => {
     res.render('addProducts/addProduct')
 })
@@ -434,18 +435,22 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let sku_year = year + "-";
     let sku_num = parseInt(Math.random(12 * 15637) * 10000)
     let sku = sku_year + sku_num;
+    let site_sku = parseInt(Math.random(12 * 25637) * 10000) + "-" + year
     let imgsUrl = [];
     let imgNum = 1;
-    let addImg = 1;
-    let site_sku = parseInt(Math.random(12 * 25637) * 10000) + "-" + year;
+    let addImg = 0;
+    let productQty = 0;
+    
     //! console.log(req.files[`image${imgNum}`][i].path)  Za pravilno shranjevanje
-
+    for (let q = 0; q < product.p_qty.length; q++) { 
+        productQty = parseInt(productQty) + parseInt(product.p_qty[q]);
+    }
 
     let firstCheck = Object.keys(req.files).length;
     let secondCheck = req.files[`image${imgNum}`].length;
 
     for (let i = 0; i < firstCheck; i++) {
-        console.log('Checking I')
+        //console.log('Checking I')
         images = [];
         //console.log(Object.keys(req.files).length)
         for (let j = 1; j < secondCheck; j++) {
@@ -465,6 +470,9 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }
         imgsUrl.push(images);
     }
+    console.log("-----------------------")
+    console.log(imgsUrl)
+    console.log("-----------------------")
    
     
     //console.log(req.files[`image${imgNum}`][0].path,' yoooooooooooo')
@@ -485,11 +493,14 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 }
       */
     if (product.p_cat == 'Kids' && product.p_subcat == 'Jackets' || product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
-        await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku, prod_site_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${total.toFixed(2)}','0',array_to_json('{${imgsUrl}}'::text[]), '${sku}', '${site_sku} ') RETURNING id,p_name, prod_site_sku`, async (err, doNext) => {
-            console.log("first")
+        await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku, prod_site_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${total.toFixed(2)}','${productQty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}', '${site_sku} ') RETURNING id,p_name, prod_site_sku`, async (err, doNext) => {
+            //console.log(doNext.rows[0])
             if (!err) {
                 for (let i = 0; i < product.p_qty.length; i++) {
-                    await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + '#' + product.color[i]}','${product.size_56[i]}','${product.size_62[i]}','${product.size_68[i]}','${product.size_74[i]}','${product.size_86[i]}','${product.size_92[i]}','${product.size_104[i]}','${product.size_110[i]}','${product.size_116[i]}','${product.size_128[i]}','${product.size_134[i]}','${product.size_140[i]}','${product.size_146[i]}','${product.size_152[i]}','${product.size_158[i]}','${product.size_164[i]}','${product.size_170[i]}','${product.size_176[i]}','${parseInt(Math.random(12 * 25637) * 10000) + "-" + year}', '${product.color[i]}', array_to_json('{${imgsUrl[addImg]}}'::text[]), '${doNext.prod_site_sku}')`)
+                    let size_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
+                    
+                    await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + '#' + product.color[i]}','${product.size_56[i]}','${product.size_62[i]}','${product.size_68[i]}','${product.size_74[i]}','${product.size_86[i]}','${product.size_92[i]}','${product.size_104[i]}','${product.size_110[i]}','${product.size_116[i]}','${product.size_128[i]}','${product.size_134[i]}','${product.size_140[i]}','${product.size_146[i]}','${product.size_152[i]}','${product.size_158[i]}','${product.size_164[i]}','${product.size_170[i]}','${product.size_176[i]}','${size_sku}', '${product.color[i]}', array_to_json('{${imgsUrl[i]}}'::text[]), '${doNext.rows[0].prod_site_sku}')`)
+                    console.log(addImg, ' urls')
                     addImg += 1;
                 }
                 req.flash('success', 'Successfully added new product')
@@ -526,12 +537,17 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM products WHERE id = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows
+            //console.log(shirts)
             if (shirts[0].p_cat == 'Kids' && shirts[0].p_subcat != 'Shoes') {
-                await conn.query(`SELECT * FROM kids_clothes WHERE id = '${id}'`, async (e, sizes) => {
-                    let size = sizes.rows[0];
-                    res.render('pages/productShow', { shirts, size })
+                await conn.query(`SELECT * FROM kids_clothes WHERE site_sku = '${shirts[0].prod_site_sku}'`, async (e, sizes) => {
+                    let size = sizes.rows;
+                    let colors = [];
+                    for (let i = 0; i < size.length; i++) {
+                        colors.push(size[i].color); 
+                    }
+                    //console.log(size)
+                    res.render('pages/productShow', { shirts, size,colors })
                 })
-
             }
         } else {
             req.flash('error', err.message)

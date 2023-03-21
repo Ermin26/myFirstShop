@@ -47,80 +47,74 @@
                 </div>
                 <div class="velikost mt-5">
                 <p>Velikost na voljo</p>
-                <div class="sizes d-flex flex-row flex-wrap mt-2 text-center justify-content-center">
-                <% for (let i = 2; i < Object.values(size).length - 2; i++){%>
-                    <% if(Object.values(size)[i] > 0) {%>
-                        <div class="select-size border m-1 p-1">
-                            <span><%= Object.keys(size)[i] %></span>
-                        </div>
-
-                           <% } %>
-                            <% } %>
-                 </div>
+                <form action="/add-to-cart" method="post">
                             <div class="add-to-cart mt-5" style="margin-bottom: 10vh;">
-                                <form action="/add-to-cart" method="post">
+                                <div class="row row-cols-2 mb-5 justify-content-center">
+                                    <div class="col-4">
+                                        <div class="input-group">
+                                            <div class="form-floating">
+                                                <select class="form-select-sm" name="color" id="color" onchange="colorChoose()">
+                                                    <option selected>Izberi Barvo</option>
+                                                        <% for(let c = 0; c < size.length; c++) {%>
+                                                    <option value="<%=size[c].sku_num %>"><%=size[c].color %></option>
+                                                           
+                                                    <% } %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="input-group">
+                                            <div class="form-floating">
+                                                <% for(let s = 0; s < size.length; s++) {%>
+                                                <select class="form-select-sm" name="size" id="<%= size[s].sku_num %>" style="display: none;">
+                                                    <option selected>Izberi velikost</option>
+                                                    <% for(let j = 2; j < Object.values(size[s]).length -3;j++ ) {%>
+                                                        <% if(Object.values(size[s])[j] > 0) {%>
+                                                        <option value="<%= Object.keys(size[s])[j] %>"><%= Object.keys(size[s])[j] %></option>
+                                                        <% }%>
+                                                    <% } %>    
+                                                </select>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                                     <input type="hidden" id="p_id" name="product_id" value="<%= info.id %>">
                                     <input type="hidden" id="p_name" name="product_name" value="<%= info.p_name %>">
-                                    <input type="hidden" id="p_size" name="product_size" value="<%= info.p_size %>">
+                                    <input type="hidden" id="p_color" name="product_color" value="">
                                     <input type="hidden" id="p_price" name="product_price" value="<%= info.p_price %>">
-                                    <button class="btn btn-primary">Dodaj v Košarico</button>
+                                    <button type="submit" class="btn btn-primary">Dodaj v Košarico</button>
                                 </form>
                             </div>
                     <% } %>
             </div>
     </div>
 </div>
+<script>
+    function colorChoose(){
+        let selected = document.getElementById('color').value;
+        let names = document.getElementById(`${selected}`).getAttribute('name');
+        let test = document.getElementsByName(`size`);
+        let inputs = document.getElementsByTagName('select');
 
-<!--
-    <div id="row" class="row row-cols-2 mt-5 no-gutters m-0 p-0">
-        <div id="col" class="col-lg-5">
-            
-        </div>
-            <div class="col-lg-7 ms-auto me-auto">
-                <div class="infoData ms-5 mt-5">
-                <% for(let info of shirts) {%>
-                    
-                    <h1 id="p_name">
-                        <%= info.p_name %>
-                    </h1>
-                    <h3>
-                        <%= info.p_fulldesc %>
-                    </h3>
-                    <div class="priceBtn d-flex flex-row mt-5 align-items-center">
-                        <h2 id="p_price" class="d-inline-flex">
-                            <%= info.p_price %> €
-                        </h2> <p class="d-flex m-0"> + Brezplačna poštnina</p>
-                    </div>
-                    <div class="velikost mt-5">
-                    <p>Velikost na voljo</p>
-                    <div class="sizes d-flex flex-row flex-wrap mt-2">
-                    <% for (let i = 2; i < Object.values(size).length - 2; i++){%>
-                        <% if(Object.values(size)[i] > 0) {%>
-                            <div class="select-size border m-1 p-1">
-                                <span><%= Object.keys(size)[i] %></span>
-                            </div>
+        let sel = document.getElementById('color');
+        let text = sel.options[sel.selectedIndex].text;
+        document.getElementById('p_color').value = text;
+        console.log(text)
+        for(let i = 0; i < test.length; i++){
+            if(test[i].id == selected){
+                document.getElementById(test[i].id).style.display = 'block';
+                document.getElementById(test[i].id).removeAttribute('disabled', 'disabled');
 
-                               <% } %>
-                                <% } %>
-                     </div>
-                                <div class="add-to-cart mt-5">
-                                    <form action="/add-to-cart" method="post">
-                                        <input type="hidden" id="p_id" name="product_id" value="<%= info.id %>">
-                                        <input type="hidden" id="p_name" name="product_name" value="<%= info.p_name %>">
-                                        <input type="hidden" id="p_size" name="product_size" value="<%= info.p_size %>">
-                                        <input type="hidden" id="p_price" name="product_price" value="<%= info.p_price %>">
-                                        <button class="btn btn-primary">Dodaj v Košarico</button>
-                                    </form>
-                                </div>
-                        <% } %>
-                </div>
-            </div>
-            </div>
-
-    </div>
--->
-
- 
+            }else{
+                document.getElementById(test[i].id).setAttribute('disabled', 'disabled');
+                document.getElementById(test[i].id).style.display = 'none';
+            }
+        }
+    }
+</script>
 
 
 
