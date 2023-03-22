@@ -12,32 +12,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% for (products of items) { %>
+                    <% for (products of sizes) { %>
                         <% for (product of products) { %>
                             <tr>
                                 <td>
                                     <div class="card flex-md-column flex-lg-row">
                                         <div class="card-header ms-auto me-auto m-0 p-0">
-                                            <div id="carousel<%= product.id %>"
+                                            <div id="carousel<%= product.sku_num %>"
                                                 class="carousel slide col d-inline-flex ms-auto me-auto">
                                                 <div class="carousel-inner">
-                                                    <% product.p_imgdestination.forEach((img, i)=>{%>
+                                                    <% product.img_link.forEach((img, i)=>{%>
                                                         <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
                                                             <img class="img-fluid rounded" alt="" src="<%= img %>"
                                                                 style="height: 150px; width: 150px;">
                                                         </div>
                                                         <% }) %>
                                                 </div>
-                                                <% if(product.p_imgdestination.length> 1) {%>
+                                                <% if(product.img_link.length> 1) {%>
                                                     <button class="carousel-control-prev" type="button"
-                                                        data-bs-target="#carousel<%= product.id %>"
+                                                        data-bs-target="#carousel<%= product.sku_num %>"
                                                         data-bs-slide="prev">
                                                         <span class="carousel-control-prev-icon"
                                                             aria-hidden="true"></span>
                                                         <span class="visually-hidden">Previous</span>
                                                     </button>
                                                     <button class="carousel-control-next" type="button"
-                                                        data-bs-target="#carousel<%= product.id %>"
+                                                        data-bs-target="#carousel<%= product.sku_num %>"
                                                         data-bs-slide="next">
                                                         <span class="carousel-control-next-icon"
                                                             aria-hidden="true"></span>
@@ -48,18 +48,16 @@
                                         </div>
                                         <div class="card-body">
                                             <h2 class="d-inline-block">
-                                                <%= product.p_name %>
+                                                <%= product.name %>
                                             </h2>
-
                                         </div>
                                     </div>
                                 </td>
                                 <td class="col-4 text-center align-middle p-0">
                                     <form action="/edit_qty" method="post">
-
                                         <% for(qty of cart) {%>
-                                            <% if(qty.product_id===product.id) {%>
-                                                <input type="hidden" value="<%= product.id %>" name="id">
+                                            <% if(qty.sku==product.sku_num) {%>
+                                                <input type="hidden" value="<%= product.sku_num %>" name="id">
                                                 <input type="submit" id="minus" name="minus" value="-">
                                                 <input type="text" class="col-1 text-center" id="qty" name="qty"
                                                     value="<%= qty.qty %>" readonly>
@@ -70,14 +68,15 @@
                                     <div class="row row-cols-2 g-0">
                                         <div class="col">
                                             <h3 class="card-text">
-                                                <%= qty.qty * product.p_price %> €
+                                                <%= qty.qty * qty.price %> €
                                             </h3>
                                         </div>
                                         <% } %>
                                             <% } %>
                                                 <div class="col">
+                                                    <%= product.sku %>
                                                     <a class="btn btn-primary"
-                                                        href="/remove/<%=product.id %> ">Remove</a>
+                                                        href="/remove/<%=product.sku_num %> ">Remove</a>
                                                 </div>
                                     </div>
                                 </td>
@@ -100,13 +99,11 @@
                                             </h2>
                                         </td>
                                     </tr>
-
                 </tbody>
             </table>
             <div class="pay">
                 <form action="/checkout" method="get">
                     <button class="btn btn-outline-primary">Checkout</button>
-
                 </form>
             </div>
             <%}else { %>

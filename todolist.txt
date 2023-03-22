@@ -1,21 +1,22 @@
 
 NEXT ----
-    ☐  Fix cart page
-    ☐  Add function to check selected category than on category unlock sub_category
-    ☐  Change size in DB to # 104 etc. for every table
-    ☐  Add size to table 104-116.
-    ☐  Make size to be availible for select
+    
+    
+    ✘  Change size in DB to # 104 etc. for every table @cancelled(23-03-22 10:58)
     ☐  Make table for addOns
     ☐  Make fuction to work on stock after user make order
     ☐  Send order on mail (Company/User) 
 
 DOING -------
-    ☐  Make new rows for products with colors- new rows added must do for every category... 
-    ☐  Work on cart save...
-    ☐  
+    ☐  Make new rows for products with colors- new rows added must do for every category...
     ☐  Working on sending mail after customer pay. @started(23-03-16 11:32)
 
 DONE -----
+    ✔  Add function to check selected category than on category unlock sub_category @done(23-03-22 10:58) 
+    ✔  Work on cart save... @done(23-03-22 10:59)
+    ✔  Fix cart page @done(23-03-22 10:58)
+    ✔  Add size to table 104-116. @done(23-03-22 10:58)
+    ✔  Make size to be availible for select @done(23-03-22 10:58)
     ✔ Added select fields for color and sizes..@done(23-03-21 14:56)
     ✔  fix save products and move imgDestination to SIZES table.. must fix unique columns for multiple colors/products @started(23-03-16 14:19) - @done(23-03-21 09:51) @lasted(4d19h32m12s)
     ✔  error: insert or update on table "kids_clothes" violates foreign key constraint "site_sku" @done(23-03-21 09:50)

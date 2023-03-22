@@ -249,7 +249,7 @@ app.get("/users", async (req, res) => {
 
 function isProductInCart(cart, id) {
     for (let i = 0; i < cart.length; i++) {
-        if (cart[i].id == id) { return true; }
+        if (cart[i].sku == id) { return true; }
     } return false;
 }
 
@@ -269,8 +269,9 @@ app.get("/cart", async (req, res) => {
     let count = 0
     let cart = req.session.cart;
     let total = req.session.total;
-
-
+    let sizes = [];
+    let countSizes = 0;
+    console.log(cart)
     if (cart) {
         if (!cart.length) {
             res.render('orders/cart', { items })
@@ -280,9 +281,29 @@ app.get("/cart", async (req, res) => {
                     if (!err) {
                         count += 1;
                         items.push(product.rows);
-                        if (cart.length === count) {
-                            res.render('orders/cart', { items, cart })
-                        }
+                            for (products of items) {
+                                for (product of products) {
+                                    if (product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
+                                        await conn.query(`SELECT * FROM kids_clothes WHERE sku_num = '${cart[i].sku}'`, async (e, results)=>{
+                                            if (!e) {
+                                                sizes.push(results.rows);
+                                                countSizes += 1;
+                                                if (cart.length === countSizes) {   
+                                                    //console.log(sizes)
+                                                    res.render('orders/cart', { items, cart, sizes })
+                                                    //console.log(sizes)
+                                                }
+                                            } else {
+                                                console.log(e.message);
+                                                
+                                                res.redirect('/')
+                                            }
+                                        })
+                                        
+                                    }
+                                }
+                            }
+                        
                     }
                 })
             }
@@ -292,28 +313,30 @@ app.get("/cart", async (req, res) => {
         res.render('orders/cart', { items })
     }
 
-
 })
 
 app.post('/add-to-cart', async (req, res) => {
+    let { product_id, product_name, product_color, size, product_price, sku_num } = req.body;
+    /*
     let id = req.body.product_id;
     let price = req.body.product_price;
     let name = req.body.product_name;
     let size = req.body.size
+    */
     let user_id = randomUUID();
-    console.log(req.body)
+    //console.log( product_id, product_name, product_color, size, product_price, sku_num)
     if (req.session.cart) {
-        let product = { product_id: id, name: name, qty: 1, price: price };
+        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price };
         let cart = req.session.cart;
         cart.push(product)
         req.flash('success', 'Successfully added to cart')
-        res.redirect(`/product/${id}`)
+        res.redirect(`/product/${product_id}`)
     } else {
-        let product = { product_id: id, name: name, qty: 1, price: price, user_id: user_id };
+        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, user_id: user_id };
         req.session.cart = [product]
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')
-        res.redirect(`/product/${id}`)
+        res.redirect(`/product/${product_id}`)
     }
 
 
@@ -324,7 +347,7 @@ app.get('/remove/:id', async (req, res) => {
     let cart = req.session.cart;
 
     for (let i = 0; i < cart.length; i++) {
-        if (cart[i].product_id == id) {
+        if (cart[i].sku == id) {
             cart.splice(cart.indexOf(cart[i]), 1)
         }
     }
@@ -338,10 +361,10 @@ app.post('/edit_qty', async (req, res) => {
     let plus_btn = req.body.plus;
     let minus_btn = req.body.minus;
     let cart = req.session.cart;
-
+    console.log(req.body);
     if (plus_btn) {
         for (let i = 0; i < cart.length; i++) {
-            if (cart[i].product_id === id) {
+            if (cart[i].sku == id) {
                 if (cart[i].qty > 0) {
                     cart[i].qty = parseInt(cart[i].qty) + 1;
                     res.redirect('/cart');
@@ -350,8 +373,9 @@ app.post('/edit_qty', async (req, res) => {
         }
     }
     if (minus_btn) {
+        console.log('noo. i am')
         for (let i = 0; i < cart.length; i++) {
-            if (cart[i].product_id === id) {
+            if (cart[i].sku == id) {
                 if (cart[i].qty > 1) {
                     cart[i].qty = parseInt(cart[i].qty) - 1;
                     res.redirect('/cart');
@@ -379,9 +403,8 @@ app.post('/checkoutToPay', async (req, res) => {
     let product_qtys = "";
     let cart = req.session.cart;
     let user_id = cart[0].user_id;
-    console.log(user_id)
     for (let i = 0; i < cart.length; i++) {
-        product_ids = cart[i].product_id + ',' + product_ids
+        product_ids = cart[i].sku + ',' + product_ids
         product_qtys = cart[i].qty + ',' + product_qtys;
     }
 
@@ -441,7 +464,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let addImg = 0;
     let productQty = 0;
     
-    //! console.log(req.files[`image${imgNum}`][i].path)  Za pravilno shranjevanje
     for (let q = 0; q < product.p_qty.length; q++) { 
         productQty = parseInt(productQty) + parseInt(product.p_qty[q]);
     }
@@ -499,7 +521,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
                 for (let i = 0; i < product.p_qty.length; i++) {
                     let size_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
                     
-                    await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + '#' + product.color[i]}','${product.size_56[i]}','${product.size_62[i]}','${product.size_68[i]}','${product.size_74[i]}','${product.size_86[i]}','${product.size_92[i]}','${product.size_104[i]}','${product.size_110[i]}','${product.size_116[i]}','${product.size_128[i]}','${product.size_134[i]}','${product.size_140[i]}','${product.size_146[i]}','${product.size_152[i]}','${product.size_158[i]}','${product.size_164[i]}','${product.size_170[i]}','${product.size_176[i]}','${size_sku}', '${product.color[i]}', array_to_json('{${imgsUrl[i]}}'::text[]), '${doNext.rows[0].prod_site_sku}')`)
+                    await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + ' '+ '#' + ' ' + product.color[i]}','${product.size_56[i]}','${product.size_62[i]}','${product.size_68[i]}','${product.size_74[i]}','${product.size_86[i]}','${product.size_92[i]}','${product.size_104[i]}','${product.size_110[i]}','${product.size_116[i]}','${product.size_128[i]}','${product.size_134[i]}','${product.size_140[i]}','${product.size_146[i]}','${product.size_152[i]}','${product.size_158[i]}','${product.size_164[i]}','${product.size_170[i]}','${product.size_176[i]}','${size_sku}', '${product.color[i]}', array_to_json('{${imgsUrl[i]}}'::text[]), '${doNext.rows[0].prod_site_sku}')`)
                     console.log(addImg, ' urls')
                     addImg += 1;
                 }

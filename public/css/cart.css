@@ -1,3 +1,11 @@
 #cart{
     box-sizing: border-box;
 }
+.card{
+    transition: none !important;
+    border: none;
+}
+
+.card:hover{
+    transform: none !important;
+}
