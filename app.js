@@ -266,15 +266,18 @@ function calculateTotal(cart, req) {
 app.get("/cart", async (req, res) => {
     let items = [];
     let cartItems = []
+    let sizes = [];
+    let allProducts = [];
     let count = 0
+    let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
-    let sizes = [];
-    let countSizes = 0;
-    console.log(cart)
+    //console.log(cart)
+    
     if (cart) {
         if (!cart.length) {
-            res.render('orders/cart', { items })
+            
+            res.render('orders/cart', { items, allProducts})
         } else {
             for (let i = 0; i < cart.length; i++) {
                 await conn.query(`SELECT * FROM products WHERE id = '${cart[i].product_id}'`, async (err, product) => {
@@ -290,12 +293,11 @@ app.get("/cart", async (req, res) => {
                                                 countSizes += 1;
                                                 if (cart.length === countSizes) {   
                                                     //console.log(sizes)
-                                                    res.render('orders/cart', { items, cart, sizes })
+                                                    res.render('orders/cart', { items, cart, sizes, allProducts })
                                                     //console.log(sizes)
                                                 }
                                             } else {
                                                 console.log(e.message);
-                                                
                                                 res.redirect('/')
                                             }
                                         })
@@ -310,7 +312,13 @@ app.get("/cart", async (req, res) => {
             calculateTotal(cart, req)
         }
     } else {
-        res.render('orders/cart', { items })
+        await conn.query(`SELECT * FROM products`, async (prodError, productsAll) => { 
+            if (!prodError) {
+                allProducts.push(productsAll.rows);
+                console.log(allProducts)
+            res.render('orders/cart', { items, allProducts })
+            }
+        })
     }
 
 })

@@ -5,11 +5,13 @@ NEXT ----
     ✘  Change size in DB to # 104 etc. for every table @cancelled(23-03-22 10:58)
     ☐  Make table for addOns
     ☐  Make fuction to work on stock after user make order
+    ☐  Work on sending mail after customer pay.
     ☐  Send order on mail (Company/User) 
 
 DOING -------
+    ☐  Working on slideshow on cart page
     ☐  Make new rows for products with colors- new rows added must do for every category...
-    ☐  Working on sending mail after customer pay. @started(23-03-16 11:32)
+    
 
 DONE -----
     ✔  Add function to check selected category than on category unlock sub_category @done(23-03-22 10:58) 

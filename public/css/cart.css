@@ -9,3 +9,9 @@
 .card:hover{
     transform: none !important;
 }
+
+#myCart{
+    min-height: 10vh;
+    height: auto;
+    margin-bottom: 5px;
+}

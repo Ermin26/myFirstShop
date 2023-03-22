@@ -1,8 +1,8 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/css/cart.css">
 
-    <% if(items.length) {%>
-        <div class="myCart mt-5 mb-5 p-2">
+<div id="myCart" class="myCart mt-5 p-2">
+        <% if(items.length) {%>
             <table class="table p-2">
                 <thead>
                     <tr class="text-center">
@@ -108,7 +108,34 @@
             </div>
             <%}else { %>
                 <h1 class="text-center mt-5">Your cart is empty.</h1>
+                
                 <%} %>
+            </div>
 
-
-        </div>
+            <!--slider add-->
+                
+            <div class="row row-cols-3">
+                <% for(all of allProducts) {%>
+                        <% for(articl of all) {%>
+                
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="carousel<%= all.id %>"
+                                class="carousel slide col d-inline-flex ms-auto me-auto">
+                                <div class="carousel-inner">
+                                    <% articl.p_imgdestination.forEach((pic, i)=> {%>
+                                    <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                                        <img class="img-fluid rounded" alt="" src="<%= pic %>"
+                                        style="height: 150px; width: 150px;">
+                                    </div>
+                                    <% }) %>
+                                </div>  
+                            </div>  
+                        </div>
+                    </div
+                </div>
+                <% } %>
+                <% } %>
+            </div>
+</div>
+            
