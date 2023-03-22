@@ -559,9 +559,10 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM products WHERE id = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows
-            //console.log(shirts)
-            console.log(shirts[0].p_cat)
-            if (shirts[0].p_cat == 'Kids' && shirts[0].p_subcat != 'Shoes') {
+
+            let category = shirts[0].p_cat;
+            let subCategory = shirts[0].p_subcat;
+            if (category == 'Kids' && subCategory != 'Shoes') {
                 await conn.query(`SELECT * FROM kids_clothes WHERE site_sku = '${shirts[0].prod_site_sku}'`, async (e, sizes) => {
                     let size = sizes.rows;
                     let colors = [];
