@@ -560,6 +560,7 @@ app.get('/product/:id', async (req, res) => {
         if (!err) {
             let shirts = result.rows
             //console.log(shirts)
+            console.log(shirts[0].p_cat)
             if (shirts[0].p_cat == 'Kids' && shirts[0].p_subcat != 'Shoes') {
                 await conn.query(`SELECT * FROM kids_clothes WHERE site_sku = '${shirts[0].prod_site_sku}'`, async (e, sizes) => {
                     let size = sizes.rows;
