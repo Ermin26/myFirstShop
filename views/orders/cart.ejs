@@ -1,14 +1,14 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/css/cart.css">
 
-<div id="myCart" class="myCart mt-5 p-2">
+<div id="myCart" class="myCart mt-5 p-2 justify-content-center text-center">
         <% if(items.length) {%>
             <table class="table p-2">
                 <thead>
                     <tr class="text-center">
-                        <th class="col bg-primary">Product</td>
-                        <th class="col bg-success">Quantity</td>
-                        <th class="col bg-primary">Subtotal</td>
+                        <th class="col border-2 border-bottom">Product</td>
+                        <th class="col border-2 border-bottom">Quantity</td>
+                        <th class="col border-2 border-bottom">Subtotal</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -17,14 +17,14 @@
                             <tr>
                                 <td>
                                     <div class="card flex-md-column flex-lg-row">
-                                        <div class="card-header ms-auto me-auto m-0 p-0">
+                                        <div class="card-header ms-auto me-auto m-0 p-0 align-middle" style="height: 100px; width: 100px;">
                                             <div id="carousel<%= product.sku_num %>"
                                                 class="carousel slide col d-inline-flex ms-auto me-auto">
                                                 <div class="carousel-inner">
                                                     <% product.img_link.forEach((img, i)=>{%>
                                                         <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
                                                             <img class="img-fluid rounded" alt="" src="<%= img %>"
-                                                                style="height: 150px; width: 150px;">
+                                                                style="height: 100px; width: 100px; min-height: 100px; min-width: 100px">
                                                         </div>
                                                         <% }) %>
                                                 </div>
@@ -58,24 +58,24 @@
                                         <% for(qty of cart) {%>
                                             <% if(qty.sku==product.sku_num) {%>
                                                 <input type="hidden" value="<%= product.sku_num %>" name="id">
-                                                <input type="submit" id="minus" name="minus" value="-">
-                                                <input type="text" class="col-1 text-center" id="qty" name="qty"
+                                                <input type="submit" class="bg-light text-dark rounded border-0" id="minus" name="minus" value="-">
+                                                <input type="text" class="w-25 text-center" id="qty" name="qty"
                                                     value="<%= qty.qty %>" readonly>
-                                                <input type="submit" id="plus" name="plus" value="+">
+                                                <input type="submit" class="bg-light text-dark rounded border-0" id="plus" name="plus" value="+">
                                     </form>
                                 </td>
                                 <td class="col-4 text-center align-middle">
-                                    <div class="row row-cols-2 g-0">
-                                        <div class="col">
+                                    <div class="row row-cols-2 d-inline-flex flex-column flex-md-row g-3">
+                                        <div class="col col-md-6">
                                             <h3 class="card-text">
-                                                <%= qty.qty * qty.price %> €
+                                                <%= qty.qty * qty.price %>€
                                             </h3>
                                         </div>
                                         <% } %>
                                             <% } %>
-                                                <div class="col">
+                                                <div class="col col-md-6">
                                                     <%= product.sku %>
-                                                    <a class="btn btn-primary"
+                                                    <a class="btn btn-primary btn-sm"
                                                         href="/remove/<%=product.sku_num %> ">Remove</a>
                                                 </div>
                                     </div>
@@ -110,32 +110,81 @@
                 <h1 class="text-center mt-5">Your cart is empty.</h1>
                 
                 <%} %>
-            </div>
+           
 
             <!--slider add-->
-                
-            <div class="row row-cols-3">
-                <% for(all of allProducts) {%>
-                        <% for(articl of all) {%>
-                
-                    <div class="card">
-                        <div class="card-body">
-                            <div id="carousel<%= all.id %>"
-                                class="carousel slide col d-inline-flex ms-auto me-auto">
-                                <div class="carousel-inner">
-                                    <% articl.p_imgdestination.forEach((pic, i)=> {%>
-                                    <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
-                                        <img class="img-fluid rounded" alt="" src="<%= pic %>"
-                                        style="height: 150px; width: 150px;">
-                                    </div>
-                                    <% }) %>
-                                </div>  
-                            </div>  
-                        </div>
-                    </div
+                <% if(allProducts.length) {%>
+            <div id="wrapper" class="ms-auto me-auto">
+                <div id="carousel">
+                  <div id="content" class="ms-auto me-auto">
+                      <% for(let all of allProducts) {%>
+                          <% for(articl of all) {%>
+                              <% articl.p_imgdestination.forEach((pic, i) =>{ %>
+                    <a id="cartLink" class="m-0 p-0" href="/product/<%= articl.id %>">
+                                <img
+                      class="item"
+                      src="<%# articl.p_imgdestination[0] %> <%= pic %>"></a>
+                    <% }) %>
+                    <% } %>
+                    <% } %>
+                  </div>
                 </div>
-                <% } %>
-                <% } %>
-            </div>
+                <button id="prev">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path fill="none" d="M0 0h24v24H0V0z" />
+                    <path d="M15.61 7.41L14.2 6l-6 6 6 6 1.41-1.41L11.03 12l4.58-4.59z" />
+                  </svg>
+                </button>
+                <button id="next">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path fill="none" d="M0 0h24v24H0V0z" />
+                    <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
+                  </svg>
+                </button>
+              </div>
+              <% } %>
 </div>
+
+
+<script>
+    const gap = 5;
+
+const carousel = document.getElementById("carousel"),
+  content = document.getElementById("content"),
+  next = document.getElementById("next"),
+  prev = document.getElementById("prev");
+
+next.addEventListener("click", e => {
+  carousel.scrollBy(width + gap, 0);
+  if (carousel.scrollWidth !== 0) {
+    prev.style.display = "flex";
+  }
+  if (content.scrollWidth - width - gap <= carousel.scrollLeft + width) {
+    next.style.display = "none";
+  }
+});
+prev.addEventListener("click", e => {
+  carousel.scrollBy(-(width + gap), 0);
+  if (carousel.scrollLeft - width - gap <= 0) {
+    prev.style.display = "none";
+  }
+  if (!content.scrollWidth - width - gap <= carousel.scrollLeft + width) {
+    next.style.display = "flex";
+  }
+});
+
+let width = carousel.offsetWidth;
+window.addEventListener("resize", e => (width = carousel.offsetWidth));
+
+  </script>
             

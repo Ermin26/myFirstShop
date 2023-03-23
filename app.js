@@ -292,8 +292,16 @@ app.get("/cart", async (req, res) => {
                                                 sizes.push(results.rows);
                                                 countSizes += 1;
                                                 if (cart.length === countSizes) {   
+                                                    await conn.query(`SELECT * FROM products`, async (prodError, productsAll) => { 
+                                                        if (!prodError) {
+                                                            allProducts.push(productsAll.rows);
+                                                            res.render('orders/cart', { items, cart, sizes, allProducts })
+                                                        } else {
+                                                            req.flash('error', prodError);
+                                                            res-redirect('/')
+                                                        }
+                                                    })
                                                     //console.log(sizes)
-                                                    res.render('orders/cart', { items, cart, sizes, allProducts })
                                                     //console.log(sizes)
                                                 }
                                             } else {
@@ -369,7 +377,6 @@ app.post('/edit_qty', async (req, res) => {
     let plus_btn = req.body.plus;
     let minus_btn = req.body.minus;
     let cart = req.session.cart;
-    console.log(req.body);
     if (plus_btn) {
         for (let i = 0; i < cart.length; i++) {
             if (cart[i].sku == id) {
@@ -381,7 +388,6 @@ app.post('/edit_qty', async (req, res) => {
         }
     }
     if (minus_btn) {
-        console.log('noo. i am')
         for (let i = 0; i < cart.length; i++) {
             if (cart[i].sku == id) {
                 if (cart[i].qty > 1) {
@@ -426,6 +432,7 @@ app.post('/checkoutToPay', async (req, res) => {
     }
 
 })
+
 
 app.get('/payment', async (req, res) => {
     let total = req.session.total.toFixed(2)

@@ -9,11 +9,11 @@ NEXT ----
     ☐  Send order on mail (Company/User) 
 
 DOING -------
-    ☐  Working on slideshow on cart page
-    ☐  Make new rows for products with colors- new rows added must do for every category...
-    
+☐  Make new rows for products with colors- new rows added must do for every category...
+
 
 DONE -----
+    ✔  Working on slideshow on cart page DEFAULT @done(23-03-23 11:47)
     ✔  Add function to check selected category than on category unlock sub_category @done(23-03-22 10:58) 
     ✔  Work on cart save... @done(23-03-22 10:59)
     ✔  Fix cart page @done(23-03-22 10:58)
