@@ -1,6 +1,6 @@
 
 NEXT ----
-    
+    ☐  Make table for Category other And for sub category Toys
     ☐  Must fix size_104-116 - doesn't work like this
     ✘  Change size in DB to # 104 etc. for every table @cancelled(23-03-22 10:58)
     ☐  Make table for addOns
@@ -8,9 +8,9 @@ NEXT ----
     ☐  Work on sending mail after customer pay.
     ☐  Send order on mail (Company/User) 
 
+    ☐  Make new rows for products with colors- new rows added must do for every category...
 DOING -------
-☐  Make new rows for products with colors- new rows added must do for every category...
-
+    ☐  Test adding products to every table with every category and subcategory @started(23-03-23 12:56)
 
 DONE -----
     ✔  Working on slideshow on cart page DEFAULT @done(23-03-23 11:47)

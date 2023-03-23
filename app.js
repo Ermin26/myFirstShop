@@ -487,46 +487,82 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let secondCheck = req.files[`image${imgNum}`].length;
 
     for (let i = 0; i < firstCheck; i++) {
-        //console.log('Checking I')
         images = [];
-        //console.log(Object.keys(req.files).length)
         for (let j = 1; j < secondCheck; j++) {
-            //console.log('Checking J')
-            //console.log(j, ' i am j')
-            //console.log(imgNum, ' i am imgNum')
             let getImg = req.files[`image${imgNum}`];
-            // console.log(getImg, ' i am Getimg')
-            //console.log(req.files[`image1`])
             for (let allImg of getImg) {
-                //console.log('Checking ALL')
                 images.push(allImg.path)
-                //console.log(allImg.path, `i am all ${j}`)
             }
             imgNum += 1;
-    
         }
         imgsUrl.push(images);
     }
-    console.log("-----------------------")
-    console.log(imgsUrl)
-    console.log("-----------------------")
    
     
     //console.log(req.files[`image${imgNum}`][0].path,' yoooooooooooo')
 
     // console.log(Object.keys(req.files).length)
     /*
-      if (product.p_cat == 'Mens' && product.p_subcat == 'Jackets' || product.p_cat == 'Womens' && product.p_subcat == 'Jackets') {
+      if (product.p_cat == 'Mens' && product.p_subcat == 'Jackets' || product.p_cat == 'Mens' && product.p_subcat == 'Shirts' || product.p_cat == 'Mens' && product.p_subcat == 'Pants' || product.p_cat == 'Mens' && product.p_subcat == 'Underwear' || product.p_cat == 'Womens' && product.p_subcat == 'Jackets' || product.p_cat == 'Womens' && product.p_subcat == 'Shirts' || product.p_cat == 'Womens' && product.p_subcat == 'Pants' || product.p_cat == 'Womens' && product.p_subcat == 'Underwear' || product.p_cat == 'Womens' && product.p_subcat == 'Dress') {
+             await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku, prod_site_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${total.toFixed(2)}','${productQty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}', '${site_sku} ') RETURNING id,p_name, prod_site_sku`, async (err, doNext) => {
+            //console.log(doNext.rows[0])
+            if (!err) {
+                for (let i = 0; i < product.p_qty.length; i++) {
+                    let size_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year   
+                    await conn.query(`INSERT INTO adult_clothes(id,name,XS, S, M, L, XL, XXL, XXXL,3XL,4XL,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + ' '+ '#' + ' ' + product.color[i]}','${product.size_xs[i]}','${product.size_s[i]}','${product.size_m[i]}','${product.size_l[i]}','${product.size_xl[i]}','${product.size_xxl[i]}','${product.size_xxxl[i]}','${product.size_xxxxl[i]}','${product.size_xxxxxl[i]}','${size_sku}', '${product.color[i]}', array_to_json('{${imgsUrl[i]}}'::text[]), '${doNext.rows[0].prod_site_sku}')`)
+                    addImg += 1;
+                }
+                req.flash('success', 'Successfully added new product')
+                console.log("No error")
+                res.redirect('add')
+            }
+            else {
+                req.flash('error', `Error ${err.message}`)
+                console.log("error")
+                res.redirect('add')
+            }
+        })
   
       }
-      if (product.p_cat == 'Mens' && product.p_subcat == 'Shirts' || product.p_cat == 'Mens' && product.p_subcat == 'Shirts') {
-  
-      }
-      if (product.p_cat == 'Mens' && product.p_subcat == 'Shoes' || product.p_cat == 'Mens' && product.p_subcat == 'Shoes') {
-  
+      if (product.p_cat == 'Mens' && product.p_subcat == 'Shoes' || product.p_cat == 'Womens' && product.p_subcat == 'Shoes') {
+          await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku, prod_site_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${total.toFixed(2)}','${productQty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}', '${site_sku} ') RETURNING id,p_name, prod_site_sku`, async (err, doNext) => {
+            //console.log(doNext.rows[0])
+            if (!err) {
+                for (let i = 0; i < product.p_qty.length; i++) {
+                    let size_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year   
+                    await conn.query(`INSERT INTO adult_shoes(id,name_of_prod,num_38, num_39, num_40, num_41, num_42, num_43, num_44,num_45,num_46,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + ' '+ '#' + ' ' + product.color[i]}','${product.size_38[i]}','${product.size_39[i]}','${product.size_40[i]}','${product.size_41[i]}','${product.size_42[i]}','${product.size_43[i]}','${product.size_44[i]}','${product.size_45[i]}','${product.size_46[i]}','${size_sku}', '${product.color[i]}', array_to_json('{${imgsUrl[i]}}'::text[]), '${doNext.rows[0].prod_site_sku}')`)
+                    addImg += 1;
+                }
+                req.flash('success', 'Successfully added new product')
+                console.log("No error")
+                res.redirect('add')
+            }
+            else {
+                req.flash('error', `Error ${err.message}`)
+                console.log("error")
+                res.redirect('add')
+            }
+        })
       }
       if (product.p_cat == 'Kids' && product.p_subcat == 'Shoes') {
-
+        await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku, prod_site_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${total.toFixed(2)}','${productQty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}', '${site_sku} ') RETURNING id,p_name, prod_site_sku`, async (err, doNext) => {
+            //console.log(doNext.rows[0])
+            if (!err) {
+                for (let i = 0; i < product.p_qty.length; i++) {
+                    let size_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year   
+                    await conn.query(`INSERT INTO kids_shoes(id,name_of_prod,num_18, num_19, num_20, num_21, num_22, num_23, num_24,num_25,num_26,num_27, num_28, num_29, num_30, num_31, num_32, num_33,num_34,num_25,num_36,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + ' '+ '#' + ' ' + product.color[i]}','${product.size_18[i]}','${product.size_19[i]}','${product.size_20[i]}','${product.size_21[i]}','${product.size_22[i]}','${product.size_23[i]}','${product.size_24[i]}','${product.size_25[i]}','${product.size_26[i]}','${product.size_27[i]}','${product.size_28[i]}','${product.size_29[i]}','${product.size_30[i]}','${product.size_31[i]}','${product.size_32[i]}','${product.size_33[i]}','${product.size_34[i]}','${product.size_35[i]}','${product.size_36[i]}','${size_sku}', '${product.color[i]}', array_to_json('{${imgsUrl[i]}}'::text[]), '${doNext.rows[0].prod_site_sku}')`)
+                    addImg += 1;
+                }
+                req.flash('success', 'Successfully added new product')
+                console.log("No error")
+                res.redirect('add')
+            }
+            else {
+                req.flash('error', `Error ${err.message}`)
+                console.log("error")
+                res.redirect('add')
+            }
+        })
 }
       */
     if (product.p_cat == 'Kids' && product.p_subcat == 'Jackets' || product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
@@ -534,37 +570,19 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             //console.log(doNext.rows[0])
             if (!err) {
                 for (let i = 0; i < product.p_qty.length; i++) {
-                    let size_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
-                    
+                    let size_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year   
                     await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color, img_link, site_sku) VALUES('${doNext.rows[0].id}','${product.p_name + ' '+ '#' + ' ' + product.color[i]}','${product.size_56[i]}','${product.size_62[i]}','${product.size_68[i]}','${product.size_74[i]}','${product.size_86[i]}','${product.size_92[i]}','${product.size_104[i]}','${product.size_110[i]}','${product.size_116[i]}','${product.size_128[i]}','${product.size_134[i]}','${product.size_140[i]}','${product.size_146[i]}','${product.size_152[i]}','${product.size_158[i]}','${product.size_164[i]}','${product.size_170[i]}','${product.size_176[i]}','${size_sku}', '${product.color[i]}', array_to_json('{${imgsUrl[i]}}'::text[]), '${doNext.rows[0].prod_site_sku}')`)
-                    console.log(addImg, ' urls')
                     addImg += 1;
                 }
                 req.flash('success', 'Successfully added new product')
                 console.log("No error")
                 res.redirect('add')
             }
-            /*
-            await conn.query(`INSERT INTO kids_clothes(id,name,size_56,size_62,size_68,size_74,size_86,size_92,size_104,size_110,size_116,size_128,size_134,size_140,size_146,size_152,size_158,size_164,size_170,size_176,sku_num,color) VALUES('${doNext.rows[0].id}','${doNext.rows[0].p_name}','${req.body.size_56}','${req.body.size_62}','${req.body.size_68}','${req.body.size_74}','${req.body.size_86}','${req.body.size_92}','${req.body.size_104}','${req.body.size_110}','${req.body.size_116}','${req.body.size_128}','${req.body.size_134}','${req.body.size_140}','${req.body.size_146}','${req.body.size_152}','${req.body.size_158}','${req.body.size_164}','${req.body.size_170}','${req.body.size_176}','${doNext.rows[0].p_sku}', 'white')`)
-            req.flash('success', 'Successfully added new product')
-            console.log("No error")
-            res.redirect('add')
-            */
-    
             else {
                 req.flash('error', `Error ${err.message}`)
                 console.log("error")
                 res.redirect('add')
             }
-            /*
-         //console.log('image')
-        //console.log(req.files['image'][0].path)
-        
-        //console.log(Array.isArray(req.files) ? req.files : [req.files].filter(e => e))
-        console.log('--')
-        res.send(req.files['image'])
-        //res.redirect('add')
-    */
         })
     }
 })
