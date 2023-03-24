@@ -14,10 +14,10 @@
                 <tbody>
                     <% for (products of sizes) { %>
                         <% for (product of products) { %>
-                            <tr>
-                                <td>
-                                    <div class="card flex-md-column flex-lg-row">
-                                        <div class="card-header ms-auto me-auto m-0 p-0 align-middle" style="height: 100px; width: 100px;">
+                        <tr>
+                            <td>
+                                <div class="card flex-md-column flex-lg-row">
+                                    <div class="card-header ms-auto me-auto m-0 p-0 align-middle" style="height: 100px; width: 100px;">
                                             <div id="carousel<%= product.sku_num %>"
                                                 class="carousel slide col d-inline-flex ms-auto me-auto">
                                                 <div class="carousel-inner">
@@ -49,13 +49,14 @@
                                         <div class="card-body">
                                             <h2 class="d-inline-block">
                                                 <%= product.name %>
+                                                <%= product.color %>
                                             </h2>
                                         </div>
                                     </div>
                                 </td>
+                                <% for(qty of cart) {%>
                                 <td class="col-4 text-center align-middle p-0">
                                     <form action="/edit_qty" method="post">
-                                        <% for(qty of cart) {%>
                                             <% if(qty.sku==product.sku_num) {%>
                                                 <input type="hidden" value="<%= product.sku_num %>" name="id">
                                                 <input type="submit" class="bg-light text-dark rounded border-0" id="minus" name="minus" value="-">
@@ -71,8 +72,7 @@
                                                 <%= qty.qty * qty.price %>€
                                             </h3>
                                         </div>
-                                        <% } %>
-                                            <% } %>
+                                        
                                                 <div class="col col-md-6">
                                                     <%= product.sku %>
                                                     <a class="btn btn-primary btn-sm"
@@ -80,8 +80,10 @@
                                                 </div>
                                     </div>
                                 </td>
-                            </tr>
-                            <% } %>
+                                <% } %>
+                                            <% } %>
+                                        </tr>
+                                        <% } %>
                                 <% } %>
                                 <tr>
                                     <td></td>

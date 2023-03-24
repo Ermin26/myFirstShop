@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="/css/show.css">
 
 <div class="row row-cols-2 d-flex flex-column flex-md-row ms-auto me-auto">
+
     <div class="col-12 col-lg-5">
         <% for(let info of shirts) {%>
             <div id="carouselExampleControls" class="carousel slide">
@@ -47,7 +48,7 @@
                 </div>
                 <div class="velikost mt-5">
                 <p>Velikost na voljo</p>
-                <form action="/add-to-cart" method="post">
+                <form action="/add-to-cart" method="post" class="text-center ms-auto me-auto">
                             <div class="add-to-cart mt-5" style="margin-bottom: 10vh;">
                                 <div class="row row-cols-2 mb-5 justify-content-center">
                                     <div class="col-4">
@@ -67,7 +68,8 @@
                                         <div class="input-group">
                                             <div class="form-floating">
                                                 <% for(let s = 0; s < size.length; s++) {%>
-                                                <select class="form-select-sm" name="size" id="<%= size[s].sku_num %>" style="display: none;">
+                                                
+                                                <select class="form-select-sm" name="size" id="<%= size[s].sku_num %>" onchange="sizeChoose()" style="display: none;">
                                                     <option selected>Izberi velikost</option>
                                                     <% for(let j = 2; j < Object.values(size[s]).length -3;j++ ) {%>
                                                         <% if(Object.values(size[s])[j] > 0) {%>
@@ -85,7 +87,9 @@
                                     <input type="hidden" id="p_name" name="product_name" value="<%= info.p_name %>">
                                     <input type="hidden" id="p_color" name="product_color" value="">
                                     <input type="hidden" id="p_price" name="product_price" value="<%= info.p_price %>">
-                                    <button type="submit" class="btn btn-primary">Dodaj v Košarico</button>
+                                    <input type="hidden" id="p_color" name="product_cat" value="<%= info.p_cat %>">
+                                    <input type="hidden" id="p_price" name="product_subcat" value="<%= info.p_subcat %>">
+                                    <button type="submit" id="btn" class="btn btn-primary ms-auto me-auto">Dodaj v Košarico</button>
                                 </form>
                             </div>
                     <% } %>
@@ -93,16 +97,17 @@
     </div>
 </div>
 <script>
+    userSelect = [];
+    document.getElementById('btn').style.display = 'none';
     function colorChoose(){
         let selected = document.getElementById('color').value;
-        let names = document.getElementById(`${selected}`).getAttribute('name');
+        userSelect.push(selected);
         let test = document.getElementsByName(`size`);
         let inputs = document.getElementsByTagName('select');
-
         let sel = document.getElementById('color');
         let text = sel.options[sel.selectedIndex].text;
         document.getElementById('p_color').value = text;
-        console.log(text)
+        //console.log(text)
         for(let i = 0; i < test.length; i++){
             if(test[i].id == selected){
                 document.getElementById(test[i].id).style.display = 'block';
@@ -114,6 +119,17 @@
             }
         }
     }
+    function sizeChoose(){
+        let userSelected = document.getElementById(`${userSelect[0]}`).value;
+        if(userSelected !== 'Izberi velikost') {
+            document.getElementById('btn').style.display = 'block';
+
+        }else{
+            document.getElementById('btn').style.display = 'none';
+        }
+
+        
+    }   
 </script>
 
 

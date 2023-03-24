@@ -10,6 +10,7 @@ NEXT ----
 
     ☐  Make new rows for products with colors- new rows added must do for every category...
 DOING -------
+    ☐  Select sizes must be multiple and checkboxes !
     ☐  Test adding products to every table with every category and subcategory @started(23-03-23 12:56)
 
 DONE -----

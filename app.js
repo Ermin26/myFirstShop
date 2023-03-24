@@ -248,9 +248,34 @@ app.get("/users", async (req, res) => {
 })
 
 function isProductInCart(cart, id) {
-    for (let i = 0; i < cart.length; i++) {
-        if (cart[i].sku == id) { return true; }
-    } return false;
+    console.log("Yooooo")
+    if (cart) {
+        for (let i = 0; i < cart.length; i++) {
+            console.log(cart[i].sku)
+            if (cart[i].sku == id) { 
+                console.log("erorrrrrr")
+                req.slash('error', 'Product je že v košarici')
+                res.redirect(`product/${cart[i].id}`)
+            } else {
+                let user_id = randomUUID();
+                //console.log( product_id, product_name, product_color, size, product_price, sku_num)
+                if (req.session.cart) {
+                    let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, };
+                    let cart = req.session.cart;
+                    cart.push(product)
+                    req.flash('success', 'Successfully added to cart')
+                    res.redirect(`/product/${product_id}`)
+                } else {
+                    let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, user_id: user_id };
+                    req.session.cart = [product]
+                    let cart = req.session.cart;
+                    req.flash('success', 'Successfully added to cart')
+                    res.redirect(`/product/${product_id}`)
+                }
+            }
+        } 
+    }
+    
 }
 
 function calculateTotal(cart, req) {
@@ -273,82 +298,74 @@ app.get("/cart", async (req, res) => {
     let cart = req.session.cart;
     let total = req.session.total;
     //console.log(cart)
-    
+   // console.log("/////////////////////////////////////////////")
     if (cart) {
         if (!cart.length) {
-            
-            res.render('orders/cart', { items, allProducts})
+            console.log('1')
+            res.render('orders/test', { items, allProducts, sizes})
         } else {
             for (let i = 0; i < cart.length; i++) {
-                await conn.query(`SELECT * FROM products WHERE id = '${cart[i].product_id}'`, async (err, product) => {
-                    if (!err) {
-                        count += 1;
-                        items.push(product.rows);
-                            for (products of items) {
-                                for (product of products) {
-                                    if (product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
-                                        await conn.query(`SELECT * FROM kids_clothes WHERE sku_num = '${cart[i].sku}'`, async (e, results)=>{
-                                            if (!e) {
-                                                sizes.push(results.rows);
-                                                countSizes += 1;
-                                                if (cart.length === countSizes) {   
-                                                    await conn.query(`SELECT * FROM products`, async (prodError, productsAll) => { 
-                                                        if (!prodError) {
-                                                            allProducts.push(productsAll.rows);
-                                                            res.render('orders/cart', { items, cart, sizes, allProducts })
-                                                        } else {
-                                                            req.flash('error', prodError);
-                                                            res-redirect('/')
-                                                        }
-                                                    })
-                                                    //console.log(sizes)
-                                                    //console.log(sizes)
+                            if (cart[i].cat == 'Kids' && cart[i].subcat == 'Shirts') {
+                                await conn.query(`SELECT * FROM kids_clothes WHERE sku_num = '${cart[i].sku}'`, async (e, results) => {
+                                    if (!e) {
+                                    //console.log(results.rows[i].sku_num)
+                                        //console.log('------------------')
+                                        //sizes.push(results.rows[i].sku_num,results.rows[i].img_link);
+                                        sizes.push(results.rows)
+                                        countSizes += 1;
+                                        if (cart.length === countSizes) {
+                                            await conn.query(`SELECT * FROM products`, async (prodError, productsAll) => {
+                                                if (!prodError) {
+                                                    allProducts.push(productsAll.rows);
+                                                    console.log(sizes)
+                                                    res.render('orders/test', { items, cart, sizes, allProducts })
+                                                } else {
+                                                    req.flash('error', prodError);
+                                                    res - redirect('/')
                                                 }
-                                            } else {
-                                                console.log(e.message);
-                                                res.redirect('/')
-                                            }
-                                        })
-                                        
+                                            })
+                                            //console.log(sizes)
+                                            //console.log(sizes)
+                                        }
+                                    } else {
+                                        console.log(e.message);
+                                        res.redirect('/')
                                     }
-                                }
-                            }
-                        
+                                })
+                                        
+                            }   
                     }
-                })
             }
             calculateTotal(cart, req)
-        }
-    } else {
+    }else {
         await conn.query(`SELECT * FROM products`, async (prodError, productsAll) => { 
             if (!prodError) {
+                console.log('3')
                 allProducts.push(productsAll.rows);
-                console.log(allProducts)
-            res.render('orders/cart', { items, allProducts })
+            res.render('orders/test', { items, allProducts,sizes })
             }
         })
     }
 
 })
 
-app.post('/add-to-cart', async (req, res) => {
-    let { product_id, product_name, product_color, size, product_price, sku_num } = req.body;
-    /*
-    let id = req.body.product_id;
-    let price = req.body.product_price;
-    let name = req.body.product_name;
-    let size = req.body.size
-    */
+app.post('/add-to-cart',async (req, res) => {
+    let { product_id, product_name, product_color, size, product_price, sku_num, product_cat,product_subcat } = req.body;
+
+    
     let user_id = randomUUID();
+    //console.log(req.session.cart.length);
     //console.log( product_id, product_name, product_color, size, product_price, sku_num)
     if (req.session.cart) {
-        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price };
+        
+        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, };
         let cart = req.session.cart;
         cart.push(product)
         req.flash('success', 'Successfully added to cart')
         res.redirect(`/product/${product_id}`)
+        
     } else {
-        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, user_id: user_id };
+        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, user_id: user_id };
         req.session.cart = [product]
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')
@@ -377,25 +394,28 @@ app.post('/edit_qty', async (req, res) => {
     let plus_btn = req.body.plus;
     let minus_btn = req.body.minus;
     let cart = req.session.cart;
+    console.log(req.body);
     if (plus_btn) {
+        console.log('plus')
         for (let i = 0; i < cart.length; i++) {
-            if (cart[i].sku == id) {
+            if (cart[i].size == id) {
                 if (cart[i].qty > 0) {
                     cart[i].qty = parseInt(cart[i].qty) + 1;
                     res.redirect('/cart');
                 }
             }
         }
-    }
-    if (minus_btn) {
-        for (let i = 0; i < cart.length; i++) {
-            if (cart[i].sku == id) {
-                if (cart[i].qty > 1) {
-                    cart[i].qty = parseInt(cart[i].qty) - 1;
-                    res.redirect('/cart');
-                } else {
-                    req.flash('error', "Quantity can't be smaller than 1")
-                    res.redirect('/cart');
+
+        if (minus_btn) {
+            for (let i = 0; i < cart.length; i++) {
+                if (cart[i].size == id) {
+                    if (cart[i].qty > 1) {
+                        cart[i].qty = parseInt(cart[i].qty) - 1;
+                        res.redirect('/cart');
+                    } else {
+                        req.flash('error', "Quantity can't be smaller than 1")
+                        res.redirect('/cart');
+                    }
                 }
             }
         }
