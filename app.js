@@ -586,7 +586,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         })
 }
       */
-/*
+
     if (product.p_cat == 'Kids' && product.p_subcategory == 'Jackets' || product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description, links) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}', array_to_json('{${imgsUrl}}'::text[])) RETURNING id`, async (err, result) => {
             if (!err) {
@@ -602,7 +602,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             }
          })
     }
-    */
+    
     
 /*
 
