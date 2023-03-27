@@ -496,13 +496,13 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let site_sku = parseInt(Math.random(12 * 25637) * 10000) + "-" + year
     let imgsUrl = [];
     let imgNum = 1;
-    let addImg = 0;
+    let sizeCount = 1;
     let productQty = 0;
-    
+    /*
     for (let q = 0; q < product.p_qty.length; q++) { 
         productQty = parseInt(productQty) + parseInt(product.p_qty[q]);
     }
-
+*/
     let firstCheck = Object.keys(req.files).length;
     let secondCheck = req.files[`image${imgNum}`].length;
 
@@ -518,6 +518,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         imgsUrl.push(images);
     }
    
+    console.log(req.body);
     
     //console.log(req.files[`image${imgNum}`][0].path,' yoooooooooooo')
 
@@ -585,6 +586,27 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         })
 }
       */
+/*
+    if (product.p_cat == 'Kids' && product.p_subcategory == 'Jackets' || product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description, links) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}', array_to_json('{${imgsUrl}}'::text[])) RETURNING id`, async (err, result) => {
+            if (!err) {
+                for (let i = 0; i < product.color.length; i++) { 
+                    let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year  
+
+                    for(let j = 0; j < size${sizeCount}.length; j++){
+                        await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, category, subcategory, qty) VALUES('${result.id}', '${product.size${sizeCount}[i]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]),'${product.p_cat}', '${product.p_subcat}', '${product.qty${sizeCount}[i]}')`)
+                    
+                    }
+                    sizeCount += 1;
+                }
+            }
+         })
+    }
+    */
+    
+/*
+
+
     if (product.p_cat == 'Kids' && product.p_subcat == 'Jackets' || product.p_cat == 'Kids' && product.p_subcat == 'Shirts') {
         await conn.query(`INSERT INTO products(p_name, p_cat, p_subcat, p_desc, p_fulldesc, p_price, p_qty, p_imgdestination, p_sku, prod_site_sku) VALUES('${product.p_name}', '${product.p_cat}', '${product.p_subcat}','${product.p_desc}','${product.p_fulldescription}','${total.toFixed(2)}','${productQty}',array_to_json('{${imgsUrl}}'::text[]), '${sku}', '${site_sku} ') RETURNING id,p_name, prod_site_sku`, async (err, doNext) => {
             //console.log(doNext.rows[0])
@@ -605,6 +627,9 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             }
         })
     }
+    */
+    req.flash('success', 'Successfully added new product');
+    res.redirect('add');
 })
 
 app.get('/product/:id', async (req, res) => {
