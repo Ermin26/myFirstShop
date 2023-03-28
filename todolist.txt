@@ -1,19 +1,20 @@
 
 NEXT ----
     ☐  Make table for Category other And for sub category Toys
-    ☐  Must fix size_104-116 - doesn't work like this
-    ✘  Change size in DB to # 104 etc. for every table @cancelled(23-03-22 10:58)
     ☐  Make table for addOns
     ☐  Make fuction to work on stock after user make order
     ☐  Work on sending mail after customer pay.
     ☐  Send order on mail (Company/User) 
-
     ☐  Make new rows for products with colors- new rows added must do for every category...
-DOING -------
-    ☐  Select sizes must be multiple and checkboxes !
-    ☐  Test adding products to every table with every category and subcategory @started(23-03-23 12:56)
 
-DONE -----
+☐ DOING ------- @started(23-03-28 14:55)
+    ☐ Work with new tables...
+    ☐ Added new tables inventory and varijacije...
+    ☐  Edit backend to use that tables, 
+    ☐  Workning on product show page @started(23-03-28 13:25) fix Velikost glede na izbrano barvo;
+
+✔ DONE ----- @done(23-03-28 14:54)
+    ✔ home page is available and can be used FIXED! @done(23-03-28 13:24)
     ✔  Working on slideshow on cart page DEFAULT @done(23-03-23 11:47)
     ✔  Add function to check selected category than on category unlock sub_category @done(23-03-22 10:58) 
     ✔  Work on cart save... @done(23-03-22 10:59)
