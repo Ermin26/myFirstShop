@@ -1,5 +1,6 @@
 
 NEXT ----
+    ✘  Make app only for adding images!!!!!! @cancelled(23-03-29 14:38)
     ☐  Must add checkbox for pyment after product received
     ☐  Make table for Category other And for sub category Toys
     ☐  Make table for addOns

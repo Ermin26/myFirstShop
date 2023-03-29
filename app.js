@@ -508,7 +508,7 @@ app.get('/add', (req, res) => {
 
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' }]), async (req, res) => {
     const product = req.body;
-    let brutoPrice = Math.round(product.p_price * 0.22 + 1.99)
+    let brutoPrice = Math.round(product.p_price * 0.22)
     let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
     let total = parseFloat(netoPrice);
     
@@ -516,9 +516,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let imgNum = 1;
     let sizeCount = 1;
     let productQty = 0;
-    console.log(req.body)
-    console.log('/////////////////////////////')
-    console.log(req.body[`size${sizeCount}`].length);
     /*
     for (let q = 0; q < product.p_qty.length; q++) { 
         productQty = parseInt(productQty) + parseInt(product.p_qty[q]);
