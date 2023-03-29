@@ -189,9 +189,9 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE id = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows
-            await conn.query(`SELECT * FROM varijacije WHERE product_id = '${id}'`, async (e, data) => {
+            await conn.query(`SELECT * FROM varijacije WHERE product_id = '${id}' ORDER BY size DESC`, async (e, data) => {
                 let products = data.rows;
-                console.log(products);
+                //console.log(products);
                 if (!e) {
                     await conn.query(`SELECT DISTINCT color FROM varijacije`, async (er, color) => {
                         let colors = color.rows;
@@ -324,75 +324,70 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
-    //console.log(cart)
-   // console.log("/////////////////////////////////////////////")
+    
     if (cart) {
         if (!cart.length) {
-            console.log('1')
-            res.render('orders/test', { items, allProducts, sizes})
+            await conn.query(`SELECT * FROM inventory`, async (err, result) => { 
+                allProducts.push(result.rows)
+                res.render('orders/cart', { items, allProducts })
+            })
+             
         } else {
             for (let i = 0; i < cart.length; i++) {
-                            if (cart[i].cat == 'Kids' && cart[i].subcat == 'Shirts') {
-                                await conn.query(`SELECT * FROM kids_clothes WHERE sku_num = '${cart[i].sku}'`, async (e, results) => {
-                                    if (!e) {
-                                    //console.log(results.rows[i].sku_num)
-                                        //console.log('------------------')
-                                        //sizes.push(results.rows[i].sku_num,results.rows[i].img_link);
-                                        sizes.push(results.rows)
-                                        countSizes += 1;
-                                        if (cart.length === countSizes) {
-                                            await conn.query(`SELECT * FROM products`, async (prodError, productsAll) => {
-                                                if (!prodError) {
-                                                    allProducts.push(productsAll.rows);
-                                                    console.log(sizes)
-                                                    res.render('orders/test', { items, cart, sizes, allProducts })
-                                                } else {
-                                                    req.flash('error', prodError);
-                                                    res - redirect('/')
-                                                }
-                                            })
-                                            //console.log(sizes)
-                                            //console.log(sizes)
-                                        }
-                                    } else {
-                                        console.log(e.message);
-                                        res.redirect('/')
-                                    }
-                                })
-                                        
-                            }   
+                await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
+                    if (!e) {
+                        //console.log(results.rows[i].sku_num)
+                        //console.log('------------------')
+                        //sizes.push(results.rows[i].sku_num,results.rows[i].img_link);
+                        let ordered = results.rows;
+                        items.push(results.rows)
+                        countSizes += 1;
+                        if (cart.length === countSizes) {
+                                            
+                                            
+                            res.render('orders/cart', { items, cart, allProducts,ordered })
+                    
+                        }
                     }
+                    else {
+                        console.log(e.message);
+                        res.redirect('/')
+                    }
+                                 
+                })
             }
             calculateTotal(cart, req)
-    }else {
-        await conn.query(`SELECT * FROM products`, async (prodError, productsAll) => { 
-            if (!prodError) {
-                console.log('3')
-                allProducts.push(productsAll.rows);
-            res.render('orders/test', { items, allProducts,sizes })
-            }
+        }
+    } else {
+        await conn.query(`SELECT * FROM inventory`, async (err, result) => { 
+            console.log('3')
+            console.log(items)
+            allProducts.push(result.rows)
+            res.render('orders/cart', { items, allProducts })
         })
     }
 
 })
 
 app.post('/add-to-cart',async (req, res) => {
-    let { product_id, product_name, product_color, size, product_price, sku_num, product_cat,product_subcat } = req.body;
+    let { product_id, product_name, product_color, product_size, product_price, sku } = req.body;
 
     
     let user_id = randomUUID();
+    console.log(req.body)
     //console.log(req.session.cart.length);
     //console.log( product_id, product_name, product_color, size, product_price, sku_num)
+    
     if (req.session.cart) {
         
-        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, };
+        let product = { product_id: product_id,sku: sku, name: product_name, color: product_color, size:product_size, qty: 1, price: product_price };
         let cart = req.session.cart;
         cart.push(product)
         req.flash('success', 'Successfully added to cart')
         res.redirect(`/product/${product_id}`)
         
     } else {
-        let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, user_id: user_id };
+        let product = { product_id: product_id,sku: sku, name: product_name, color: product_color, size:product_size, qty: 1, price: product_price , user_id: user_id };
         req.session.cart = [product]
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')
@@ -423,19 +418,18 @@ app.post('/edit_qty', async (req, res) => {
     let cart = req.session.cart;
     console.log(req.body);
     if (plus_btn) {
-        console.log('plus')
         for (let i = 0; i < cart.length; i++) {
-            if (cart[i].size == id) {
+            if (cart[i].sku == id) {
                 if (cart[i].qty > 0) {
                     cart[i].qty = parseInt(cart[i].qty) + 1;
                     res.redirect('/cart');
                 }
             }
         }
-
+    }
         if (minus_btn) {
             for (let i = 0; i < cart.length; i++) {
-                if (cart[i].size == id) {
+                if (cart[i].sku == id) {
                     if (cart[i].qty > 1) {
                         cart[i].qty = parseInt(cart[i].qty) - 1;
                         res.redirect('/cart');
@@ -446,7 +440,7 @@ app.post('/edit_qty', async (req, res) => {
                 }
             }
         }
-    }
+    
     calculateTotal(cart, req)
 
 })
@@ -489,7 +483,7 @@ app.get('/payment', async (req, res) => {
     let count = 0
 
     for (let i = 0; i < cart.length; i++) {
-        await conn.query(`SELECT * FROM products WHERE id = '${cart[i].product_id}'`, async (err, product) => {
+        await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
                 count += 1;
                 items.push(product.rows);
