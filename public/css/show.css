@@ -13,3 +13,33 @@ body{
 .carousel-control-prev-icon, .carousel-control-next-icon{
     filter: invert(60%);
 }
+
+.barva{
+    display:grid;
+    grid-template-columns: auto auto;
+    grid-gap: 5px;
+    row-gap: 5px;
+    padding: 2px;
+    list-style: none;
+}
+
+.grid-container{
+    display:grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 10px;
+    column-gap: 5px;
+    row-gap: 5px;
+    list-style: none;
+    padding: 2px;
+    text-align: center;
+}
+
+
+
+.grid-container li:hover, .barva li:hover{
+    background-color: beige;
+ }
+
+ .grid-container li:focus, .barva li:focus{
+    background-color: green;
+ }

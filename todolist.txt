@@ -10,8 +10,9 @@ NEXT ----
     ☐  Make new rows for products with colors- new rows added must do for every category...
 
 ☐ DOING ------- @started(23-03-28 14:55)
-☐ Work with new tables...
-☐  Edit backend to use that tables, 
+    ☐ Working on select color/size on product show page. NUJNO! @started(23-03-31 13:53)
+    ☐ Work with new tables...
+    ☐  Edit backend to use that tables, 
 
 
 

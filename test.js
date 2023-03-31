@@ -78,9 +78,10 @@ const create = async (req, res) => {
         //await conn.query("DROP TABLE IF EXISTS bills");
         //await conn.query("DROP TABLE IF EXISTS sended");
         await conn.query("DROP TABLE IF EXISTS varijacije");
+        await conn.query("DROP TABLE IF EXISTS inventory");
 
-        //await conn.query("CREATE TABLE inventory (id BIGSERIAL, name VARCHAR, neto_price FLOAT, info VARCHAR, description VARCHAR, links json, PRIMARY KEY (id), UNIQUE (name))");
-        await conn.query("CREATE TABLE varijacije (id BIGSERIAL, product_id NUMERIC, size VARCHAR, img_link json, sku VARCHAR, category VARCHAR, subcategory VARCHAR, qty INTEGER, color VARCHAR, PRIMARY KEY(id), UNIQUE (sku))");
+        await conn.query("CREATE TABLE inventory (id BIGSERIAL, name VARCHAR, neto_price FLOAT, info VARCHAR, description VARCHAR,category VARCHAR, subcategory VARCHAR, links json, PRIMARY KEY (id), UNIQUE (name))");
+        await conn.query("CREATE TABLE varijacije (id BIGSERIAL, product_id NUMERIC, size VARCHAR, img_link json, sku VARCHAR,  qty INTEGER, color VARCHAR, PRIMARY KEY(id), UNIQUE (sku))");
         //await conn.query("CREATE TABLE users (id BIGSERIAL,fname VARCHAR(30),lname VARCHAR(30),email VARCHAR(100),country VARCHAR(50),city VARCHAR(30),zip VARCHAR(15),address VARCHAR(50),password VARCHAR(80), PRIMARY KEY (ID))");
         //
         //await conn.query("CREATE TABLE products (id BIGSERIAL ,p_name VARCHAR,p_qty NUMERIC,p_price FLOAT,p_cat VARCHAR(15),p_subcat VARCHAR(15),p_size VARCHAR(20),p_color TEXT[],p_desc VARCHAR(150),p_fulldesc VARCHAR(300),p_imgdestination json, PRIMARY KEY (ID))");

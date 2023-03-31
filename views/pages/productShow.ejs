@@ -33,9 +33,7 @@
         </div>
 
     <div class="col-12 col-lg-7 justify-content-center">
-        <div class="infoData mt-5 text-center">
-            
-                
+        <div class="infoData mt-5 text-center">                
                 <h1 id="p_name">
                     <%= info.name %>
                 </h1>
@@ -83,6 +81,22 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <ul class="barva border border-2" style="display:none;">
+                                        <% for(let s = 0; s < colors.length; s++) {%>
+                                            <li class="p-2 m-2 border border-1" name="color" value="<%= colors[s].color %>" onclick="getColor()"><%= colors[s].color %></li>
+                                            <% } %>
+
+                                    </ul>
+                                    <% for(let c = 0; c < colors.length; c++) {%>
+                                    <ul class="grid-container" id="<%= product.color %>" style="display:none;">
+                                        <% for(product of products) {%>
+                                            <% if( product.qty > 0) {%>
+                                            <li tabindex="1" class="p-2 m-2 border border-1" name="sizess" onclick="getMe()" value="<%= product.sku %>"><%= product.size%></li>
+                                            <% } %>
+                                            <% } %>  
+                                        </ul>
+                                        <% } %>
 
                                 </div>
                                     <input type="hidden" id="p_id" name="product_id" value="<%= info.id %>">
@@ -102,6 +116,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
+
+function getMe(){
+        let data = document.querySelectorAll('.grid-container li');
+        console.log("prvic",data);
+        for(let i = 0; i < data.length; i++){
+            data[i].onclick = function(){
+                const clicked = this.value;
+                console.log(clicked);
+            }
+        }
+    }
     
     userSelect = [];
     document.getElementById('btn').style.display = 'none';
