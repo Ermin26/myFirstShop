@@ -354,7 +354,6 @@ app.get("/cart", async (req, res) => {
                 allProducts.push(result.rows)
                 res.render('orders/cart', { items, allProducts })
             })
-             
         } else {
             for (let i = 0; i < cart.length; i++) {
                 await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
@@ -375,8 +374,7 @@ app.get("/cart", async (req, res) => {
                     else {
                         console.log(e.message);
                         res.redirect('/')
-                    }
-                                 
+                    }                           
                 })
             }
             calculateTotal(cart, req)
@@ -384,7 +382,6 @@ app.get("/cart", async (req, res) => {
     } else {
         await conn.query(`SELECT * FROM inventory`, async (err, result) => { 
             console.log('3')
-            console.log(items)
             allProducts.push(result.rows)
             res.render('orders/cart', { items, allProducts })
         })

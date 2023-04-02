@@ -10,7 +10,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
-        folder: 'Yasemin-shop', // add folder on cloudinary in shrani slike noter 
+        folder: 'Salester-shop', // add folder on cloudinary in shrani slike noter 
         allowedFormats: ['jpeg', 'png', 'jpg', 'gif']
     }
 });
