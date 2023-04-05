@@ -2,22 +2,22 @@
 NEXT ----
     ✘  Make app only for adding images!!!!!! @cancelled(23-03-29 14:38)
     ☐  Must add checkbox for pyment after product received
-    ☐  Make table for Category other And for sub category Toys
     ☐  Make table for addOns
     ☐  Make fuction to work on stock after user make order
     ☐  Work on sending mail after customer pay.
     ☐  Send order on mail (Company/User) 
-    ☐  Make new rows for products with colors- new rows added must do for every category...
-
-☐ DOING ------- @started(23-03-28 14:55)
-    ☐  Add function for adding row for every category;
+    
+    ☐ DOING ------- @started(23-03-28 14:55)
     ☐ Working on select color/size on product show page. NUJNO! @started(23-03-31 13:53)
     ☐ Work with new tables...
     ☐  Edit backend to use that tables, 
-
-
-
-✔ DONE ----- @done(23-03-28 14:54)
+    
+    
+    
+✔ DONE ----- @done(23-03-28 14:54)ž
+    ✔ Added searc field on page @done(23-04-05 14:11)
+    ✔  Add function for adding row for every category; @done(23-04-05 14:08)
+    ✔  Make new rows for products with colors- new rows added must do for every category... @done(23-04-05 14:10)
     ✔ Working on edit qty on the cart page @done(23-03-29 10:38)
     ✔  Workning on product show page @started(23-03-28 13:25) fix Velikost glede na izbrano barvo; @done(23-03-29 08:44) @lasted(19h19m21s)
     ✔  Show cart @started(23-03-29 08:44) @done(23-03-29 10:25) @lasted(1h41m11s)

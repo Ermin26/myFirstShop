@@ -216,7 +216,7 @@ app.get('/product/:id', async (req, res) => {
                 let products = data.rows;
                 //console.log(products);
                 if (!e) {
-                    await conn.query(`SELECT DISTINCT color FROM varijacije`, async (er, color) => {
+                    await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                         let colors = color.rows;
                        res.render('pages/productShow', { shirts, products,colors });
                    });
@@ -546,7 +546,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 
     for (let i = 0; i < firstCheck; i++) {
         images = [];
-        for (let j = 1; j < secondCheck; j++) {
+        for (let j = 0; j < secondCheck; j++) {
             let getImg = req.files[`image${imgNum}`];
             for (let allImg of getImg) {
                 images.push(allImg.path)
@@ -555,11 +555,9 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }
         imgsUrl.push(images);
     }
-    
     //console.log(req.files[`image${imgNum}`][0].path,' yoooooooooooo')
     
     // console.log(Object.keys(req.files).length)
-
 //----------------------------------------------------------
     //? Dela
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[])) RETURNING id`, async (err, result) => {
