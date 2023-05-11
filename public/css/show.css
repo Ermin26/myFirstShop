@@ -1,21 +1,22 @@
-html{
+html {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
 }
 
-body{
+body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
 }
 
-.carousel-control-prev-icon, .carousel-control-next-icon{
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
     filter: invert(60%);
 }
 
-.barva{
-    display:grid;
+.barva {
+    display: grid;
     grid-template-columns: auto auto;
     grid-gap: 5px;
     row-gap: 5px;
@@ -27,38 +28,48 @@ body{
     display: grid;
     grid-template-columns: auto auto auto;
     padding: 10px;
-  }
-  .grid-item {
+}
+
+.grid-item {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 10px;
     border: 1px solid;
     margin: 5px;
     font-size: 20px;
     text-align: center;
-  }
+}
 
 
 
-.grid-container .grid-item:hover, .barva li:hover{
+.grid-container .grid-item:hover,
+.barva li:hover {
     background-color: rgb(139, 219, 92);
- }
+}
 
- .grid-container li:focus, .barva li:focus{
+.grid-container li:focus,
+.barva li:focus {
     background-color: green;
- }
+}
 
- ul{
+ul {
     list-style: none;
     display: grid;
     grid-template-columns: auto auto auto;
     padding: 10px;
- }
+}
 
- li{
+li {
     text-decoration: none;
- }
+    cursor: pointer;
+}
 
- #selectField{
+li>input {
+    cursor: pointer;
+}
+
+
+
+#selectField {
     display: flex;
     list-style: none;
- }
+}

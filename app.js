@@ -178,7 +178,7 @@ app.get('/', async (req, res) => {
         } else {
             if (!err) {
                 //console.log(products)
-                res.render('pages/home', { products }) 
+                res.render('pages/home', { products })
             }
         }
     })
@@ -199,9 +199,9 @@ app.post('/search', async (req, res) => {
         if (!err) {
             let products = shirts.rows;
             console.log(products);
-            res.render('pages/searched', {products})
+            res.render('pages/searched', { products })
         } else {
-            req.flash('error','Nothing to show')
+            req.flash('error', 'Nothing to show')
             res.redirect('/')
         }
     })
@@ -218,18 +218,18 @@ app.get('/product/:id', async (req, res) => {
                 if (!e) {
                     await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                         let colors = color.rows;
-                       res.render('pages/productShow', { shirts, products,colors });
-                   });
-                    
+                        res.render('pages/testShow', { shirts, products, colors });
+                    });
+
                 }
-                    //console.log(products)
-                    
-                
-             })    
+                //console.log(products)
+
+
+            })
         } else {
             req.flash('error', err.message)
             res.redirect('/')
-            
+
         }
     })
 })
@@ -302,7 +302,7 @@ function isProductInCart(cart, id) {
     if (cart) {
         for (let i = 0; i < cart.length; i++) {
             console.log(cart[i].sku)
-            if (cart[i].sku == id) { 
+            if (cart[i].sku == id) {
                 console.log("erorrrrrr")
                 req.slash('error', 'Product je že v košarici')
                 res.redirect(`product/${cart[i].id}`)
@@ -310,22 +310,22 @@ function isProductInCart(cart, id) {
                 let user_id = randomUUID();
                 //console.log( product_id, product_name, product_color, size, product_price, sku_num)
                 if (req.session.cart) {
-                    let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, };
+                    let product = { product_id: product_id, sku: sku_num, name: product_name, color: product_color, size: size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, };
                     let cart = req.session.cart;
                     cart.push(product)
                     req.flash('success', 'Successfully added to cart')
                     res.redirect(`/product/${product_id}`)
                 } else {
-                    let product = { product_id: product_id,sku: sku_num, name: product_name, color: product_color, size:size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, user_id: user_id };
+                    let product = { product_id: product_id, sku: sku_num, name: product_name, color: product_color, size: size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, user_id: user_id };
                     req.session.cart = [product]
                     let cart = req.session.cart;
                     req.flash('success', 'Successfully added to cart')
                     res.redirect(`/product/${product_id}`)
                 }
             }
-        } 
+        }
     }
-    
+
 }
 
 function calculateTotal(cart, req) {
@@ -347,10 +347,10 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
-    
+
     if (cart) {
         if (!cart.length) {
-            await conn.query(`SELECT * FROM inventory`, async (err, result) => { 
+            await conn.query(`SELECT * FROM inventory`, async (err, result) => {
                 allProducts.push(result.rows)
                 res.render('orders/cart', { items, allProducts })
             })
@@ -365,22 +365,22 @@ app.get("/cart", async (req, res) => {
                         items.push(results.rows)
                         countSizes += 1;
                         if (cart.length === countSizes) {
-                                            
-                                            
-                            res.render('orders/cart', { items, cart, allProducts,ordered })
-                    
+
+
+                            res.render('orders/cart', { items, cart, allProducts, ordered })
+
                         }
                     }
                     else {
                         console.log(e.message);
                         res.redirect('/')
-                    }                           
+                    }
                 })
             }
             calculateTotal(cart, req)
         }
     } else {
-        await conn.query(`SELECT * FROM inventory`, async (err, result) => { 
+        await conn.query(`SELECT * FROM inventory`, async (err, result) => {
             console.log('3')
             allProducts.push(result.rows)
             res.render('orders/cart', { items, allProducts })
@@ -389,25 +389,24 @@ app.get("/cart", async (req, res) => {
 
 })
 
-app.post('/add-to-cart',async (req, res) => {
+app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, sku } = req.body;
 
-    
     let user_id = randomUUID();
     console.log(req.body)
     //console.log(req.session.cart.length);
     //console.log( product_id, product_name, product_color, size, product_price, sku_num)
-    
+
     if (req.session.cart) {
-        
-        let product = { product_id: product_id,sku: sku, name: product_name, color: product_color, size:product_size, qty: 1, price: product_price };
+
+        let product = { product_id: product_id, sku: sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
         let cart = req.session.cart;
         cart.push(product)
         req.flash('success', 'Successfully added to cart')
         res.redirect(`/product/${product_id}`)
-        
+
     } else {
-        let product = { product_id: product_id,sku: sku, name: product_name, color: product_color, size:product_size, qty: 1, price: product_price , user_id: user_id };
+        let product = { product_id: product_id, sku: sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price, user_id: user_id };
         req.session.cart = [product]
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')
@@ -447,20 +446,20 @@ app.post('/edit_qty', async (req, res) => {
             }
         }
     }
-        if (minus_btn) {
-            for (let i = 0; i < cart.length; i++) {
-                if (cart[i].sku == id) {
-                    if (cart[i].qty > 1) {
-                        cart[i].qty = parseInt(cart[i].qty) - 1;
-                        res.redirect('/cart');
-                    } else {
-                        req.flash('error', "Quantity can't be smaller than 1")
-                        res.redirect('/cart');
-                    }
+    if (minus_btn) {
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].sku == id) {
+                if (cart[i].qty > 1) {
+                    cart[i].qty = parseInt(cart[i].qty) - 1;
+                    res.redirect('/cart');
+                } else {
+                    req.flash('error', "Quantity can't be smaller than 1")
+                    res.redirect('/cart');
                 }
             }
         }
-    
+    }
+
     calculateTotal(cart, req)
 
 })
@@ -531,7 +530,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let brutoPrice = Math.ceil(product.p_price * 0.22)
     let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
     let total = parseFloat(netoPrice);
-    
+
     let imgsUrl = [];
     let imgNum = 1;
     let sizeCount = 1;
@@ -556,33 +555,33 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         imgsUrl.push(images);
     }
     //console.log(req.files[`image${imgNum}`][0].path,' yoooooooooooo')
-    
+
     // console.log(Object.keys(req.files).length)
-//----------------------------------------------------------
+    //----------------------------------------------------------
     //? Dela
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[])) RETURNING id`, async (err, result) => {
-            if (!err) {
-                for (let i = 0; i < product.color.length; i++) { 
-                    for (let j = 0; j < req.body[`size${sizeCount}`].length; j++){
-                        let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year  
-                        await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color) VALUES('${result.rows[0].id}', '${req.body[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`][j]}', '${product.color[i]}')`)
-                    
-                    }
-                    sizeCount += 1;
+    await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[])) RETURNING id`, async (err, result) => {
+        if (!err) {
+            for (let i = 0; i < product.color.length; i++) {
+                for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {
+                    let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
+                    await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color) VALUES('${result.rows[0].id}', '${req.body[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`][j]}', '${product.color[i]}')`)
+
                 }
-                req.flash('success',"Successfully added new product")
-                res.redirect('add')
+                sizeCount += 1;
             }
-            else {
-                req.flash('error', `Something went wrong. ${err.message}`);
-                res.redirect('add');
-            }
-         })
-    
+            req.flash('success', "Successfully added new product")
+            res.redirect('add')
+        }
+        else {
+            req.flash('error', `Something went wrong. ${err.message}`);
+            res.redirect('add');
+        }
+    })
+
     /*
     res.redirect('/add')
     */
-   
+
 })
 
 
@@ -776,9 +775,9 @@ app.get('/kids', async (req, res) => {
             if (!shirts.length) {
                 req.flash('error', ' Nothing to display.')
                 res.redirect('/');
-            } else { 
+            } else {
                 res.render('artikli/kids/kidsAll', { shirts })
-                }
+            }
         } else {
             req.flash('error', err.message);
             res.redirect('/');
