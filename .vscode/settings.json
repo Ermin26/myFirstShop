@@ -11,8 +11,8 @@
         {
             "pgOptions": {
                 "ssl": {
-                    "cert": "C:\\Users\\lerve\\OneDrive\\Namizje\\myFirstShop\\root.crt",
-                    "ca": "C:\\Users\\lerve\\OneDrive\\Namizje\\myFirstShop\\root.crt"
+                    "cert": "C:\\Users\\lerve\\OneDrive\\Namizje\\Ermin\\myFirstShop\\root.crt",
+                    "ca": "C:\\Users\\lerve\\OneDrive\\Namizje\\Ermin\\myFirstShop\\root.crt"
                 }
             },
             "previewLimit": 50,

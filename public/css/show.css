@@ -23,23 +23,42 @@ body{
     list-style: none;
 }
 
-.grid-container{
-    display:grid;
-    grid-template-columns: auto auto auto auto;
-    grid-gap: 10px;
-    column-gap: 5px;
-    row-gap: 5px;
-    list-style: none;
-    padding: 2px;
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+  }
+  .grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border: 1px solid;
+    margin: 5px;
+    font-size: 20px;
     text-align: center;
-}
+  }
 
 
 
-.grid-container li:hover, .barva li:hover{
-    background-color: beige;
+.grid-container .grid-item:hover, .barva li:hover{
+    background-color: rgb(139, 219, 92);
  }
 
  .grid-container li:focus, .barva li:focus{
     background-color: green;
+ }
+
+ ul{
+    list-style: none;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+ }
+
+ li{
+    text-decoration: none;
+ }
+
+ #selectField{
+    display: flex;
+    list-style: none;
  }

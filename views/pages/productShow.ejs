@@ -47,56 +47,85 @@
                 </div>
                 
                 <div class="velikost mt-5">
-                <p>Velikost na voljo</p>
+                
                 <form action="/add-to-cart" method="post" class="text-center ms-auto me-auto">
                             <div class="add-to-cart mt-5" style="margin-bottom: 10vh;">
                                 <div class="row row-cols-2 mb-5 justify-content-center">
+                                 <!--
                                     <div class="col-4">
                                         <div class="input-group">
                                             <div class="form-floating">
                                                 <select class="form-select-sm" name="sku_num" id="color" onchange="colorChoose()">
                                                     <option selected>Izberi Barvo</option>
-                                                        <% for(let s = 0; s < colors.length; s++) {%>
-                                                    <option value="<%= colors[s].color %>"><%= colors[s].color %></option>
+                                                        <%# for(let s = 0; s < colors.length; s++) {%>
+                                                    <option value="<%# colors[s].color %>"><%# colors[s].color %></option>
                                                            
-                                                    <% } %>
+                                                    <%# } %>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
+                                    -->
+
+                                    <select name="" id="selectField">
+                                        <option value="">1</option>
+                                        <option value="">2</option>
+                                        <option value="">3</option>
+                                        <option value="">4</option>
+                                    </select>
+                                    <!--NOVO dodaj input field to the every li element-->
+                                    <p>Izberite barvo</p>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            <div class="input-group">
+                                                <div class="grid-container">
+                                                    <ul id="colors">
+                                                        <% for(let s = 0; s < colors.length; s++) {%>
+                                                            <li data-value="<%= colors[s].color %>"><input class="grid-item border text-center" name="color" value="<%= colors[s].color %>" readonly select></li>
+                                                            <% } %> 
+                                                        </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <div class="input-group" id="addGrid">
+                                                <div class="grid-container">
+                                                    <% for(let s = 0; s < colors.length; s++) {%>
+                                                    <ul name="sizes" id="<%= colors[s].color %>">
+                                                <% for(product of products) {%>
+                                                    <% if(product.color == colors[s].color && product.qty > 0) {%>
+                                                    <li class="grid-item border text-center" data-value="<%= product.sku %>"><%= product.size %></li>
+                                                    <% } %>
+                                                    <% } %>
+                                                </ul>
+                                            <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <!--///////////////////////////////////////-->
+
+                                    <!--
                                     <div class="col-4">
                                         <div class="input-group">
                                             <div class="form-floating">
-                                                <% for(let s = 0; s < colors.length; s++) {%>
-                                                <select class="form-select-sm text-center" name="sku" id="<%= colors[s].color %>" onchange="sizeChoose()" style="display: none;">
+                                                <%# for(let s = 0; s < colors.length; s++) {%>
+                                                <select class="form-select-sm text-center" name="sku" id="<%# colors[s].color %>" onchange="sizeChoose()" style="display: none;">
                                                     <option selected>Izberi velikost</option>
-                                                    <% for(product of products) {%>
-                                                        <% if(product.color == colors[s].color && product.qty > 0) {%>
-                                                        <option value="<%= product.sku %>"><%= product.size%></option>
-                                                   
-                                                        <% } %>
-                                                        <% } %>      
+                                                    <%# for(product of products) {%>
+                                                        <%# if(product.color == colors[s].color && product.qty > 0) {%>
+                                                        <option value="<%# product.sku %>"><%# product.size%></option>  
+                                                        <%# } %>
+                                                        <%# } %>      
                                                 </select>
-                                                <% } %>
+                                                <%# } %>
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <ul class="barva border border-2" style="display:none;">
-                                        <% for(let s = 0; s < colors.length; s++) {%>
-                                            <li class="p-2 m-2 border border-1" name="color" value="<%= colors[s].color %>" onclick="getColor()"><%= colors[s].color %></li>
-                                            <% } %>
-
-                                    </ul>
-                                    <% for(let c = 0; c < colors.length; c++) {%>
-                                    <ul class="grid-container" id="<%= product.color %>" style="display:none;">
-                                        <% for(product of products) {%>
-                                            <% if( product.qty > 0) {%>
-                                            <li tabindex="1" class="p-2 m-2 border border-1" name="sizess" onclick="getMe()" value="<%= product.sku %>"><%= product.size%></li>
-                                            <% } %>
-                                            <% } %>  
-                                        </ul>
-                                        <% } %>
+                                    -->
 
                                 </div>
                                     <input type="hidden" id="p_id" name="product_id" value="<%= info.id %>">
@@ -116,18 +145,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
+function getEventTarget(e) {
+    e = e || window.event;
+    return e.target || e.srcElement; 
+}
+    var color = []
 
-function getMe(){
-        let data = document.querySelectorAll('.grid-container li');
-        console.log("prvic",data);
-        for(let i = 0; i < data.length; i++){
-            data[i].onclick = function(){
-                const clicked = this.value;
-                console.log(clicked);
-            }
-        }
-    }
-    
+    function barva() {
+        console.log(document.getElementsByName('colorId'))
+    };
+
+
+
     userSelect = [];
     document.getElementById('btn').style.display = 'none';
     function colorChoose(){
