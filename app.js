@@ -218,7 +218,7 @@ app.get('/product/:id', async (req, res) => {
                 if (!e) {
                     await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                         let colors = color.rows;
-                        res.render('pages/testShow', { shirts, products, colors });
+                        res.render('pages/productShow', { shirts, products, colors });
                     });
 
                 }
