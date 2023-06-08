@@ -27,6 +27,8 @@ const { storage } = require('./cloudinary/cloudConfig');
 const { randomUUID } = require('crypto');
 const { parse } = require('path');
 const upload = multer({ storage })
+const stripe = require('stripe')(process.env.STRIPE_SK);
+
 //const upload = multer({ dest: 'uploads/' })
 
 
@@ -41,16 +43,7 @@ const client = new Client({
         ca: fs.readFileSync('./root.crt').toString()
     },
 });
-/*
-const client = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'YaseminShop',
-    password: 'ermin',
-    port: 5432,
 
-});
-*/
 const conn = client;
 
 const connectToDB = async (req, res) => {
@@ -71,14 +64,15 @@ app.engine('ejs', layouts);
 app.use(express.urlencoded({ extended: true }));
 app.use(override('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(express.json());
 
 
 const forSession = process.env.DB_PASS
 const nothingSpecial = process.env.IGNORE_ME
 
-
-
+const s_sk = process.env.STRIPE_SK;
+const s_pk = process.env.STRIPE_PK;
 
 
 app.use(session({
@@ -161,7 +155,6 @@ app.use((req, res, next) => {
 let todayDate = new Date();
 let date = todayDate.toLocaleDateString()
 let year = todayDate.getFullYear();
-console.log(date)
 
 let subtotal = [];
 
@@ -188,9 +181,6 @@ app.get('/searched', async (req, res) => {
     res.render('pages/searched')
 })
 
-app.get('/searched', async (req, res) => {
-    res.render('pages/searched')
-})
 
 app.post('/search', async (req, res) => {
     let data = req.body.searched;
@@ -352,7 +342,7 @@ app.get("/cart", async (req, res) => {
         if (!cart.length) {
             await conn.query(`SELECT * FROM inventory`, async (err, result) => {
                 allProducts.push(result.rows)
-                res.render('orders/cart', { items, allProducts })
+                res.render('orders/cart', { items, allProducts, s_pk })
             })
         } else {
             for (let i = 0; i < cart.length; i++) {
@@ -367,7 +357,7 @@ app.get("/cart", async (req, res) => {
                         if (cart.length === countSizes) {
 
 
-                            res.render('orders/cart', { items, cart, allProducts, ordered })
+                            res.render('orders/cart', { items, cart, allProducts, ordered, s_pk })
 
                         }
                     }
@@ -381,9 +371,8 @@ app.get("/cart", async (req, res) => {
         }
     } else {
         await conn.query(`SELECT * FROM inventory`, async (err, result) => {
-            console.log('3')
             allProducts.push(result.rows)
-            res.render('orders/cart', { items, allProducts })
+            res.render('orders/cart', { items, allProducts, s_pk })
         })
     }
 
@@ -466,10 +455,25 @@ app.post('/edit_qty', async (req, res) => {
 
 app.get('/checkout', async (req, res) => {
     let total = req.session.total.toFixed(2);
-    res.render('orders/checkout', { total })
+    res.render('orders/checkout', { total, s_pk, s_sk })
 })
 
 app.post('/checkoutToPay', async (req, res) => {
+    const { amount } = req.body;
+    console.log(amount);
+
+    try {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount,
+            currency: 'eur',
+        });
+        res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+
+    //! stripe end
+    /*
     let { name, lastName, email, country, city, zip, street, phone } = req.body
     let costs = req.session.total.toFixed(2)
     let orderDate = todayDate.toLocaleString();
@@ -490,7 +494,7 @@ app.post('/checkoutToPay', async (req, res) => {
         console.log("error", e)
         res.redirect('/checkout')
     }
-
+*/
 })
 
 
@@ -510,7 +514,7 @@ app.get('/payment', async (req, res) => {
                     await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                         let userData = user.rows[0]
                         console.log(userData)
-                        res.render('orders/pay', { total, cart, userData });
+                        res.render('orders/pay', { total, cart, userData, s_pk });
                     })
                 }
             } else {
