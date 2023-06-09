@@ -8,6 +8,9 @@ NEXT ----
     ☐  Send order on mail (Company/User) 
     
     ☐ DOING ------- @started(23-03-28 14:55)
+    ✘ Working on stripe urgent!!!!!! error for doctype @cancelled(23-06-09 14:48)
+
+
     ✘ Working on select color/size on product show page. NUJNO! @started(23-03-31 13:53) @cancelled(23-05-11 22:40) @wasted(5w6d8h47m15s)
     ✘ Nadaljuj pri tem, da lahko izberes velikost! @started(23-05-11 22:40) @cancelled(23-05-11 22:40) @wasted(12s)
     ☐ Work with new tables...

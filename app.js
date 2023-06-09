@@ -454,23 +454,75 @@ app.post('/edit_qty', async (req, res) => {
 })
 
 app.get('/checkout', async (req, res) => {
-    let total = req.session.total.toFixed(2);
-    res.render('orders/checkout', { total, s_pk, s_sk })
+    let total = req.session.total.toFixed(2)
+    let cart = req.session.cart;
+    console.log(cart)
+    let items = [];
+    let cartItems = []
+    let count = 0
+    for (let i = 0; i < cart.length; i++) {
+        await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}'`, async (err, product) => {
+            if (!err) {
+                count += 1;
+                items.push(product.rows);
+                if (cart.length === count) {
+                    await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
+                        let userData = user.rows[0]
+                        res.render('orders/checkout', { total, cart, userData, s_pk, s_sk });
+                    })
+                }
+            } else {
+                req.flash('error', `Error ${err.message}`);
+                res.redirect('/')
+            }
+        })
+    }
 })
 
 app.post('/checkoutToPay', async (req, res) => {
-    const { amount } = req.body;
-    console.log(amount);
-
+    let cart = req.session.cart;
+    let costs = req.session.total.toFixed(2)
+    const { name,lastName, email, country, city, zip, phone } = req.body;
     try {
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount,
+        const stripeProducts = [];
+
+        for(let product of cart){ 
+            const stripeProduct = await stripeProducts.products.create({
+                name: product.name,
+                description: product.sku
+            })
+        }
+
+        const price = await stripe.prices.create({
+            unit_amount: product.price * 100,
             currency: 'eur',
+            product: stripeProduct.id
         });
-        res.json({ clientSecret: paymentIntent.client_secret });
+
+        stripeProducts.push({product: stripeProduct, price});
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: costs * 100, // Amount in cents
+      currency: 'eur',
+      description: 'Nakup',
+      payment_method_types: ['card'],
+      metadata: {
+        name,
+        lastName,
+        email,
+        country,
+        city,
+        zip,
+        phone,
+      },
+    });
+    req.flash('success',"Successfully placed order")
+    res.redirect('/cart')
     } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+        req.flash('error',error.message)
+      res.redirect('/checkout')
+    
+  }
 
     //! stripe end
     /*

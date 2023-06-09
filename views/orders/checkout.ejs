@@ -1,144 +1,111 @@
-<script src="https://js.stripe.com/v3/"></script>
-<style>
-    .StripeElement {
-        box-sizing: border-box;
-        height: 40px;
-        padding: 10px 12px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        background-color: white;
-        box-shadow: 0 1px 3px 0 #e6ebf1;
-        -webkit-transition: box-shadow 150ms ease;
-        transition: box-shadow 150ms ease;
-    }
-
-    .StripeElement--focus {
-        box-shadow: 0 1px 3px 0 #cfd7df;
-    }
-
-    .StripeElement--invalid {
-        border-color: #fa755a;
-    }
-
-    .StripeElement--webkit-autofill {
-        background-color: #fefde5 !important;
-    }
-</style>
 <% layout('layouts/boilerplate') %>
 
-    <div class="preBuyIt mt-5">
-        <form id="checkout-form">
-            <div class="group-item ms-auto me-auto">
-                <div class="row row-cols-2 text-center">
-                    <div class="col-6">
-                        <div class="mb-2">
-                            <label for="name">First name</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="James" required>
-                        </div>
-                        <div class="mb-2">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                placeholder="example@gmail.com" required>
-                        </div>
-                        <div class="mb-2">
-                            <label for="city">City</label>
-                            <input type="text" class="form-control" id="city" name="city" placeholder="Wien" required>
-                        </div>
-                        <div class="mb-2">
-                            <label for="street">Street</label>
-                            <input type="text" class="form-control" id="street" name="street" placeholder="Lebelstraße"
-                                required>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-2">
-                            <label for="lastName">Last name</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Mccanzie"
-                                required>
-                        </div>
-                        <div class="mb-2">
-                            <label for="country">Country</label>
-                            <input type="text" class="form-control" id="country" name="country" placeholder="Austria"
-                                required>
-                        </div>
-                        <div class="mb-2">
-                            <label for="zip">Zip code</label>
-                            <input type="number" class="form-control" id="zip" name="zip" placeholder="1100" required>
-                        </div>
-                        <div class="mb-2">
-                            <label for="phone">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" placeholder="+38670755355"
-                                required>
-                        </div>
-                    </div>
-                </div>
-                <p>Total amount: <%= total %> €</p>
-                <div class="button">
-                    <button class="btn btn-primary" id="checkout-button">Checkout</button>
-                </div>
+<style>
+    .card-element {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+  
+
+        <form id="payment-form" action="/checkoutToPay" method="POST">
+            <div>
+              <label for="name">Ime</label>
+              <input type="text" id="name" name="name" required>
             </div>
-        </form>
-        <div id="card-element"></div>
-    </div>
+            <div>
+              <label for="lastName">Priimek</label>
+              <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+              <label for="country">Country</label>
+              <input type="text" id="country" name="country" required>
+            </div>
+            <div>
+              <label for="city">City</label>
+              <input type="text" id="city" name="city" required>
+            </div>
+            <div>
+              <label for="zip">ZIP Code</label>
+              <input type="text" id="zip" name="zip" required>
+            </div>
+            <div>
+              <label for="phone">Phone</label>
+              <input type="text" id="phone" name="phone" required>
+            </div>
+            <div id="card-element">
+                <!-- Stripe.js will insert the card input elements here -->
+            </div>
+            <button type="submit" id="submit-button">Pay Now</button>
+          </form>
 
-    <script>
-        // Replace 'YOUR_SERVER_ENDPOINT' with the actual server endpoint
-        const serverEndpoint = 'http://localhost:5000/checkoutToPay';
-        const stripePublicKey = 'pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z';
-        const stripe = Stripe(stripePublicKey);
-        const elements = stripe.elements();
-        const cardElement = elements.create('card', {
-            style: {
-                base: {
-                    fontFamily: 'Arial, sans-serif',
-                    fontSize: '16px',
-                    '::placeholder': {
-                        color: '#aab7c4',
-                    },
+
+          <script src="https://js.stripe.com/v3/"></script>
+          <script>
+            // Set up Stripe.js with your publishable key
+            const stripe = Stripe(`<%= s_pk %>`);
+          
+            // Create an instance of elements
+            const elements = stripe.elements();
+          
+            // Create a card element and mount it to the card element container
+            const cardElement = elements.create('card');
+            cardElement.mount('#card-element');
+          
+            // Handle form submission
+            const form = document.getElementById('payment-form');
+            form.addEventListener('submit', async (event) => {
+              event.preventDefault();
+          
+              // Disable the submit button to prevent multiple clicks
+              document.getElementById('submit-button').disabled = true;
+
+              const formData = new FormData(form);
+              const firstName = formData.get('name')
+              const lastName = formData.get('lastName')
+    const billingDetails = {
+      name:  firstName + ' ' + lastName,
+      email: formData.get('email'),
+      address: {
+        country: formData.get('country'),
+        city: formData.get('city'),
+        postal_code: formData.get('zip'),
+      },
+      phone: formData.get('phone'),
+    };
+          
+              // Create a payment intent on the server
+              const response = await fetch('/checkoutToPay', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
                 },
-            },
-        });
-        cardElement.mount('#card-element');
-        const checkoutForm = document.getElementById('checkout-form');
-        const checkoutButton = document.getElementById('checkout-button');
-
-        checkoutButton.addEventListener('click', async (event) => {
-            event.preventDefault();
-
-            checkoutButton.disabled = true;
-            checkoutButton.textContent = 'Processing...';
-
-            const amount = <%= total %> * 100; // Replace with the actual value of 'total' from your server
-
-            try {
-                const response = await fetch(serverEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ amount }),
-                });
-
-                const { clientSecret } = await response.json();
-
-                const result = await stripe.confirmCardPayment(clientSecret, {
-                    payment_method: {
-                        card: cardElement,
-                    },
-                });
-
-                if (result.error) {
-                    throw new Error(result.error.message);
-                } else {
-                    console.log('Payment successful!');
-                    // Handle successful payment, e.g., show success message or redirect to a success page
-                }
-            } catch (error) {
-                console.error(error.message);
-                // Handle error, e.g., show error message to the user
-            } finally {
-                checkoutButton.disabled = false;
-                checkoutButton.textContent = 'Checkout';
-            }
-        });
-    </script>
+                body: JSON.stringify({
+                   billing_details: billingDetails,
+                }),
+              });
+          
+              const { clientSecret } = await response.json();
+          
+              // Confirm the payment with the client secret and card details
+              const result = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                  card: cardElement,
+                  billing_details: billingDetails,
+                },
+              });
+          
+              if (result.error) {
+                // Display an error message to the user
+                console.error(result.error.message);
+              } else {
+                // Payment successful, redirect or show a success message
+                console.log('Payment succeeded!');
+              }
+            });
+          </script>
