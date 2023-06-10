@@ -64,8 +64,8 @@ app.engine('ejs', layouts);
 app.use(express.urlencoded({ extended: true }));
 app.use(override('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(bodyParser.json());
-app.use(express.json());
+app.use(bodyParser.json());
+//app.use(express.json());
 
 
 const forSession = process.env.DB_PASS
@@ -428,12 +428,14 @@ app.post('/edit_qty', async (req, res) => {
     if (plus_btn) {
         for (let i = 0; i < cart.length; i++) {
             if (cart[i].sku == id) {
+                console.log(cart[i].sku, id)
                 if (cart[i].qty > 0) {
                     cart[i].qty = parseInt(cart[i].qty) + 1;
                     res.redirect('/cart');
                 }
             }
         }
+
     }
     if (minus_btn) {
         for (let i = 0; i < cart.length; i++) {
@@ -450,13 +452,14 @@ app.post('/edit_qty', async (req, res) => {
     }
 
     calculateTotal(cart, req)
-
+    console.log("------cart--------------")
+    console.log(cart)
+    console.log("------EndCart--------------")
 })
 
-app.get('/checkout', async (req, res) => {
+app.get('/order', async (req, res) => {
     let total = req.session.total.toFixed(2)
     let cart = req.session.cart;
-    console.log(cart)
     let items = [];
     let cartItems = []
     let count = 0
@@ -468,7 +471,7 @@ app.get('/checkout', async (req, res) => {
                 if (cart.length === count) {
                     await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                         let userData = user.rows[0]
-                        res.render('orders/checkout', { total, cart, userData, s_pk, s_sk });
+                        res.render('orders/order', { total, cart, userData, s_pk, s_sk });
                     })
                 }
             } else {
@@ -478,52 +481,59 @@ app.get('/checkout', async (req, res) => {
         })
     }
 })
-
-app.post('/checkoutToPay', async (req, res) => {
+const stripeProducts = [];
+app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
-    const { name,lastName, email, country, city, zip, phone } = req.body;
+    const { name, lastName, email, country, city, street, zip, phone } = req.body;
+    console.log(req.body)
+
+
     try {
-        const stripeProducts = [];
 
-        for(let product of cart){ 
-            const stripeProduct = await stripeProducts.products.create({
-                name: product.name,
-                description: product.sku
-            })
-        }
-
-        const price = await stripe.prices.create({
-            unit_amount: product.price * 100,
+        /*
+                for (let product of cart) {
+                    const stripeProduct = await stripeProducts.products.create({
+                        name: product.name,
+                        description: product.sku
+                    })
+                }
+        
+                const price = await stripe.prices.create({
+                    unit_amount: product.price * 100,
+                    currency: 'eur',
+                    product: stripeProduct.id
+                });
+        
+                stripeProducts.push({ product: stripeProduct, price });
+        */
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: costs * 100, // Amount in cents
             currency: 'eur',
-            product: stripeProduct.id
+            description: 'Nakup',
+            payment_method_types: ['card'],
+            metadata: {
+                name,
+                lastName,
+                email,
+                country,
+                city,
+                street,
+                zip,
+                phone,
+            },
         });
+        req.flash('success', "Successfully placed order")
+        req.session.cart = "";
+        res.json({ clientSecret: paymentIntent.client_secret })
 
-        stripeProducts.push({product: stripeProduct, price});
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: costs * 100, // Amount in cents
-      currency: 'eur',
-      description: 'Nakup',
-      payment_method_types: ['card'],
-      metadata: {
-        name,
-        lastName,
-        email,
-        country,
-        city,
-        zip,
-        phone,
-      },
-    });
-    req.flash('success',"Successfully placed order")
-    res.redirect('/cart')
+        //res.redirect('/')
     } catch (error) {
-        req.flash('error',error.message)
-      res.redirect('/checkout')
-    
-  }
+        req.flash('error', error.message)
+        console.log('error', error.message)
+        res.redirect('/order')
 
+    }
     //! stripe end
     /*
     let { name, lastName, email, country, city, zip, street, phone } = req.body

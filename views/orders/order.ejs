@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <title>Place order</title>
+</head>
+
+<body>
+    <%- include('../partials/nav.ejs') %>
+
+        <%- include('../../flash') %>
+            <div class="info">
+                <div class="row row-cols-2 mt-5 g-0">
+                    <div class="col-7 ms-auto me-auto">
+                        <div class="info mt-3 mb-4">
+                        </div>
+                        <div class="method m-0 p-0 text-center">
+                            <h3 class="d-inline-flex align-middle p-1">Choose payment method</h3>
+
+                        </div>
+                        <div id="paypal-button-container" class="d-flex m-2 p-2 mt-5"></div>
+
+                    </div>
+
+                    <div class="col-5">
+                        <div class="card">
+                            <div class="d-flex justify-content-between p-2">
+                                <h3 class="d-inlines">Košarica</h3>
+                                <p class="d-inline-flex"><a href="/cart">Uredi</a></p>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Izdelek</th>
+                                            <th>Količina</th>
+                                            <th>Cena</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(product of cart) {%>
+                                            <tr>
+                                                <td>
+                                                    <%= product.name%> - <%= product.color%>-#<%= product.size %>
+                                                </td>
+                                                <td>
+                                                    <%= product.qty %>
+                                                </td>
+                                                <td>
+                                                    <%= product.price %> €
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <div class="col-8 text-start">
+                                    <ul>
+                                        <li>Subtotal:</li>
+                                        <li>Dostava</li>
+                                        <li><strong>Za plačilo</strong></li>
+                                    </ul>
+                                </div>
+                                <div class="col-4 d-flex flex-column text-end">
+                                    <strong>0.00 €</strong>
+                                    <strong>0.00 €</strong>
+                                    <strong>
+                                        <%= total %> €
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="payment-form" action="/placeOrder" method="POST">
+                    <div class="row ">
+                        <div class="col d-flex flex-column text-center">
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="name">Ime</label>
+                                <input type="text" name="name" id="name" required>
+                            </div>
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="lastName">Priimek</label>
+                                <input type="text" name="lastName" id="lastName">
+                            </div>
+
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="email">E-pošta</label>
+                                <input type="text" id="email" name="email" required>
+                            </div>
+
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="phone">Telefon</label>
+                                <input type="text" id="phone" name="phone" required>
+                            </div>
+
+                        </div>
+                        <div class="col d-flex flex-column text-center">
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="country">Država</label>
+                                <input type="text" name="country" id="country" required>
+                            </div>
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="city">Mesto</label>
+                                <input type="text" name="city" id="city" required>
+                            </div>
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="street">Ulica</label>
+                                <input type="text" name="street" id="street" required>
+                            </div>
+
+                            <div class="mb-3 d-inline-flex flex-column">
+                                <label for="zip">Poštana številka</label>
+                                <input type="text" id="zip" name="zip" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 justify-content-center text-center">
+                        <div id="card-element">
+                            <!-- Stripe.js will insert the card input elements here -->
+                        </div>
+                        <div class="col mt-3 mb-5">
+                            <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
+                            <%= s_pk %>
+                        </div>
+                    </div>
+                </form>
+
+
+                <%- include('../partials/footer.ejs') %>
+                    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+                        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+                        crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+                        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+                        crossorigin="anonymous"></script>
+                    <script src="https://js.stripe.com/v3/"></script>
+
+
+                    <script>
+
+                        // Set up Stripe.js with your publishable key
+                        const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z');
+
+                        // Create an instance of elements
+                        const elements = stripe.elements();
+
+                        // Create a card element and mount it to the card element container
+                        const cardElement = elements.create('card');
+                        cardElement.mount('#card-element');
+
+                        // Handle form submission
+                        const form = document.getElementById('payment-form');
+                        form.addEventListener('submit', async (event) => {
+                            event.preventDefault();
+
+                            // Disable the submit button to prevent multiple clicks
+                            document.getElementById('submit-button').disabled = true;
+
+                            const formData = new FormData(form);
+                            const firstName = formData.get('name')
+                            const lastName = formData.get('lastName')
+                            const billingDetails = {
+                                name: firstName + ' ' + lastName,
+                                email: formData.get('email'),
+                                address: {
+                                    line1: formData.get('street'),
+                                    country: formData.get('country'),
+                                    city: formData.get('city'),
+                                    postal_code: formData.get('zip'),
+                                },
+                                phone: formData.get('phone'),
+                            };
+
+                            // Create a payment intent on the server
+                            const response = await fetch('/placeOrder', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    billing_details: billingDetails,
+                                }),
+                            });
+                            if (response.ok) {
+                                const data = await response.json(); // Parse the JSON response
+                                const { clientSecret } = data; // Access the clientSecret
+                                // ... rest of your code ...
+                                const result = await stripe.confirmCardPayment(clientSecret, {
+                                    payment_method: {
+                                        card: cardElement,
+                                        billing_details: billingDetails,
+                                    },
+                                });
+
+                                if (result.error) {
+                                    // Display an error message to the user
+                                    console.error(result.error.message);
+                                } else {
+                                    // Payment successful, redirect or show a success message
+                                    window.location.href = '/'
+                                    console.log('Payment succeeded!');
+                                }
+
+                            } else {
+                                console.error('Error placing order'); // Handle the error case
+                            }
+
+
+                            // Confirm the payment with the client secret and card details
+
+                        });
+                    </script>
+
+</body>
+
+</html>
