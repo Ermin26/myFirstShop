@@ -481,12 +481,13 @@ app.get('/order', async (req, res) => {
         })
     }
 })
-const stripeProducts = [];
+const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
     const { name, lastName, email, country, city, street, zip, phone } = req.body;
-    console.log(req.body)
+
+    const stripeProducts = stripe.products;
 
 
     try {
@@ -497,18 +498,18 @@ app.post('/placeOrder', async (req, res) => {
                         name: product.name,
                         description: product.sku
                     })
+        
+        
+                    const price = await stripe.prices.create({
+                        unit_amount: product.price * 100,
+                        currency: 'eur',
+                        product: stripeProduct.id
+                    });
                 }
-        
-                const price = await stripe.prices.create({
-                    unit_amount: product.price * 100,
-                    currency: 'eur',
-                    product: stripeProduct.id
-                });
-        
-                stripeProducts.push({ product: stripeProduct, price });
+                productsForStripe.push({ product: stripeProduct, price });
         */
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: costs * 100, // Amount in cents
+            amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
             description: 'Nakup',
             payment_method_types: ['card'],
