@@ -1,13 +1,12 @@
 <% layout('layouts/boilerplate') %>
-<link rel="stylesheet" href="css/add.css">
 <div class="cena text-center">
     <h1>Izračun cene</h1>
 
-    <h2>Upisana cena * 22% (ddv) + 0.99 + upisana cena = Prodajna cena</h2>
+    <h2>Upisana cena * 18% (ddv) + 0.99 + upisana cena = Prodajna cena</h2>
     <h3>Primer</h3>
-    <p>19 * 0.22 + 0.99</p>
+    <p>20 * 0.18 + 0.99</p>
     <p class="bg-danger text-light">Opozorilo! Rezultat od "upisane cena * ddv" zaokruzuje na večjo številko!</p>
-    <p>5 + 0.99 + 19 = 24.99 €</p>
+    <p>4 + 0.99 + 20 = 24.99 €</p>
 </div>
 
     <form class="validated-form mt-5" action="/addProduct" method="post" enctype="multipart/form-data" novalidate>

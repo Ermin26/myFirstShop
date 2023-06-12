@@ -486,10 +486,7 @@ app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
     const { name, lastName, email, country, city, street, zip, phone } = req.body;
-
     const stripeProducts = stripe.products;
-
-
     try {
 
         /*
@@ -524,14 +521,34 @@ app.post('/placeOrder', async (req, res) => {
                 phone,
             },
         });
-        req.flash('success', "Successfully placed order")
+
+        let orderDate = todayDate.toLocaleString();
+    let product_ids = "";
+    let product_qtys = "";
+    let cart = req.session.cart;
+    let user_id = cart[0].user_id;
+    for (let i = 0; i < cart.length; i++) {
+        product_ids = cart[i].sku + ',' + product_ids
+        product_qtys = cart[i].qty + ',' + product_qtys;
+    }
+
+        try {
+        console.log("try to insert into orders")
+        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${name}', '${lastName}', '${email}', '${country}', '${city}', '${zip}', '${street}', '${phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
+        req.flash('success', "Successfully placed order");
         req.session.cart = "";
         res.json({ clientSecret: paymentIntent.client_secret })
+        } catch (e) {
+        
+        console.log("error", e.message, "Error with insert into orders")
+        res.redirect('/order')
+    }
+        
 
         //res.redirect('/')
     } catch (error) {
         req.flash('error', error.message)
-        console.log('error', error.message)
+        console.log('error', error.message,"stripe error")
         res.redirect('/order')
 
     }
@@ -560,7 +577,7 @@ app.post('/placeOrder', async (req, res) => {
 */
 })
 
-
+/*
 app.get('/payment', async (req, res) => {
     let total = req.session.total.toFixed(2)
     let cart = req.session.cart;
@@ -587,6 +604,7 @@ app.get('/payment', async (req, res) => {
     }
 
 })
+*/
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
 })
@@ -594,7 +612,7 @@ app.get('/add', (req, res) => {
 
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' }]), async (req, res) => {
     const product = req.body;
-    let brutoPrice = Math.ceil(product.p_price * 0.22)
+    let brutoPrice = Math.ceil(product.p_price * 0.18)
     let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
     let total = parseFloat(netoPrice);
 
@@ -609,18 +627,32 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 */
     let firstCheck = Object.keys(req.files).length;
     let secondCheck = req.files[`image${imgNum}`].length;
+    let imgTest = Object.keys(req.files);
+    console.log("///////////////////////");
+    //console.log(imgTest);
+    //console.log("///////////////////////");
+    //console.log(imgTest.length);
+    //console.log("///////////////////////");
 
     for (let i = 0; i < firstCheck; i++) {
         images = [];
+        if (imgTest.length < 2) {
+            const productImgs = req.files[`image${imgNum}`]; 
+            for(let productimg of productImgs) {
+                images.push(productimg.path);
+            }
+        }else{
         for (let j = 0; j < secondCheck; j++) {
             let getImg = req.files[`image${imgNum}`];
             for (let allImg of getImg) {
                 images.push(allImg.path)
             }
             imgNum += 1;
+            }
         }
         imgsUrl.push(images);
     }
+
     //console.log(req.files[`image${imgNum}`][0].path,' yoooooooooooo')
 
     // console.log(Object.keys(req.files).length)
