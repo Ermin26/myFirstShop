@@ -533,7 +533,6 @@ app.post('/placeOrder', async (req, res) => {
     }
 
         try {
-        console.log("try to insert into orders")
         await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${name}', '${lastName}', '${email}', '${country}', '${city}', '${zip}', '${street}', '${phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
         req.flash('success', "Successfully placed order");
         req.session.cart = "";
