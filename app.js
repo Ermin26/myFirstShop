@@ -198,28 +198,30 @@ app.post('/search', async (req, res) => {
 })
 
 app.get('/product/:id', async (req, res) => {
-    let { id } = req.params
+    let { id } = req.params;
+
     await conn.query(`SELECT * FROM inventory WHERE id = '${id}'`, async (err, result) => {
         if (!err) {
-            let shirts = result.rows
-            await conn.query(`SELECT * FROM varijacije WHERE product_id = '${id}' ORDER BY size DESC`, async (e, data) => {
-                let products = data.rows;
-                //console.log(products);
-                if (!e) {
-                    await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
-                        let colors = color.rows;
-                        res.render('pages/productShow', { shirts, products, colors });
-                    });
+            let shirts = result.rows;
 
+            await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
+                let colors = color.rows;
+
+                // Retrieve sizes for each color
+                let products = [];
+                for (let i = 0; i < colors.length; i++) {
+                    const colorName = colors[i].color;
+                    const sizesResult = await conn.query(`SELECT size FROM varijacije WHERE product_id='${id}' AND color='${colorName}'`);
+                    const sizes = sizesResult.rows.map((row) => row.size);
+                    products.push({ color: colorName, sizes });
                 }
-                //console.log(products)
-
-
-            })
+                console.log('///////////////////////')
+                console.log(colors);
+                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
+            });
         } else {
-            req.flash('error', err.message)
-            res.redirect('/')
-
+            req.flash('error', err.message);
+            res.redirect('/');
         }
     })
 })

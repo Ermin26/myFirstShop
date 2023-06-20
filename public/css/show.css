@@ -25,7 +25,14 @@ body {
 .size {
     display: inline-block;
     margin-right: 10px;
+    margin: 2px;
+    width: 75px;
+    height: 40px;
+    padding: 2px;
     cursor: pointer;
+    border: 1px solid black;
+    padding: 2px;
+    text-align: center;
 }
 
 .barva {
