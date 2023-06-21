@@ -4,7 +4,7 @@
     <div class="row row-cols-2 d-flex  flex-md-row ms-auto me-auto mt-5">
 
         <% for(let info of shirts) {%>
-            <div class="col-12 col-lg-5 bg-info flex-row">
+            <div class="col-12 col-lg-5 bg-info flex-row p-0 m-0">
                 <div id="carouselExampleControls" class="carousel slide bg-warning m-0" style="height: 400px; width:400px; min-height: 400px; max-width:400px;">
                     <div id="carousel" class="carousel-inner text-center">
                         <% info.links.forEach((img, i)=>{%>
@@ -30,9 +30,6 @@
                         <% } %>
                         
                 </div>
-                <div id="colorSection" class="bg-danger d-inline-flex">
-           
-                </div>
 
             </div>
 
@@ -56,22 +53,17 @@
                         <form action="/add-to-cart" method="post" class="text-center ms-auto me-auto">
                             <div class="add-to-cart mt-5" style="margin-bottom: 10vh;">
                                 
-                                    <div class="row">
-                                        <div id="colorSection">
+                                    <div class="row text-left mb-5">
+                                        <div id="colorSection" class="ms-auto d-inline-flex">
            
                                         </div>
                                     </div>
-
-
-
                                     <!--///////////////////////////////////////-->
 
-
-                                    <div class="row">
-                                                <div id="sizeSection">
-                                                    <!-- Sizes for the selected color will be dynamically added here -->
-                                                  </div>
-                                            
+                                    <div class="row mt-5 mb-5">
+                                        <div id="sizeSection">
+                                            <!-- Sizes for the selected color will be dynamically added here -->
+                                        </div>
                                     </div>
 
 
@@ -89,16 +81,6 @@
                 </div>
             </div>
             <% } %>
-    </div>
-
-    <div class="row">
-        <div id="colorSection">
-           
-          </div>
-      
-          <div id="sizeSection">
-            <!-- Sizes for the selected color will be dynamically added here -->
-          </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -136,7 +118,7 @@
       */
         window.addEventListener('sizesUpdated', function (event) {
           const sizes = event.detail;
-      
+          const sizeDivs = [];
           sizeSection.innerHTML = ''; // Clear previous sizes
       
           sizes.forEach((size) => {
@@ -146,10 +128,17 @@
       
             sizeDiv.addEventListener('click', function () {
               const selectedSize = this.textContent;
+              sizeDivs.forEach((div) =>{
+                if(div !== this){
+                  div.classList.remove('selected');
+                }
+              })
+              // Toggle the 'selected' class on the clicked size div
+              this.classList.toggle('selected');
               console.log(selectedSize)
               //addToCart(selectedColor, selectedSize);
             });
-      
+            sizeDivs.push(sizeDiv)
             sizeSection.appendChild(sizeDiv);
           });
         });
