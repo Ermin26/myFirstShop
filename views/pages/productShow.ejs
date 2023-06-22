@@ -86,21 +86,43 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <script>
+      
         document.addEventListener('DOMContentLoaded', function () {
         const colorSection = document.getElementById('colorSection');
         const sizeSection = document.getElementById('sizeSection');
         const products = JSON.parse('<%- productsJSON %>');
-      
         function handleColors(colors) {
           colors.forEach((color) => {
             const colorDiv = document.createElement('div');
             colorDiv.classList.add('color');
             colorDiv.setAttribute('data-color', color.color);
             colorDiv.textContent = color.color;
-      
+
+            colorDiv.addEventListener('click', function () {
+            const selectedColor = this.getAttribute('data-color');
+            handleColorSelection(selectedColor);
+            });
+            
             colorSection.appendChild(colorDiv);
           });
         }
+
+        let selectedColorDiv = null; // Variable to keep track of the selected color div
+
+function handleColorSelection(color) {
+  if (selectedColorDiv) {
+    // Remove the previous selected class
+    selectedColorDiv.classList.remove('selected');
+  }
+
+  // Add selected class to the clicked color div
+  const colorDiv = colorSection.querySelector(`[data-color="${color}"]`);
+  colorDiv.classList.add('selected');
+  selectedColorDiv = colorDiv;
+  document.getElementById('p_color').value = selectedColorDiv.innerText;
+  // Call the function to render sizes for the selected color
+  renderSizes(color);
+}
       
         function renderSizes(color) {
           const selectedProduct = products.find((product) => product.color === color);
@@ -110,12 +132,6 @@
             window.dispatchEvent(event);
           }
         }
-      /*
-        function addToCart(color, size) {
-          // Your code to add the selected color and size to the cart
-          console.log(`Added to cart: Color - ${color}, Size - ${size}`);
-        }
-      */
         window.addEventListener('sizesUpdated', function (event) {
           const sizes = event.detail;
           const sizeDivs = [];
@@ -135,7 +151,8 @@
               })
               // Toggle the 'selected' class on the clicked size div
               this.classList.toggle('selected');
-              console.log(selectedSize)
+              
+            document.getElementById('p_size').value = selectedSize;
               //addToCart(selectedColor, selectedSize);
             });
             sizeDivs.push(sizeDiv)
@@ -156,57 +173,4 @@
       });
 
 
-        /*
-        function getEventTarget(e) {
-            e = e || window.event;
-            return e.target || e.srcElement;
-        }
-        var color = []
-
-        function barva() {
-            console.log(document.getElementsByName('colorId'))
-        };
-
-
-
-        userSelect = [];
-        document.getElementById('btn').style.display = 'none';
-        function colorChoose() {
-            let selected = document.getElementById('color').value;
-            userSelect.push(selected);
-            let test = document.getElementsByName(`sku`);
-            let inputs = document.getElementsByTagName('select');
-            let sel = document.getElementById('color');
-            let text = sel.options[sel.selectedIndex].text;
-            document.getElementById('p_color').value = text;
-            //console.log(test)
-            for (let i = 0; i < test.length; i++) {
-                console.log(selected, test)
-                if (test[i].id == selected) {
-                    console.log(selected);
-                    document.getElementById(test[i].id).style.display = 'block';
-                    document.getElementById(test[i].id).removeAttribute('disabled', 'disabled');
-
-                } else {
-                    document.getElementById(test[i].id).setAttribute('disabled', 'disabled');
-                    document.getElementById(test[i].id).style.display = 'none';
-                }
-            }
-        }
-        function sizeChoose() {
-            let userSelected = document.getElementById(`${userSelect[0]}`).value;
-            if (userSelected !== 'Izberi velikost') {
-                console.log(`${userSelect[0]}`)
-                let selSize = document.getElementById(`${userSelect[0]}`)
-                let textSize = selSize.options[selSize.selectedIndex].text;
-                document.getElementById('p_size').value = textSize;
-                document.getElementById('btn').style.display = 'block';
-
-            } else {
-                document.getElementById('btn').style.display = 'none';
-            }
-
-
-        }   
-        */
     </script>

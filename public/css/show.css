@@ -22,22 +22,22 @@ body {
     padding: 5px;
   }
   .selected{
-    background-color: #f0f0f0;
+    background-color: #00fff2;
   }
   .size{
     border: 1px solid black;
     cursor: pointer;
     height: 45px;
     text-align: center;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+  place-items: center;
+  align-content: center;
 
 }
 #sizeSection {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
     gap: 10px;
-    
 }
 
 .size:hover,
@@ -45,8 +45,7 @@ body {
     background-color: rgb(139, 219, 92);
 }
 
-.grid-container li:focus,
-.barva li:focus {
+.size:focus {
     background-color: green;
 }
 

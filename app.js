@@ -196,7 +196,20 @@ app.post('/search', async (req, res) => {
         }
     })
 })
-
+// Function to sort sizes
+function sortSizes(sizes) {
+    // Define the order of sizes
+    const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+  
+    // Sort the sizes based on the defined order
+    sizes.sort((a, b) => {
+      const indexA = sizeOrder.indexOf(a);
+      const indexB = sizeOrder.indexOf(b);
+      return indexA - indexB;
+    });
+  
+    return sizes;
+  }
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
 
@@ -209,15 +222,33 @@ app.get('/product/:id', async (req, res) => {
 
                 // Retrieve sizes for each color
                 let products = [];
+                let sizes = [];
                 for (let i = 0; i < colors.length; i++) {
                     const colorName = colors[i].color;
-                    const sizesResult = await conn.query(`SELECT size FROM varijacije WHERE product_id='${id}' AND color='${colorName}'`);
-                    const sizes = sizesResult.rows.map((row) => row.size);
-                    products.push({ color: colorName, sizes });
+                    if (shirts[0].category === 'Kids' || shirts[0].subcategory === 'Shoes') {
+                        
+                        // For numbers
+                    }
+                    else {
+                        // for text
+                    }
+                    const sizesResult = await conn.query(`SELECT size FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);
+                    //if (shirts[0].category === 'Kids' || shirts[0].subcategory === 'Shoes') {
+                        const size = sizesResult.rows.map((row) => row.size);
+                        const sizes = size.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+                        products.push({ color: colorName, sizes });
+                        
+                       // res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
+                    //}
+                   // else {
+                    //    const sizess = sizesResult.rows.map((row) => row.size);
+                    //    sizes.push(sizess)
+                    //    console.log(sizes);
+                    //    
+                    //}
                 }
-                console.log('///////////////////////')
-                console.log(colors);
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
+                
             });
         } else {
             req.flash('error', err.message);
