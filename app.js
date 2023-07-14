@@ -197,19 +197,7 @@ app.post('/search', async (req, res) => {
     })
 })
 // Function to sort sizes
-function sortSizes(sizes) {
-    // Define the order of sizes
-    const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
-  
-    // Sort the sizes based on the defined order
-    sizes.sort((a, b) => {
-      const indexA = sizeOrder.indexOf(a);
-      const indexB = sizeOrder.indexOf(b);
-      return indexA - indexB;
-    });
-  
-    return sizes;
-  }
+
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
 
@@ -234,11 +222,10 @@ app.get('/product/:id', async (req, res) => {
                     }
                     const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);
                     //if (shirts[0].category === 'Kids' || shirts[0].subcategory === 'Shoes') {
-                    console.log(sizesResult.rows)    
-                    const size = sizesResult.rows.map((row) => row.size);
-                        const sizes = size.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-                        console.log("Sizes", sizes)
-                        products.push({ color: colorName, sizes });
+                    //console.log(sizesResult.rows)    
+                    const size = sizesResult.rows.map((row) => row);
+                        //console.log("Sizes", size)
+                        products.push({ color: colorName, size });
                         
                        // res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
                     //}
@@ -381,7 +368,7 @@ app.get("/cart", async (req, res) => {
             })
         } else {
             for (let i = 0; i < cart.length; i++) {
-                await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.color='${cart[i].color}' `, async (e, results) => {
+                await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
                     if (!e) {
                         console.log(results.rows)
                         //console.log('------------------')
@@ -414,7 +401,7 @@ app.get("/cart", async (req, res) => {
 })
 
 app.post('/add-to-cart', async (req, res) => {
-    let { product_id, product_name, product_color, product_size, product_price, sku } = req.body;
+    let { product_id, product_name, product_color, product_size, product_price, product_sku } = req.body;
 
     let user_id = randomUUID();
     console.log(req.body)
@@ -423,14 +410,14 @@ app.post('/add-to-cart', async (req, res) => {
 
     if (req.session.cart) {
 
-        let product = { product_id: product_id, sku: sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
+        let product = { product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
         let cart = req.session.cart;
         cart.push(product)
         req.flash('success', 'Successfully added to cart')
         res.redirect(`/product/${product_id}`)
 
     } else {
-        let product = { product_id: product_id, sku: sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price, user_id: user_id };
+        let product = { product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price, user_id: user_id };
         req.session.cart = [product]
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')

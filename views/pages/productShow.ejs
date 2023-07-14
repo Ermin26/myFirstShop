@@ -68,6 +68,7 @@
 
 
                                 <input type="hidden" id="p_id" name="product_id" value="<%= info.id %>">
+                                <input type="hidden" id="p_sku" name="product_sku" value="">
                                 <input type="hidden" id="p_name" name="product_name" value="<%= info.name %>">
                                 <input type="hidden" id="p_color" name="product_color" value="">
                                 <input type="hidden" id="p_size" name="product_size" value="">
@@ -128,22 +129,24 @@ function handleColorSelection(color) {
           const selectedProduct = products.find((product) => product.color === color);
       
           if (selectedProduct) {
-            const event = new CustomEvent('sizesUpdated', { detail: selectedProduct.sizes });
+            const event = new CustomEvent('sizesUpdated', { detail: selectedProduct.size });
             window.dispatchEvent(event);
           }
         }
         window.addEventListener('sizesUpdated', function (event) {
-          const sizes = event.detail;
+          const size = event.detail;
           const sizeDivs = [];
           sizeSection.innerHTML = ''; // Clear previous sizes
       
-          sizes.forEach((size) => {
+          size.forEach((sizes) => {
             const sizeDiv = document.createElement('div');
             sizeDiv.classList.add('size');
-            sizeDiv.textContent = size;
+            sizeDiv.textContent = sizes.size;
+            sizeDiv.setAttribute('product-sku', sizes.sku);
       
             sizeDiv.addEventListener('click', function () {
               const selectedSize = this.textContent;
+              const selectedSku = this.getAttribute('product-sku');
               sizeDivs.forEach((div) =>{
                 if(div !== this){
                   div.classList.remove('selected');
@@ -153,7 +156,10 @@ function handleColorSelection(color) {
               this.classList.toggle('selected');
               
             document.getElementById('p_size').value = selectedSize;
-              //addToCart(selectedColor, selectedSize);
+            document.getElementById('p_sku').value = selectedSku;
+            console.log(selectedSize);  
+            console.log(selectedSku);  
+            //addToCart(selectedColor, selectedSize);
             });
             sizeDivs.push(sizeDiv)
             sizeSection.appendChild(sizeDiv);
