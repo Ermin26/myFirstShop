@@ -12,21 +12,10 @@
 <body>
     <%- include('../partials/nav.ejs') %>
 
-    <div class="container">
+    <div class="container text-center justify-content-center" style="margin-bottom: 15vh;">
         <%- include('../../flash') %>
-            <div class="info">
-                <div class="row row-cols-2 mt-5 g-0">
-                    <div class="col-7 ms-auto me-auto">
-                        <div class="info mt-3 mb-4">
-                        </div>
-                        <div class="method m-0 p-0 text-center">
-                            <h3 class="d-inline-flex align-middle p-1">Choose payment method</h3>
-
-                        </div>
-                        <div id="paypal-button-container" class="d-flex m-2 p-2 mt-5"></div>
-
-                    </div>
-
+            <div class="info text-center">
+                <div class="row row-cols-2 mt-5 g-2 ms-auto me-auto">
                     <div class="col-5">
                         <div class="card">
                             <div class="d-flex justify-content-between p-2">
@@ -78,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+               <div class="col-5 ms-auto me-auto">
                 <form id="payment-form" action="/placeOrder" method="POST">
                     <div class="row ">
                         <div class="col d-flex flex-column text-center">
@@ -131,6 +120,8 @@
                         </div>
                     </div>
                 </form>
+            </div>
+            </div>
             </div>
         </div>
 
