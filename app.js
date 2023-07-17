@@ -28,9 +28,10 @@ const { randomUUID } = require('crypto');
 const { parse } = require('path');
 const upload = multer({ storage })
 const stripe = require('stripe')(process.env.STRIPE_SK);
+const nodemailer = require('nodemailer');
 
 //const upload = multer({ dest: 'uploads/' })
-
+const yoo = process.env.YOO;
 
 const client = new Client({
     user: process.env.DB_USERN,
@@ -359,7 +360,6 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
-    //console.log(cart)
     if (cart) {
         if (!cart.length) {
             await conn.query(`SELECT * FROM inventory`, async (err, result) => {
@@ -370,7 +370,7 @@ app.get("/cart", async (req, res) => {
             for (let i = 0; i < cart.length; i++) {
                 await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
                     if (!e) {
-                        console.log(results.rows)
+                        //console.log(results.rows)
                         //console.log('------------------')
                         //sizes.push(results.rows[i].sku_num,results.rows[i].img_link);
                         let ordered = results.rows;
@@ -404,7 +404,6 @@ app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, product_sku } = req.body;
 
     let user_id = randomUUID();
-    console.log(req.body)
     //console.log(req.session.cart.length);
     //console.log( product_id, product_name, product_color, size, product_price, sku_num)
 
@@ -507,7 +506,7 @@ const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
-    const { name, lastName, email, country, city, street, zip, phone } = req.body;
+    let { name,email, country, city,street, zip, phone } = req.body;
     const stripeProducts = stripe.products;
     try {
 
@@ -534,7 +533,6 @@ app.post('/placeOrder', async (req, res) => {
             payment_method_types: ['card'],
             metadata: {
                 name,
-                lastName,
                 email,
                 country,
                 city,
@@ -545,20 +543,46 @@ app.post('/placeOrder', async (req, res) => {
         });
 
         let orderDate = todayDate.toLocaleString();
-    let product_ids = "";
-    let product_qtys = "";
-    let cart = req.session.cart;
-    let user_id = cart[0].user_id;
+        let product_ids = "";
+        let product_qtys = "";
+        let cart = req.session.cart;
+        let user_id = cart[0].user_id;
     for (let i = 0; i < cart.length; i++) {
         product_ids = cart[i].sku + ',' + product_ids
         product_qtys = cart[i].qty + ',' + product_qtys;
     }
 
         try {
-        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${name}', '${lastName}', '${email}', '${country}', '${city}', '${zip}', '${street}', '${phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
-        req.flash('success', "Successfully placed order");
-        req.session.cart = "";
-        res.json({ clientSecret: paymentIntent.client_secret })
+            await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${req.body.billing_details.name}', '${req.body.billing_details.email}', '${req.body.billing_details.address.country}', '${req.body.billing_details.address.city}', '${req.body.billing_details.address.postal_code}', '${req.body.billing_details.address.line1}', '${req.body.billing_details.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
+            req.flash('success', "Successfully placed order");
+            req.session.cart = "";
+            
+            let transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: "jolda.ermin@gmail.com",
+                    pass: `${yoo}`,
+                },
+                tls: {
+                    rejectUnauthorized: false,
+                }
+            });
+            
+            let mailOptions = {
+                from: "jolda.ermin@gmail.com",
+                to: "ermin.alma1011@gmail.com",
+                subject: "NAROČILO",
+                text: `Korisnik ${req.body.billing_details.name} je z dnem ${orderDate} oddal naročilo!`,
+            };
+            
+            transporter.sendMail(mailOptions, function (err, success) {
+                if (err) {
+                    console.log(err.message);
+                } else {
+                    console.log("Email sended");
+                }
+            })
+            res.json({ clientSecret: paymentIntent.client_secret })
         } catch (e) {
         
         console.log("error", e.message, "Error with insert into orders")

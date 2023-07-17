@@ -6,19 +6,23 @@ NEXT ----
     ☐  Make fuction to work on stock after user make order
     ☐  Work on sending mail after customer pay.
     ☐  Send order on mail (Company/User) 
+    ☐  Work with new tables...
+    ☐  Edit backend to use that tables,
+    
     
     ☐ DOING ------- @started(23-03-28 14:55)
-    ☐ Add sku to the product show page
     ✘ Fix countrys (SI,UK,IT,RO) and fix postal codes @cancelled(23-06-10 22:00)
     ✘ Fix redirect to some page after user payed and make page for get info about order @cancelled(23-06-11 20:04)
-    ✘ Working on select color/size on product show page. NUJNO! @started(23-03-31 13:53) @cancelled(23-05-11 22:40) @wasted(5w6d8h47m15s)
-    ✘ Nadaljuj pri tem, da lahko izberes velikost! @started(23-05-11 22:40) @cancelled(23-05-11 22:40) @wasted(12s)
-    ☐ Work with new tables...
-    ☐  Edit backend to use that tables, 
+     
     
     
     
-✔ DONE ----- @done(23-03-28 14:54)ž
+ ✔ DONE ----- @done(23-03-28 14:54)
+
+    ✔ Adding orders to the table and send email after user purchase order. @done(23-07-17 14:42)
+    ✔ Nadaljuj pri tem, da lahko izberes velikost! @started(23-05-11 22:40) @done(23-07-14 12:41) @lasted(9w14h1m30s)
+    ✔ Working on select color/size on product show page. NUJNO! @started(23-03-31 13:53) @done(23-07-14 12:41) @lasted(14w6d22h48m24s)
+    ✔ Add sku to the product show page @done(23-07-14 12:41)
     ✔ Working on stripe urgent!!!!!! error for doctype @done(23-06-10 22:00)
     ✔ Added searc field on page @done(23-04-05 14:11)
     ✔  Add function for adding row for every category; @done(23-04-05 14:08)
