@@ -572,7 +572,33 @@ app.post('/placeOrder', async (req, res) => {
                 from: "jolda.ermin@gmail.com",
                 to: "ermin.alma1011@gmail.com",
                 subject: "NAROČILO",
-                text: `Korisnik ${req.body.billing_details.name} je z dnem ${orderDate} oddal naročilo!`,
+                html: `
+                <html>
+                  <head>
+                    <style>
+                      body {
+                        font-family: Arial, sans-serif;
+                        background-color: white;
+                      }
+                      p {
+                        color: cyan;
+                      }
+                      .container{
+                        margin: 2px;
+                        padding: 4px;
+                        border: 2px solid black;
+                      }
+                      /* Add more styles as needed */
+                    </style>
+                  </head>
+                  <body>
+                    <div class="container">
+                        <p>Korisnik <stron>${req.body.billing_details.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
+                        <!-- Add the rest of your HTML content here -->
+                    </div>
+                    </body>
+                </html>
+              `,
             };
             
             transporter.sendMail(mailOptions, function (err, success) {
