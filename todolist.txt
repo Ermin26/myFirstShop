@@ -13,12 +13,12 @@ NEXT ----
     ☐ DOING ------- @started(23-03-28 14:55)
     ✘ Fix countrys (SI,UK,IT,RO) and fix postal codes @cancelled(23-06-10 22:00)
     ✘ Fix redirect to some page after user payed and make page for get info about order @cancelled(23-06-11 20:04)
-     
+     ✘ ☐ Fix the with of div filed when is only one size available @cancelled(23-07-19 14:51)
     
     
     
  ✔ DONE ----- @done(23-03-28 14:54)
-
+    ✔ Show only sizes which qty is greater than 1 @done(23-07-19 14:50)
     ✔ Adding orders to the table and send email after user purchase order. @done(23-07-17 14:42)
     ✔ Nadaljuj pri tem, da lahko izberes velikost! @started(23-05-11 22:40) @done(23-07-14 12:41) @lasted(9w14h1m30s)
     ✔ Working on select color/size on product show page. NUJNO! @started(23-03-31 13:53) @done(23-07-14 12:41) @lasted(14w6d22h48m24s)

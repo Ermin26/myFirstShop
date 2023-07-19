@@ -4,7 +4,7 @@
     <div class="row row-cols-2 d-flex  flex-md-row ms-auto me-auto mt-5">
 
         <% for(let info of shirts) {%>
-            <div class="col-12 col-lg-5 bg-info flex-row p-0 m-0">
+            <div class="col-12 col-lg-5 flex-row p-0 m-0">
                 <div id="carouselExampleControls" class="carousel slide bg-warning m-0" style="height: 400px; width:400px; min-height: 400px; max-width:400px;">
                     <div id="carousel" class="carousel-inner text-center">
                         <% info.links.forEach((img, i)=>{%>
@@ -85,27 +85,34 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
     <script>
       
         document.addEventListener('DOMContentLoaded', function () {
         const colorSection = document.getElementById('colorSection');
         const sizeSection = document.getElementById('sizeSection');
         const products = JSON.parse('<%- productsJSON %>');
-        function handleColors(colors) {
-          colors.forEach((color) => {
-            const colorDiv = document.createElement('div');
-            colorDiv.classList.add('color');
-            colorDiv.setAttribute('data-color', color.color);
-            colorDiv.textContent = color.color;
 
-            colorDiv.addEventListener('click', function () {
-            const selectedColor = this.getAttribute('data-color');
-            handleColorSelection(selectedColor);
-            });
-            
-            colorSection.appendChild(colorDiv);
-          });
+        function handleColors(colors) {
+           colors.forEach((color) => {
+      const colorDiv = document.createElement('div');
+      colorDiv.classList.add('color');
+      colorDiv.setAttribute('data-color', color.color);
+      colorDiv.textContent = color.color;
+      
+      colorDiv.addEventListener('click', function () {
+        const selectedColor = this.getAttribute('data-color');
+        handleColorSelection(selectedColor);
+      });
+      
+      colorSection.appendChild(colorDiv);
+    });
+
+    if (colors.length === 1) {
+      // Automatically select the first color if there's only one color available
+      const firstColorDiv = colorSection.querySelector('.color');
+      const firstColor = firstColorDiv.getAttribute('data-color');
+      handleColorSelection(firstColor);
+    }
         }
 
         let selectedColorDiv = null; // Variable to keep track of the selected color div
@@ -135,6 +142,24 @@ function handleColorSelection(color) {
         }
         window.addEventListener('sizesUpdated', function (event) {
           const size = event.detail;
+          console.log("size: ", size[0].size)
+          if (size.length < 2) {
+            const sizeDivs = [];
+          sizeSection.innerHTML = '';
+          const sizeDiv = document.createElement('div');
+            sizeDiv.classList.add('size');
+            sizeDiv.textContent = size[0].size;
+            sizeDiv.setAttribute('product-sku', size[0].sku);
+            sizeDivs.push(sizeDiv)
+            sizeSection.appendChild(sizeDiv);
+        // Automatically select the first size if there's only one size available
+        const firstSizeDiv = sizeSection.querySelector('.size');
+        firstSizeDiv.classList.add('selected');
+        const firstSize = firstSizeDiv.textContent;
+        const firstSku = firstSizeDiv.getAttribute('product-sku');
+        document.getElementById('p_size').value = firstSize;
+        document.getElementById('p_sku').value = firstSku;
+      }else{
           const sizeDivs = [];
           sizeSection.innerHTML = ''; // Clear previous sizes
       
@@ -147,6 +172,7 @@ function handleColorSelection(color) {
             sizeDiv.addEventListener('click', function () {
               const selectedSize = this.textContent;
               const selectedSku = this.getAttribute('product-sku');
+              
               sizeDivs.forEach((div) =>{
                 if(div !== this){
                   div.classList.remove('selected');
@@ -164,6 +190,8 @@ function handleColorSelection(color) {
             sizeDivs.push(sizeDiv)
             sizeSection.appendChild(sizeDiv);
           });
+        }
+          
         });
       
         handleColors(JSON.parse('<%- productsJSON %>'));

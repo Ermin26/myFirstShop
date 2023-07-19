@@ -584,6 +584,8 @@ app.post('/placeOrder', async (req, res) => {
                         color: cyan;
                       }
                       .container{
+                        height: 20vh;
+                        width: 15vh
                         margin: 2px;
                         padding: 4px;
                         border: 2px solid black;
@@ -748,11 +750,16 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }
     })
 
+    await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
     /*
     res.redirect('/add')
     */
 
 })
+async function DeleteZeroQty() {
+    await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
+}
+DeleteZeroQty();
 
 
 // ARTICL PAGES
