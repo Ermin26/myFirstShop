@@ -22,7 +22,9 @@ body {
     padding: 5px;
   }
   .selected{
-    background-color: #00fff2;
+    background-color: #e0e0e0;
+    box-sizing: border-box;
+    border-radius: 50%;
   }
   .size{
     border: 1px solid black;
@@ -34,15 +36,16 @@ body {
   align-content: center;
 
 }
+
 #sizeSection {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    grid-template-columns: 70px 70px 70px 70px 70px;
     gap: 10px;
 }
 
 .size:hover,
 .barva li:hover {
-    background-color: rgb(139, 219, 92);
+    background-color: rgb(190, 194, 187);
 }
 
 .size:focus {

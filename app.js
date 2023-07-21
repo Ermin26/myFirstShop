@@ -215,12 +215,15 @@ app.get('/product/:id', async (req, res) => {
                 for (let i = 0; i < colors.length; i++) {
                     const colorName = colors[i].color;
                     if (shirts[0].category === 'Kids' || shirts[0].subcategory === 'Shoes') {
-                        
+                        const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
+                        const size = sizesResult.rows.map((row) => row);
+                        //console.log("Sizes", size)
+                        products.push({ color: colorName, size });
                         // For numbers
                     }
                     else {
                         // for text
-                    }
+                    
                     const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);
                     //if (shirts[0].category === 'Kids' || shirts[0].subcategory === 'Shoes') {
                     //console.log(sizesResult.rows)    
@@ -236,6 +239,7 @@ app.get('/product/:id', async (req, res) => {
                     //    console.log(sizes);
                     //    
                     //}
+                }
                 }
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
                 
@@ -311,12 +315,9 @@ app.get("/users", async (req, res) => {
 })
 
 function isProductInCart(cart, id) {
-    console.log("Yooooo")
     if (cart) {
         for (let i = 0; i < cart.length; i++) {
-            console.log(cart[i].sku)
             if (cart[i].sku == id) {
-                console.log("erorrrrrr")
                 req.slash('error', 'Product je že v košarici')
                 res.redirect(`product/${cart[i].id}`)
             } else {
@@ -742,6 +743,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
                 sizeCount += 1;
             }
             req.flash('success', "Successfully added new product")
+            await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
             res.redirect('add')
         }
         else {
@@ -750,7 +752,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }
     })
 
-    await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
     /*
     res.redirect('/add')
     */
