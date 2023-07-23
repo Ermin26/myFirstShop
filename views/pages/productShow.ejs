@@ -1,11 +1,11 @@
 <% layout('layouts/boilerplate') %>
     <link rel="stylesheet" href="/css/show.css">
    
-    <div class="row row-cols-2 d-flex  flex-md-row ms-auto me-auto mt-5">
+    <div id="main-row" class="row row-cols-2 d-flex  flex-md-row ms-auto me-auto mt-5">
 
         <% for(let info of shirts) {%>
             <div class="col-12 col-lg-5 flex-row p-0 m-0">
-                <div id="carouselExampleControls" class="carousel slide bg-warning m-0" style="height: 400px; width:400px; min-height: 400px; max-width:400px;">
+                <div id="carouselExampleControls" class="carousel slide m-0" style="height: 400px; width:400px; min-height: 400px; max-width:400px;">
                     <div id="carousel" class="carousel-inner text-center">
                         <% info.links.forEach((img, i)=>{%>
                             <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
@@ -58,7 +58,6 @@
            
                                         </div>
                                     </div>
-                                    <!--///////////////////////////////////////-->
 
                                     <div class="row mt-5 mb-5">
                                         <div id="sizeSection">
@@ -82,6 +81,27 @@
                 </div>
             </div>
             <% } %>
+    </div>
+    <div class="more-imgs text-center">
+      <h3 class="bi-text-danger">All images</h3>
+    </div>
+    <div id="next-row" class="row m-0 p-0">
+      
+      <picture id="picture" class="m-0 p-0">
+        <% for(images of shirts) {%>
+          <% images.links.forEach((img)=>{%>
+              <img src="<%=img %>" alt="">
+            <% }) %>
+          <% } %>
+
+      </picture>
+
+    </div>
+
+    <div id="other-row" class="row">
+      <div class="info text-center">
+        <p>Here will be more random products</p>
+      </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

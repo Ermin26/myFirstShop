@@ -10,6 +10,10 @@ body {
     overflow-x: hidden;
 }
 
+#main-row{
+    margin-bottom: 20vh;
+}
+
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     filter: invert(60%);
@@ -52,21 +56,49 @@ body {
     background-color: green;
 }
 
-ul {
-    list-style: none;
-    display: grid;
-    grid-template-columns: auto auto auto;
-    padding: 10px;
+#next-row{
+    height: auto;
+    width: 100%;
+    margin-top: 50vh;
+    margin-bottom: 10vh;
+    justify-content: center;
+    border: 1px solid black;
 }
 
-li {
-    text-decoration: none;
-    cursor: pointer;
+#picture{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
 }
 
-li>input {
-    cursor: pointer;
+#picture > img{
+    height: 400px; 
+    width:400px; 
+    min-height: 400px; 
+    max-width:400px;
+    margin-right: 10px; 
+    object-fit:cover; 
+    object-position: center;
+    justify-content: center;
+    margin: 15px;
 }
+
+#other-row{
+    height: 50vh;
+    margin-top: 20vh;
+    margin-bottom: 10vh;
+    background-color: azure;
+}
+
+#footer{
+    margin-top: 15vh;
+}
+
+
 
 
 
