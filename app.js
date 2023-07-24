@@ -222,23 +222,9 @@ app.get('/product/:id', async (req, res) => {
                         // For numbers
                     }
                     else {
-                        // for text
-                    
-                    const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);
-                    //if (shirts[0].category === 'Kids' || shirts[0].subcategory === 'Shoes') {
-                    //console.log(sizesResult.rows)    
-                    const size = sizesResult.rows.map((row) => row);
-                        //console.log("Sizes", size)
+                        const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
+                        const size = sizesResult.rows.map((row) => row);
                         products.push({ color: colorName, size });
-                        
-                       // res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
-                    //}
-                   // else {
-                    //    const sizess = sizesResult.rows.map((row) => row.size);
-                    //    sizes.push(sizess)
-                    //    console.log(sizes);
-                    //    
-                    //}
                 }
                 }
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
@@ -446,15 +432,24 @@ app.post('/edit_qty', async (req, res) => {
     let plus_btn = req.body.plus;
     let minus_btn = req.body.minus;
     let cart = req.session.cart;
-    console.log(req.body);
     if (plus_btn) {
         for (let i = 0; i < cart.length; i++) {
             if (cart[i].sku == id) {
-                console.log(cart[i].sku, id)
-                if (cart[i].qty > 0) {
-                    cart[i].qty = parseInt(cart[i].qty) + 1;
-                    res.redirect('/cart');
-                }
+                await conn.query(`SELECT qty FROM varijacije WHERE sku = '${cart[i].sku}'`, (err, result) => { 
+                    if (!err) {
+                        if (cart[i].qty > 0 && cart[i].qty < result.rows[0].qty) {
+                            cart[i].qty = parseInt(cart[i].qty) + 1;
+                            res.redirect('/cart');
+                        } else {
+                            req.flash('error', `The maximum allowed qty for this product is ${result.rows[0].qty}`)
+                            res.redirect('/cart')
+                        }
+                    } else {
+                        console.log(err);
+                        res.redirect('/cart');
+                    }
+                    })
+                
             }
         }
 
@@ -610,7 +605,31 @@ app.post('/placeOrder', async (req, res) => {
                 } else {
                     console.log("Email sended");
                 }
+                
             })
+            console.log('Ids',product_ids)
+            console.log('Ids with [0]',product_ids[0])
+            // Function for change qty of ordered products
+            //! OBVEZNO JE TREBA VEJICO ODSTRANIT PREDEN KLICES QUERY DA ISCE IZDELEK!!
+
+            if (Array.isArray(product_ids)) {
+                console.log('yooooo', product_ids)
+                /*
+            for (let j = 0; j < products_ids.length; j++) {
+
+             }
+             */
+            } else {
+                await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids}'`, async (error, product) => {
+                    if (!error) {
+                        console.log(product.rows);
+                    } else {
+                        console.log(error.message);
+                        res.redirect('/order')
+                    }
+                 })
+            }
+            
             res.json({ clientSecret: paymentIntent.client_secret })
         } catch (e) {
         

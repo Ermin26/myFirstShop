@@ -69,7 +69,7 @@
                                                 <input type="submit" class="bg-light text-dark rounded border-0"
                                                     id="minus" name="minus" value="-">
                                                 <input type="text" class="w-25 text-center" id="qty" name="qty"
-                                                    value="<%= qty.qty %>" readonly>
+                                                    value="<%= qty.qty %>" readonly min="1" max="<%= products.qty %>">
                                                 <input type="submit" class="bg-light text-dark rounded border-0"
                                                     id="plus" name="plus" value="+">
                                                 <% } %>
@@ -182,6 +182,7 @@
 
 
     <script>
+        /*
         const gap = 5;
 
         const carousel = document.getElementById("carousel"),
@@ -210,5 +211,5 @@
 
         let width = carousel.offsetWidth;
         window.addEventListener("resize", e => (width = carousel.offsetWidth));
-
+*/
     </script>
