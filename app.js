@@ -159,11 +159,16 @@ let year = todayDate.getFullYear();
 
 let subtotal = [];
 
+async function deleteZeroQty() {
+    await conn.query(`DELETE FROM varijacije WHERE qty = $1`, [0]);
+}
+
+deleteZeroQty();
 
 app.get('/', async (req, res) => {
     let date = new Date();
     let day = date.getDay()
-
+    deleteZeroQty();
     await conn.query(`SELECT * FROM inventory`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -179,17 +184,17 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/searched', async (req, res) => {
+    deleteZeroQty();
     res.render('pages/searched')
 })
 
 
 app.post('/search', async (req, res) => {
     let data = req.body.searched;
-    console.log(data);
+    
     await conn.query(`SELECT * FROM inventory WHERE category ~* '${data}' OR name ~* '${data}' OR subcategory ~*'${data}' OR info ~* '${data}' OR description ~* '${data}'`, async (err, shirts) => {
         if (!err) {
             let products = shirts.rows;
-            console.log(products);
             res.render('pages/searched', { products })
         } else {
             req.flash('error', 'Nothing to show')
@@ -197,7 +202,7 @@ app.post('/search', async (req, res) => {
         }
     })
 })
-// Function to sort sizes
+
 
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
@@ -347,6 +352,7 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
+    deleteZeroQty();
     if (cart) {
         if (!cart.length) {
             await conn.query(`SELECT * FROM inventory`, async (err, result) => {
@@ -391,9 +397,6 @@ app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, product_sku } = req.body;
 
     let user_id = randomUUID();
-    //console.log(req.session.cart.length);
-    //console.log( product_id, product_name, product_color, size, product_price, sku_num)
-
     if (req.session.cart) {
 
         let product = { product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
@@ -445,7 +448,7 @@ app.post('/edit_qty', async (req, res) => {
                             res.redirect('/cart')
                         }
                     } else {
-                        console.log(err);
+                        req.flash('error',err.message);
                         res.redirect('/cart');
                     }
                     })
@@ -469,9 +472,7 @@ app.post('/edit_qty', async (req, res) => {
     }
 
     calculateTotal(cart, req)
-    console.log("------cart--------------")
-    console.log(cart)
-    console.log("------EndCart--------------")
+    
 })
 
 app.get('/order', async (req, res) => {
@@ -480,6 +481,7 @@ app.get('/order', async (req, res) => {
     let items = [];
     let cartItems = []
     let count = 0
+    deleteZeroQty();
     for (let i = 0; i < cart.length; i++) {
         await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
@@ -539,13 +541,15 @@ app.post('/placeOrder', async (req, res) => {
         });
 
         let orderDate = todayDate.toLocaleString();
-        let product_ids = "";
-        let product_qtys = "";
+        let product_ids = [];
+        let product_qtys = [];
+        //let product_qtys = "";
         let cart = req.session.cart;
         let user_id = cart[0].user_id;
     for (let i = 0; i < cart.length; i++) {
-        product_ids = cart[i].sku + ',' + product_ids
-        product_qtys = cart[i].qty + ',' + product_qtys;
+        product_ids.push(cart[i].sku)
+        product_qtys.push(cart[i].qty)
+        //product_qtys = cart[i].qty + ',' + product_qtys;
     }
 
         try {
@@ -607,97 +611,38 @@ app.post('/placeOrder', async (req, res) => {
                 }
                 
             })
-            console.log('Ids',product_ids)
-            console.log('Ids with [0]',product_ids[0])
-            // Function for change qty of ordered products
-            //! OBVEZNO JE TREBA VEJICO ODSTRANIT PREDEN KLICES QUERY DA ISCE IZDELEK!!
+            
+            // Update qty after user has confirmed payment
 
-            if (Array.isArray(product_ids)) {
-                console.log('yooooo', product_ids)
-                /*
-            for (let j = 0; j < products_ids.length; j++) {
-
-             }
-             */
-            } else {
-                await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids}'`, async (error, product) => {
-                    if (!error) {
-                        console.log(product.rows);
-                    } else {
-                        console.log(error.message);
-                        res.redirect('/order')
+            for (let j = 0; j < product_ids.length; j++) {
+                await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
+                    if (!e) {
+                        const qty = result.rows[0].qty - parseInt(product_qtys[j]);
+                        await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
+                        console.log( "Successfully updated")
+                    }
+                    else {
+                        req.flash('error', e.message);
+                        res.redirect('/order');
                     }
                  })
-            }
+             }
             
             res.json({ clientSecret: paymentIntent.client_secret })
         } catch (e) {
         
-        console.log("error", e.message, "Error with insert into orders")
+        req.flash("error", e.message, "Error with insert data into orders. Please try again.")
         res.redirect('/order')
     }
-        
-
-        //res.redirect('/')
     } catch (error) {
         req.flash('error', error.message)
-        console.log('error', error.message,"stripe error")
         res.redirect('/order')
 
     }
-    //! stripe end
-    /*
-    let { name, lastName, email, country, city, zip, street, phone } = req.body
-    let costs = req.session.total.toFixed(2)
-    let orderDate = todayDate.toLocaleString();
-    let product_ids = "";
-    let product_qtys = "";
-    let cart = req.session.cart;
-    let user_id = cart[0].user_id;
-    for (let i = 0; i < cart.length; i++) {
-        product_ids = cart[i].sku + ',' + product_ids
-        product_qtys = cart[i].qty + ',' + product_qtys;
-    }
-
-    try {
-        await conn.query(`INSERT INTO orders(name, lastname, email, country, city, zip, street, phone, status,date, costs, products_ids, product_qtys, user_id) VALUES('${req.body.name}', '${req.body.lastName}', '${req.body.email}', '${req.body.country}', '${req.body.city}', '${req.body.zip}', '${req.body.street}', '${req.body.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
-        req.flash('success', "Your order sucessfully placed. Choose payment method")
-        res.redirect('/payment')
-    } catch (e) {
-        console.log("error", e)
-        res.redirect('/checkout')
-    }
-*/
-})
-
-/*
-app.get('/payment', async (req, res) => {
-    let total = req.session.total.toFixed(2)
-    let cart = req.session.cart;
-    let items = [];
-    let cartItems = []
-    let count = 0
-
-    for (let i = 0; i < cart.length; i++) {
-        await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}'`, async (err, product) => {
-            if (!err) {
-                count += 1;
-                items.push(product.rows);
-                if (cart.length === count) {
-                    await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
-                        let userData = user.rows[0]
-                        console.log(userData)
-                        res.render('orders/pay', { total, cart, userData, s_pk });
-                    })
-                }
-            } else {
-                req.flash('error', `Error ${err.message}`);
-            }
-        })
-    }
 
 })
-*/
+
+
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
 })
