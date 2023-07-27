@@ -19,6 +19,7 @@ NEXT ----
     
     
 ✔ DONE ----- @done(23-03-28 14:54)
+    ✔ added function for show btn "Add to cart" after user choose color and size @done(23-07-27 14:50)
     ✔  Make fuction to work on stock after user make order @done(23-07-25 14:24)
     ✔ Fix the with of div filed when is only one size available @done(23-07-23 22:11)
     ✔ Show only sizes which qty is greater than 1 @done(23-07-19 14:50)

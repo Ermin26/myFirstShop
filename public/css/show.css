@@ -36,9 +36,8 @@ body {
     height: 45px;
     text-align: center;
     display: grid;
-  place-items: center;
-  align-content: center;
-
+    place-items: center;
+    align-content: center;
 }
 
 #sizeSection {

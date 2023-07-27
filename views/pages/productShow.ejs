@@ -41,11 +41,12 @@
                     <h3>
                         <%= info.description %>
                     </h3>
+                    <h4><%= info.info %></h4>
                     <div class="priceBtn d-flex flex-row mt-5 justify-content-center align-items-center">
                         <h2 id="p_price" class="d-inline-flex">
                             <%= info.neto_price %> €
                         </h2>
-                        <p class="d-flex m-0"> + Brezplačna poštnina</p>
+                        <p class="d-flex m-0"><strong> + Brezplačna poštnina</strong></p>
                     </div>
 
                     <div class="velikost mt-5">
@@ -106,7 +107,9 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
-      
+
+        let btnInfo = document.getElementById('btn');
+        btnInfo.setAttribute('disabled', 'true');
         document.addEventListener('DOMContentLoaded', function () {
         const colorSection = document.getElementById('colorSection');
         const sizeSection = document.getElementById('sizeSection');
@@ -162,7 +165,6 @@ function handleColorSelection(color) {
         }
         window.addEventListener('sizesUpdated', function (event) {
           const size = event.detail;
-          console.log("size: ", size[0].size)
           if (size.length < 2) {
             const sizeDivs = [];
           sizeSection.innerHTML = '';
@@ -203,8 +205,16 @@ function handleColorSelection(color) {
               
             document.getElementById('p_size').value = selectedSize;
             document.getElementById('p_sku').value = selectedSku;
-            console.log(selectedSize);  
-            console.log(selectedSku);  
+           // console.log(selectedSize);  
+           // console.log(selectedSku);  
+            if(selectedSize && selectedSku){
+              btnInfo.removeAttribute('disabled');
+              console.log('working');
+            }else{
+              btnInfo.setAttribute('disabled', 'true');
+              console.log('else working');
+
+            }
             //addToCart(selectedColor, selectedSize);
             });
             sizeDivs.push(sizeDiv)
@@ -225,6 +235,8 @@ function handleColorSelection(color) {
           });
         });
       });
+
+      
 
 
     </script>

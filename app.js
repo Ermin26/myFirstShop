@@ -666,7 +666,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let firstCheck = Object.keys(req.files).length;
     let secondCheck = req.files[`image${imgNum}`].length;
     let imgTest = Object.keys(req.files);
-    console.log("///////////////////////");
     //console.log(imgTest);
     //console.log("///////////////////////");
     //console.log(imgTest.length);
@@ -708,17 +707,14 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             }
             req.flash('success', "Successfully added new product")
             await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
-            res.redirect('add')
+            
         }
         else {
             req.flash('error', `Something went wrong. ${err.message}`);
             res.redirect('add');
         }
     })
-
-    /*
     res.redirect('/add')
-    */
 
 })
 async function DeleteZeroQty() {
