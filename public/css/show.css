@@ -13,6 +13,12 @@ body {
 #main-row{
     margin-bottom: 20vh;
 }
+#col1{
+    width: 35%;
+}
+#col2{
+    width: 65%;
+}
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
@@ -61,26 +67,27 @@ body {
     margin-top: 50vh;
     margin-bottom: 10vh;
     justify-content: center;
-    border: 1px solid black;
 }
 
 #picture{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    flex-shrink: 1;
+    /*min-height: 400px; */
+    max-width:100%;
     justify-content: center;
     align-items: center;
     margin: 5px;
 }
 
 #picture > img{
-    height: 400px; 
-    width:400px; 
-    min-height: 400px; 
+    /*height: 400px; 
+    width:400px;*/ 
+    /*min-height: 400px; */
     max-width:400px;
     margin-right: 10px; 
     object-fit:cover; 
+    border: 1px solid black;
     object-position: center;
     justify-content: center;
     margin: 15px;
@@ -97,11 +104,78 @@ body {
     margin-top: 15vh;
 }
 
-
-
-
-
 #selectField {
     display: flex;
     list-style: none;
+}
+
+@media screen and (max-width: 1000px) {
+    .container{
+        max-width: 100%;
+    }
+   
+    #picture{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /*min-height: 400px; */
+        max-width:100%;
+        justify-content: center;
+        align-items: center;
+        margin: 5px;
+    }
+    
+    #picture > img{
+        /*height: 400px; 
+        width:400px;*/ 
+        /*min-height: 400px; */
+        max-width:100%;
+        width:400px;
+        margin-right: 10px; 
+        object-fit:cover; 
+        border: 1px solid black;
+        object-position: center;
+        justify-content: center;
+        margin: 15px;
+    }
+}
+@media screen and (max-width: 650px) {
+    .container{
+        max-width: 100%;
+    }
+    #main-row{
+        margin-bottom: 20vh;
+        display: flex;
+        flex-direction: column;
+    }
+    #col1{
+        width: 100%;
+    }
+    #col2{
+        width: 100%;
+    }
+    #picture{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /*min-height: 400px; */
+        max-width:100%;
+        justify-content: center;
+        align-items: center;
+        margin: 5px;
+    }
+    
+    #picture > img{
+        /*height: 400px; 
+        width:400px;*/ 
+        /*min-height: 400px; */
+        max-width:100%;
+        width:400px;
+        margin-right: 10px; 
+        object-fit:cover; 
+        border: 1px solid black;
+        object-position: center;
+        justify-content: center;
+        margin: 15px;
+    }
 }
