@@ -33,6 +33,14 @@ a{
     color: black;
 }
 
+#searched{
+    width: 25%;
+}
+#carouselHome{
+    width: 100%;
+    height: 35vh;
+    background-color: cyan;
+}
 
 
 @media(max-width: 3000px){
@@ -47,6 +55,9 @@ a{
     #imgSize{
         width: 200px;
         height: 200px;
+    }
+    #searched{
+        width: 50%;
     }
 }
 
@@ -63,5 +74,8 @@ a{
     #imgSize{
         width: 300px;
         height: 300px;
+    }
+    #searched{
+        width: 100%;
     }
 }

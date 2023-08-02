@@ -4,7 +4,6 @@ NEXT ----
     ☐  Must add checkbox for pyment after product received?
     ☐  Make table for addOns
     ☐  Make fuction to work on stock after user return product
-    ☐  Work on sending mail after customer pay.
     ☐  Work with new tables...
     ☐  Edit backend to use that tables,
     ☐  Add slide show on productShow page (Random)
@@ -19,6 +18,7 @@ NEXT ----
     
     
 ✔ DONE ----- @done(23-03-28 14:54)
+    ✔  Work on sending mail after customer pay. @done(23-08-02 13:22)
     ✔ added function for show btn "Add to cart" after user choose color and size @done(23-07-27 14:50)
     ✔  Make fuction to work on stock after user make order @done(23-07-25 14:24)
     ✔ Fix the with of div filed when is only one size available @done(23-07-23 22:11)

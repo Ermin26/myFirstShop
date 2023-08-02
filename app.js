@@ -658,18 +658,10 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let imgNum = 1;
     let sizeCount = 1;
     let productQty = 0;
-    /*
-    for (let q = 0; q < product.p_qty.length; q++) { 
-        productQty = parseInt(productQty) + parseInt(product.p_qty[q]);
-    }
-*/
+
     let firstCheck = Object.keys(req.files).length;
     let secondCheck = req.files[`image${imgNum}`].length;
     let imgTest = Object.keys(req.files);
-    //console.log(imgTest);
-    //console.log("///////////////////////");
-    //console.log(imgTest.length);
-    //console.log("///////////////////////");
 
     for (let i = 0; i < firstCheck; i++) {
         images = [];

@@ -16,9 +16,21 @@ body {
 #col1{
     width: 35%;
 }
+
+.img-fluid{
+    max-width: 100%;
+    max-height: auto;
+    position: relative;
+    vertical-align: middle;
+    height: 400px;
+    width: 400px;
+    object-fit:cover;
+}
+
 #col2{
     width: 65%;
 }
+
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
@@ -62,10 +74,14 @@ body {
 }
 
 #next-row{
+    position: absolute;
+    box-sizing: border-box;
+    background-color: rgb(55, 55, 207);
     height: auto;
     width: 100%;
     margin-top: 50vh;
     margin-bottom: 10vh;
+    left: 0;
     justify-content: center;
 }
 
@@ -73,6 +89,7 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    flex-shrink: 1;
     /*min-height: 400px; */
     max-width:100%;
     justify-content: center;
@@ -81,10 +98,10 @@ body {
 }
 
 #picture > img{
-    /*height: 400px; 
-    width:400px;*/ 
-    /*min-height: 400px; */
-    max-width:400px;
+    height: 250px; 
+    width:250px;
+    max-width:100%;
+    max-height:100%;
     margin-right: 10px; 
     object-fit:cover; 
     border: 1px solid black;
@@ -129,8 +146,10 @@ body {
         /*height: 400px; 
         width:400px;*/ 
         /*min-height: 400px; */
+        width:200px;
+        height:200px;
         max-width:100%;
-        width:400px;
+        max-height:100%;
         margin-right: 10px; 
         object-fit:cover; 
         border: 1px solid black;
@@ -169,8 +188,10 @@ body {
         /*height: 400px; 
         width:400px;*/ 
         /*min-height: 400px; */
+        width:200px;
+        height:200px;
         max-width:100%;
-        width:400px;
+        max-height:100%;
         margin-right: 10px; 
         object-fit:cover; 
         border: 1px solid black;
