@@ -99,6 +99,7 @@
             const { clientSecret } = await response.json();
 
             // Confirm the payment with the client secret and card details
+            //const result = await stripe.confirmCardPayment(clientSecret, {
             const result = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: {
                     card: cardElement,

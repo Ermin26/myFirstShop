@@ -483,14 +483,14 @@ app.get('/order', async (req, res) => {
     let count = 0
     deleteZeroQty();
     for (let i = 0; i < cart.length; i++) {
-        await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}'`, async (err, product) => {
+        await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
                 count += 1;
                 items.push(product.rows);
                 if (cart.length === count) {
                     await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                         let userData = user.rows[0]
-                        res.render('orders/order', { total, cart, userData, s_pk, s_sk });
+                        res.render('orders/order', { total, cart,items, userData, s_pk, s_sk });
                     })
                 }
             } else {
@@ -528,7 +528,7 @@ app.post('/placeOrder', async (req, res) => {
             amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
             description: 'Nakup',
-            payment_method_types: ['card'],
+            payment_method_types: ['card', 'paypal'],
             metadata: {
                 name,
                 email,

@@ -35,8 +35,15 @@
                                     <tbody>
                                         <% for(product of cart) {%>
                                             <tr>
-                                                <td>
-                                                    <%= product.name%> - <%= product.color%>-#<%= product.size %>
+                                                <td class="text-left d-flex align-items-center">
+                                                    <% for(let allData of items) {%>
+                                                        <% for(let images of allData) {%>
+                                                            <% if(product.sku === images.sku) {%>
+                                                    <img src="<%= images.img_link[0] %>" class="img-fluid" alt="" style="width: 60px; height: 60px; border-radius: 50%; object-fit:cover; object-position: center;">
+                                                    <% } %>
+                                                    <% } %>
+                                                    <% } %>
+                                                  <p class="d-flex align-items-center m-0 ms-2"><%= product.name%> - <%= product.color%>-#<%= product.size %></p>
                                                 </td>
                                                 <td>
                                                     <%= product.qty %>
@@ -55,15 +62,27 @@
                                     <ul>
                                         <li>Subtotal:</li>
                                         <li>Dostava</li>
+                                        <li>Popust</li>
                                         <li><strong>Za plačilo</strong></li>
                                     </ul>
                                 </div>
                                 <div class="col-4 d-flex flex-column text-end">
+                                    <strong><%= total %> €</strong>
                                     <strong>0.00 €</strong>
+                                    <% if(total > 50) {%>
+                                        <strong>10%</strong>
+                                    <% }else{ %>
                                     <strong>0.00 €</strong>
+                                    <% } %>
+                                    <% if(total > 50) {%>
+                                    <strong>
+                                        <%=  total - (total * 0.10).toFixed(2) %> €
+                                    </strong>
+                                    <% }else{%>
                                     <strong>
                                         <%= total %> €
                                     </strong>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
