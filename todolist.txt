@@ -15,7 +15,11 @@ NEXT ----
     ✘ Fix countrys (SI,UK,IT,RO) and fix postal codes @cancelled(23-06-10 22:00)
     ✘ Fix redirect to some page after user payed and make page for get info about order @cancelled(23-06-11 20:04)
     
-    
+☐ IMPORTANT!!!
+
+    ✘ Set stripe manualy add card svg  on the left side on the right input fields @cancelled(23-08-04 14:38)
+        for entering data for card
+    ✘ Make options for user to choose how will pay (default is with card) @cancelled(23-08-04 14:38)
     
 ✔ DONE ----- @done(23-03-28 14:54)
     ✔  Work on sending mail after customer pay. @done(23-08-02 13:22)
