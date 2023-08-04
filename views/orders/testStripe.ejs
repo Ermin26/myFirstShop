@@ -1,0 +1,102 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="row justify-content-center text-center">
+<form id="payment-form" action="/placeOrder" method="POST">
+    
+    <div class="row">
+        
+        <div class="col m-1 d-inline-flex btn btn-outline-primary border border-1 border-dark" onclick="payWithCard()"><p class="d-inline-flex text-center mt-auto mb-auto ms-auto me-auto">Card</p></div>
+        <div id="payPal" class="col m-1 d-inline-flex btn btn-outline-warning text-primary border border-1 border-dark" onclick="payWithPayPal()"><p class="d-inline-flex text-center  mt-auto mb-auto ms-auto me-auto">PayPal</p>
+        
+        </div>
+        <div id="googlePay" class="col m-1 d-inline-flex btn btn-outline-light text-dark border border-1 border-dark" onclick="payWithGooglePay()"><p class="d-inline-flex text-center  mt-auto mb-auto ms-auto me-auto">Google Pay</p>
+        
+        </div>
+        <div id="applePay" class="col m-1 d-inline-flex btn btn-outline-light text-dark border border-1 border-dark" onclick="payWithApplePay()"><p class="d-inline-flex text-center  mt-auto mb-auto ms-auto me-auto">Apple Pay</p>
+        
+        </div>
+
+        <!-- WITH JAVASCRIPT ADD HERE INPUT FIELDS DEPENDS ON USER CHOOSE PAY OPTIONS-->
+
+        <div id="payFields" class="payData">
+
+        </div>
+    </div>
+
+</form>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+                        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+                        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+                        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+                        crossorigin="anonymous"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+ const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z');
+                       
+                        
+ const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            document.getElementById('submit-button').disabled = true;
+
+            const formData = new FormData(form);
+            const firstName = formData.get('name');
+            const lastName = 'Doe'; // Add your logic for the last name
+            const billingDetails = {
+                name: firstName + ' ' + lastName,
+                email: formData.get('email'),
+                address: {
+                    line1: formData.get('street'),
+                    country: formData.get('country'),
+                    city: formData.get('city'),
+                    postal_code: formData.get('zip'),
+                },
+                phone: formData.get('phone'),
+            };
+
+            try {
+                const response = await fetch('/placeOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        billing_details: billingDetails,
+                    }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const { clientSecret } = data;
+
+                    const result = await stripe.confirmCardPayment(clientSecret, {
+                        payment_method: {
+                            card: cardElement,
+                            billing_details: billingDetails,
+                        },
+                    });
+
+                    if (result.error) {
+                        console.error(result.error.message);
+                    } else {
+                        window.location.href = '/';
+                        console.log('Payment succeeded!');
+                    }
+                } else {
+                    console.error('Error placing order');
+                }
+            } catch (err) {
+                console.error('Error:', err.message);
+            }
+        });
+</script>

@@ -490,7 +490,8 @@ app.get('/order', async (req, res) => {
                 if (cart.length === count) {
                     await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                         let userData = user.rows[0]
-                        res.render('orders/order', { total, cart,items, userData, s_pk, s_sk });
+                        //! only testing, change it for order
+                        res.render('orders/testStripe', { total, cart,items, userData, s_pk, s_sk });
                     })
                 }
             } else {
@@ -507,28 +508,11 @@ app.post('/placeOrder', async (req, res) => {
     let { name,email, country, city,street, zip, phone } = req.body;
     const stripeProducts = stripe.products;
     try {
-
-        /*
-                for (let product of cart) {
-                    const stripeProduct = await stripeProducts.products.create({
-                        name: product.name,
-                        description: product.sku
-                    })
-        
-        
-                    const price = await stripe.prices.create({
-                        unit_amount: product.price * 100,
-                        currency: 'eur',
-                        product: stripeProduct.id
-                    });
-                }
-                productsForStripe.push({ product: stripeProduct, price });
-        */
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
             description: 'Nakup',
-            payment_method_types: ['card', 'paypal'],
+            payment_method_types: ['card', 'paypal', 'google_pay',],
             metadata: {
                 name,
                 email,
