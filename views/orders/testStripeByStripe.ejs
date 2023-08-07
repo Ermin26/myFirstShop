@@ -5,9 +5,7 @@
     <title>Accept a payment</title>
     <meta name="description" content="A demo of a payment on Stripe" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/public/css/testByStripe.css" />
     <script src="https://js.stripe.com/v3/"></script>
-    <script src="/public/js/testStripe.js" defer></script>
   </head>
   <style>
     /* Variables */
@@ -154,149 +152,102 @@
   }
   </style>
   <body>
-    <!-- Display a payment form -->
-    <form id="payment-form">
+    <form id="payment-form" action="/create-payment-intent" method="post">
       <div id="link-authentication-element">
-        <!--Stripe.js injects the Link Authentication Element-->
+        <!-- Elements will create authentication element here -->
       </div>
       <div id="payment-element">
-        <!--Stripe.js injects the Payment Element-->
+        <!-- Elements will create form elements here -->
       </div>
-      <button id="submit">
-        <div class="spinner hidden" id="spinner"></div>
-        <span id="button-text">Pay now</span>
-      </button>
-      <div id="payment-message" class="hidden"></div>
+      <button id="submit">Pay now</button>
+      <div id="error-message">
+        <!-- Display error message to your customers here -->
+      </div>
     </form>
+
+    <div id="messages" role="alert" style="display: none;"></div>
   </body>
 
   <script>
-    // This is your test publishable API key.
-const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z');
-     
-     // The items the customer wants to buy
-     const items = [{ id: "xl-tshirt" }];
-     
-     let elements;
-     
-     initialize();
-     checkStatus();
-     
-     document
-       .querySelector("#payment-form")
-       .addEventListener("submit", handleSubmit);
-     
-     let emailAddress = '';
-     // Fetches a payment intent and captures the client secret
-     async function initialize() {
-       const response = await fetch("/placeOrder", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ items }),
-       });
-       const { clientSecret } = await response.json();
-     
-       const appearance = {
-         theme: 'stripe',
-       };
-       elements = stripe.elements({ appearance, clientSecret });
-     
-       const linkAuthenticationElement = elements.create("linkAuthentication");
-       linkAuthenticationElement.mount("#link-authentication-element");
-     
-       linkAuthenticationElement.on('change', (event) => {
-         emailAddress = event.value.email;
-       });
-     
-       const paymentElementOptions = {
-         layout: "tabs",
-       };
-     
-       const paymentElement = elements.create("payment", paymentElementOptions);
-       paymentElement.mount("#payment-element");
-     }
-     
-     async function handleSubmit(e) {
-       e.preventDefault();
-       setLoading(true);
-     
-       const { error } = await stripe.confirmPayment({
-         elements,
-         confirmParams: {
-           // Make sure to change this to your payment completion page
-           return_url: "/",
-           receipt_email: emailAddress,
-         },
-       });
-     
-       // This point will only be reached if there is an immediate error when
-       // confirming the payment. Otherwise, your customer will be redirected to
-       // your `return_url`. For some payment methods like iDEAL, your customer will
-       // be redirected to an intermediate site first to authorize the payment, then
-       // redirected to the `return_url`.
-       if (error.type === "card_error" || error.type === "validation_error") {
-         showMessage(error.message);
-       } else {
-         showMessage("An unexpected error occurred.");
-       }
-     
-       setLoading(false);
-     }
-     
-     // Fetches the payment intent status after payment submission
-     async function checkStatus() {
-       const clientSecret = new URLSearchParams(window.location.search).get(
-         "payment_intent_client_secret"
-       );
-     
-       if (!clientSecret) {
-         return;
-       }
-     
-       const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
-     
-       switch (paymentIntent.status) {
-         case "succeeded":
-           showMessage("Payment succeeded!");
-           break;
-         case "processing":
-           showMessage("Your payment is processing.");
-           break;
-         case "requires_payment_method":
-           showMessage("Your payment was not successful, please try again.");
-           break;
-         default:
-           showMessage("Something went wrong.");
-           break;
-       }
-     }
-     
-     // ------- UI helpers -------
-     
-     function showMessage(messageText) {
-       const messageContainer = document.querySelector("#payment-message");
-     
-       messageContainer.classList.remove("hidden");
-       messageContainer.textContent = messageText;
-     
-       setTimeout(function () {
-         messageContainer.classList.add("hidden");
-         messageContainer.textContent = "";
-       }, 4000);
-     }
-     
-     // Show a spinner on payment submission
-     function setLoading(isLoading) {
-       if (isLoading) {
-         // Disable the button and show a spinner
-         document.querySelector("#submit").disabled = true;
-         document.querySelector("#spinner").classList.remove("hidden");
-         document.querySelector("#button-text").classList.add("hidden");
-       } else {
-         document.querySelector("#submit").disabled = false;
-         document.querySelector("#spinner").classList.add("hidden");
-         document.querySelector("#button-text").classList.remove("hidden");
-       }
-     }
+    document.addEventListener('DOMContentLoaded', async () => {
+  // Load the publishable key from the server. The publishable key
+  // is set in your .env file.
+  const {publishableKey} = await fetch('/config').then((r) => r.json());
+  if (!publishableKey) {
+    console.log('invalid publishable key')
+  }
+
+  const stripe = Stripe(publishableKey, {
+    apiVersion: '2020-08-27',
+  });
+
+  // On page load, we create a PaymentIntent on the server so that we have its clientSecret to
+  // initialize the instance of Elements below. The PaymentIntent settings configure which payment
+  // method types to display in the PaymentElement.
+  const {
+    error: backendError,
+    clientSecret
+  } = await fetch('/create-payment-intent').then(r => r.json());
+  if (backendError) {
+    console.log(backendError);
+  }
+  console.log(`Client secret returned.`);
+
+  // Initialize Stripe Elements with the PaymentIntent's clientSecret,
+  // then mount the payment element.
+  const elements = stripe.elements({ clientSecret });
+  const paymentElement = elements.create('payment');
+  paymentElement.mount('#payment-element');
+  // Create and mount the linkAuthentication Element to enable autofilling customer payment details
+  const linkAuthenticationElement = elements.create("linkAuthentication");
+  linkAuthenticationElement.mount("#link-authentication-element");
+  // If the customer's email is known when the page is loaded, you can
+  // pass the email to the linkAuthenticationElement on mount:
+  //
+  //   linkAuthenticationElement.mount("#link-authentication-element",  {
+  //     defaultValues: {
+  //       email: 'jenny.rosen@example.com',
+  //     }
+  //   })
+  // If you need access to the email address entered:
+  //
+  //  linkAuthenticationElement.on('change', (event) => {
+  //    const email = event.value.email;
+  //    console.log({ email });
+  //  })
+
+  // When the form is submitted...
+  const form = document.getElementById('payment-form');
+  let submitted = false;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Disable double submission of the form
+    if(submitted) { return; }
+    submitted = true;
+    form.querySelector('button').disabled = true;
+
+    const nameInput = document.querySelector('#name');
+
+    // Confirm the payment given the clientSecret
+    // from the payment intent that was just created on
+    // the server.
+    const {error: stripeError} = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `/done`,
+      }
+    });
+
+    if (stripeError) {
+      console.log(stripeError.message);
+
+      // reenable the form.
+      submitted = false;
+      form.querySelector('button').disabled = false;
+      return;
+    }
+  });
+});
   </script>
 </html>
