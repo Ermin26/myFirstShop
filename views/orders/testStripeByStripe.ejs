@@ -152,12 +152,15 @@
   }
   </style>
   <body>
-    <form id="payment-form" action="/create-payment-intent" method="post">
+    <form id="payment-form" action="/testStripe" method="post">
       <div id="link-authentication-element">
         <!-- Elements will create authentication element here -->
       </div>
       <div id="payment-element">
         <!-- Elements will create form elements here -->
+      </div>
+      <div id="address-element">
+
       </div>
       <button id="submit">Pay now</button>
       <div id="error-message">
@@ -198,6 +201,8 @@
   const elements = stripe.elements({ clientSecret });
   const paymentElement = elements.create('payment');
   paymentElement.mount('#payment-element');
+  const addressElement = elements.create('address',{mode: 'shipping', allowedCountries: ['SI']});
+  addressElement.mount('#address-element');
   // Create and mount the linkAuthentication Element to enable autofilling customer payment details
   const linkAuthenticationElement = elements.create("linkAuthentication");
   linkAuthenticationElement.mount("#link-authentication-element");
@@ -240,7 +245,7 @@
     });
 
     if (stripeError) {
-      console.log(stripeError.message);
+      console.log(stripeError.message,' yoooo');
 
       // reenable the form.
       submitted = false;

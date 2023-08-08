@@ -1,217 +1,67 @@
 <% layout('layouts/boilerplate') %>
-<link rel="stylesheet" href="/css/testStripe.css">
-<script src="https://js.stripe.com/v3/"></script>
-<script src="/js/testStripe.js" defer></script>
 
-<div class="row justify-content-center text-center">
-<form id="payments-form" action="/placeOrder" method="POST">
-    
-    <div class="row">
-        
-        <div id="bankCard" class="col m-1 d-inline-flex btn btn-outline-primary border border-1 border-dark" onclick="payWithCard()"><p class="d-inline-flex text-center mt-auto mb-auto ms-auto me-auto">Card</p></div>
-        <div id="payPal" class="col m-1 d-inline-flex btn btn-outline-warning text-primary border border-1 border-dark" onclick="payWithPayPal()"><p class="d-inline-flex text-center  mt-auto mb-auto ms-auto me-auto">PayPal</p>
-        
-        </div>
-        <div id="googlePay" class="col m-1 d-inline-flex btn btn-outline-light text-dark border border-1 border-dark" onclick="payWithGooglePay()"><p class="d-inline-flex text-center  mt-auto mb-auto ms-auto me-auto">Google Pay</p>
-        
-        </div>
-        <div id="applePay" class="col m-1 d-inline-flex btn btn-outline-light text-dark border border-1 border-dark" onclick="payWithApplePay()"><p class="d-inline-flex text-center  mt-auto mb-auto ms-auto me-auto">Apple Pay</p>
-        
-        </div>
 
-        <!-- WITH JAVASCRIPT ADD HERE INPUT FIELDS DEPENDS ON USER CHOOSE PAY OPTIONS-->
+<div class="row row-cols-2">
 
-        <div id="payFields" class="payData">
+    <div class="col">
 
-        </div>
     </div>
-</form>
+    <div class="col">
 
-<div class="row">
-    <h1>Test stripe</h1>
-    <form id="payment-form">
-        <div id="link-authentication-element">
-          <!--Stripe.js injects the Link Authentication Element-->
-        </div>
-        <div id="payment-element">
-          <!--Stripe.js injects the Payment Element-->
-        </div>
-        <button id="submit">
-          <div class="spinner hidden" id="spinner"></div>
-          <span id="button-text">Pay now</span>
-        </button>
-        <div id="payment-message" class="hidden"></div>
-      </form>
+        <form id="order-elements" action="/order" method="post">
+            <div class="row">
+                <div class="col">
+                    <div id="link-authentication-element">
+                        <!-- Elements will create authentication element here -->
+                      </div>
+                      <div id="payment-element">
+                        <!-- Elements will create form elements here -->
+                      </div>
+                      <div id="address-element">
+                
+                      </div>
+                      <button id="submit">Pay now</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-                        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
-                        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
-                        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
-                        crossorigin="anonymous"></script>
-<script src="https://js.stripe.com/v3/"></script>
+
+
+
 <script>
-    /*
-    const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z');
-                 
-    function payWithCard(){
-        let checkIfFieldsExist = document.getElementById('cardFields');
-        if(checkIfFieldsExist) {
 
-        }
-        else{
-        document.getElementById("bankCard").style.backgroundColor = "Blue"
-        document.getElementById("bankCard").style.color = "White"
-        let createOptionsFields = document.getElementById('payFields');
-        let pay = document.createElement('div')
-        pay.classList.add('col-12', 'col-lg-5', 'ms-auto', 'me-auto', 'border-dark');
-        pay.id = 'cardFields';
-        pay.innerHTML = `<form id="payment-form" action="/placeOrder" method="POST">
-                    <div class="row ">
-                        <div class="col d-flex flex-column text-center">
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="name">Ime<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" name="name" id="name" required>
-                            </div>
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="lastName">Priimek<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" name="lastName" id="lastName">
-                            </div>
+    document.addEventListener("DOMContentLoaded", async()=>{
 
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="email">E-pošta<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" id="email" name="email" required>
-                            </div>
+        const {publishableKey} = await fetch('/getPk').then((r) => r.json());
+  if (!publishableKey) {
+    console.log('invalid publishable key')
+  }
 
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="phone">Telefon<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" id="phone" name="phone" required>
-                            </div>
+  const stripe = Stripe(publishableKey, {
+    apiVersion: '2020-08-27',
+  });
 
-                        </div>
-                        <div class="col d-flex flex-column text-center">
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="country">Država<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" name="country" id="country" required>
-                            </div>
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="city">Mesto<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" name="city" id="city" required>
-                            </div>
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="street">Ulica<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" name="street" id="street" required>
-                            </div>
-
-                            <div class="mb-3 d-inline-flex flex-column">
-                                <label for="zip">Poštna številka<sup class="text-danger"><strong>*</strong></sup></label>
-                                <input type="text" id="zip" name="zip" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 justify-content-center text-center">
-                        <div class="row text-center">
-                            here will be card
-                        </div>
-                        <div id="card-element" class="border border-2 border-dark p-2">
-                            <!-- Stripe.js will insert the card input elements here -->
-                        </div>
-                        <div class="col mt-3 mb-5">
-                            <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
-                        </div>
-                    </div>
-                </form>`
-        createOptionsFields.appendChild(pay);
-
-        const elements = stripe.elements();
-        const cardElement = elements.create('card');
-        cardElement.mount('#card-element');
-
-        const form = document.getElementById('payment-form');
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            document.getElementById('submit-button').disabled = true;
-
-            const formData = new FormData(form);
-            const firstName = formData.get('name');
-            const lastName = 'Doe'; // Add your logic for the last name
-            const billingDetails = {
-                name: firstName + ' ' + lastName,
-                email: formData.get('email'),
-                address: {
-                    line1: formData.get('street'),
-                    country: formData.get('country'),
-                    city: formData.get('city'),
-                    postal_code: formData.get('zip'),
-                },
-                phone: formData.get('phone'),
-            };
-
-            try {
-                const response = await fetch('/placeOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        billing_details: billingDetails,
-                    }),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const { clientSecret } = data;
-
-                    const result = await stripe.confirmCardPayment(clientSecret, {
-                        payment_method: {
-                            card: cardElement,
-                            billing_details: billingDetails,
-                        },
-                    });
-
-                    if (result.error) {
-                        console.error(result.error.message);
-                    } else {
-                        window.location.href = '/';
-                        console.log('Payment succeeded!');
-                    }
-                } else {
-                    console.error('Error placing order');
-                }
-            } catch (err) {
-                console.error('Error:', err.message);
-            }
-        });
+  const {
+    error: backendError,
+    clientSecret
+  } = await fetch('/placeOrder').then(r => r.json());
+  if (backendError) {
+    console.log(backendError);
+  }
+  console.log(`Client secret returned.`);
         
-        }
-        
-    }
+        let elements = stripe.elements({clientSecret: `${s_sk}`});
 
-    function payWithPayPal(){
-        let checkIfFieldsExist = document.getElementById('cardFields');
-        if(checkIfFieldsExist){
-            document.getElementById("bankCard").removeAttribute('style');
-            let createOptionsFields = document.getElementById('payFields');
-            createOptionsFields.innerHTML=""
-        }
-    };          
-    function payWithGooglePay(){
-        let checkIfFieldsExist = document.getElementById('cardFields');
-        if(checkIfFieldsExist){
-            document.getElementById("bankCard").removeAttribute('style');
-            let createOptionsFields = document.getElementById('payFields');
-            createOptionsFields.innerHTML=""
-        }
-    };          
-    function payWithApplePay(){
-        let checkIfFieldsExist = document.getElementById('cardFields');
-        if(checkIfFieldsExist){
-            document.getElementById("bankCard").removeAttribute('style');
-            let createOptionsFields = document.getElementById('payFields');
-            createOptionsFields.innerHTML=""
-        }
-    };          
-       */
+        let authElement = elements.create('linkAuthentication');
+        authElement.mount("#link-authentication-element")
+
+
+
+
+
+    });
+
+
 </script>

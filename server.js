@@ -1,6 +1,10 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const express = require("express");
 const app = express();
-layouts = require('ejs-mate')
+const layouts = require('ejs-mate')
 const bodyParser = require("body-parser");
 const path = require('path');
 const override = require('method-override');
@@ -89,6 +93,10 @@ app.get('/create-payment-intent', async (req, res) => {
   }
 });
 
+app.post('/testStripe', async (req, res) => {
+  console.log(req.body);
+  res.send(req.body);
+})
 // Expose a endpoint as a webhook handler for asynchronous events.
 // Configure your webhook in the stripe developer dashboard
 // https://dashboard.stripe.com/test/webhooks

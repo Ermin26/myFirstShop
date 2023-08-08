@@ -65,7 +65,7 @@ app.engine('ejs', layouts);
 app.use(express.urlencoded({ extended: true }));
 app.use(override('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 //app.use(express.json());
 
 
@@ -482,6 +482,7 @@ app.get('/order', async (req, res) => {
     let cartItems = []
     let count = 0
     deleteZeroQty();
+    const publishableKey = process.env.STRIPE_PK;
     for (let i = 0; i < cart.length; i++) {
         await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
@@ -491,7 +492,8 @@ app.get('/order', async (req, res) => {
                     await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                         let userData = user.rows[0]
                         //! only testing, change it for order
-                        res.render('orders/testStripeByStripe', { total, cart,items, userData, s_pk, s_sk });
+                        
+                        res.render('orders/testStripe', { total, cart,items, userData, s_pk, s_sk, publishableKey });
                     })
                 }
             } else {
@@ -500,6 +502,12 @@ app.get('/order', async (req, res) => {
             }
         })
     }
+})
+const publishableKey = process.env.STRIPE_PK;
+app.get('/getPk', async (req, res) => { 
+    res.send({
+        publishableKey: publishableKey,
+      });
 })
 const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
@@ -541,7 +549,9 @@ app.post('/placeOrder', async (req, res) => {
                 phone,
             },
         });
-
+        res.send({
+            clientSecret: paymentIntent.client_secret,
+          });
         let orderDate = todayDate.toLocaleString();
         let product_ids = [];
         let product_qtys = [];
