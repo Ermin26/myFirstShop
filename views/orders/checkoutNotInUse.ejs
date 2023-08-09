@@ -43,6 +43,12 @@
                     <input type="text" id="phone" name="phone" required>
                 </div>
             </div>
+            <div id="link-authentication-element">
+                <!--Stripe.js injects the Link Authentication Element-->
+              </div>
+              <div id="payment-element">
+                <!--Stripe.js injects the Payment Element-->
+              </div>
             <div id="card-element">
                 <!-- Stripe.js will insert the card input elements here -->
             </div>
@@ -52,16 +58,54 @@
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
+        addEventListener('DOMContentLoaded',async () =>{
         // Set up Stripe.js with your publishable key
         const stripe = Stripe(`<%= s_pk %>`);
-
+            const {
+    error: backendError,
+    clientSecret
+  } = await fetch('/test-stripe').then(r => r.json());
+  if (backendError) {
+    console.log(backendError);
+  }
+  console.log(`Client secret returned.`);
         // Create an instance of elements
-        const elements = stripe.elements();
+        const appearance = {
+  theme: 'night',
+  variables: {
+    fontFamily: 'Sohne, system-ui, sans-serif',
+    fontWeightNormal: '500',
+    borderRadius: '8px',
+    colorBackground: '#0A2540',
+    colorPrimary: '#EFC078',
+    colorPrimaryText: '#1A1B25',
+    colorText: 'white',
+    colorTextSecondary: 'white',
+    colorTextPlaceholder: '#727F96',
+    colorIconTab: 'white',
+    colorLogo: 'dark'
+  },
+  rules: {
+    '.Input, .Block': {
+      backgroundColor: 'transparent',
+      border: '1.5px solid var(--colorPrimary)'
+    }
+  }
+};
+
+// Pass the appearance object to the Elements instance
+const elements = stripe.elements({clientSecret, appearance});
 
         // Create a card element and mount it to the card element container
-        const cardElement = elements.create('card');
-        cardElement.mount('#card-element');
 
+        const paymentElementOptions = {
+    layout: "tabs",
+  };
+
+  const paymentElement = elements.create("payment", paymentElementOptions);
+  paymentElement.mount("#payment-element");
+
+  
         // Handle form submission
         const form = document.getElementById('payment-form');
         form.addEventListener('submit', async (event) => {
@@ -86,7 +130,7 @@
             };
 
             // Create a payment intent on the server
-            const response = await fetch('/checkoutToPay', {
+            const response = await fetch('/placeOrder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,7 +139,6 @@
                     billing_details: billingDetails,
                 }),
             });
-
             const { clientSecret } = await response.json();
 
             // Confirm the payment with the client secret and card details
@@ -115,4 +158,5 @@
                 console.log('Payment succeeded!');
             }
         });
-    </script>
+    })
+        </script>

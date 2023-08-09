@@ -493,7 +493,7 @@ app.get('/order', async (req, res) => {
                         let userData = user.rows[0]
                         //! only testing, change it for order
                         
-                        res.render('orders/testStripe', { total, cart,items, userData, s_pk, s_sk, publishableKey });
+                        res.render('orders/order', { total, cart,items, userData, s_pk, s_sk, publishableKey });
                     })
                 }
             } else {
@@ -503,12 +503,7 @@ app.get('/order', async (req, res) => {
         })
     }
 })
-const publishableKey = process.env.STRIPE_PK;
-app.get('/getPk', async (req, res) => { 
-    res.send({
-        publishableKey: publishableKey,
-      });
-})
+
 const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
@@ -654,6 +649,25 @@ app.post('/placeOrder', async (req, res) => {
 
 })
 
+app.get("/placeOrder", async (req, res) => {
+    
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 1999,
+      currency: "eur",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+  
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+});
+  
+app.get('/done', async (req, res) => {
+    res.send('<h1>Done!</h1>');
+})
 
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
