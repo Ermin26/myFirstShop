@@ -650,10 +650,10 @@ app.post('/placeOrder', async (req, res) => {
 })
 
 app.get("/placeOrder", async (req, res) => {
-    
+    let total = req.session.total.toFixed(2)
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1999,
+      amount: Math.round(total * 100), // Amount in cents
       currency: "eur",
       automatic_payment_methods: {
         enabled: true,

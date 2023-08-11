@@ -93,55 +93,26 @@
                             </div>
                         </div>
                     </div>
-                    <!--
-               <div class="col-12 col-lg-5 ms-auto me-auto">
-                <form id="payment-form" action="/placeOrder" method="POST">
-                    <div class="row row-cols-2">
-                        <div class="col">
-                            <label for="name">Ime</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="col">
-                    <label for="lastName">Priimek</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-                <div>
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div>
-                    <label for="country">Country</label>
-                    <input type="text" id="country" name="country" required>
-                </div>
-            </div>
-            <div class="col">
-                <div>
-                    <label for="city">City</label>
-                    <input type="text" id="city" name="city" required>
-                </div>
-                <div>
-                    <label for="zip">ZIP Code</label>
-                    <input type="text" id="zip" name="zip" required>
-                </div>
-                <div>
-                    <label for="phone">Phone</label>
-                    <input type="text" id="phone" name="phone" required>
-                </div>
-            </div>
-        -->
-            <div id="link-authentication-element">
-                <!--Stripe.js injects the Link Authentication Element -->
-            </div>
-              <div id="payment-element">
+                    
+                    <div class="col-12 col-lg-5 ms-auto me-auto">
+                    <form id="payment-form" action="/placeOrder" method="POST">
+                        
+                        <div class="col">   
+                            <div id="address-element">
                 <!--Stripe.js injects the Payment Element-->
-              </div>
+                            </div>
+                         <div id="link-authentication-element">
+                         </div>
+                            <div id="payment-element">
+                <!--Stripe.js injects the Payment Element-->
+                            </div>
+                        </div>
+                        
            
-            <button type="submit" id="submit-button">Pay Now</button>
+                        <button type="submit" id="submit-button">Pay Now</button>
+                    </form> 
                     </div>
-                </form>
-            </div>
-            </div>
+                </div>
             </div>
         </div>
 
@@ -171,10 +142,11 @@
   }
                     console.log(`Client secret returned.`);
                           // Create an instance of elements
-/*
+
                     const appearance = {
                         theme: 'night',
                         labels: 'floating',
+                        /*
                         rules: {
                             '.Tab': {
                               border: '1px solid #E0E6EB',
@@ -215,19 +187,20 @@
                              border: '1.5px solid var(--colorPrimary)'
                             }
                         }
+                        */
                         };
+                    const options = {mode :'shipping', allowedCountries:['SI','AT','BG','HR', 'HU', 'RO','SK']}    
 
-*/
 // Pass the appearance object to the Elements instance
-                        const elements = stripe.elements({clientSecret});
+                        const elements = stripe.elements({clientSecret, appearance});
 
         // Create a card element and mount it to the card element container
-
-   
-
-                        const paymentElement = elements.create("payment");
-                        paymentElement.mount("#payment-element");
-                        
+                        const addressElement = elements.create("address", options);
+                        addressElement.mount("#address-element");
+                        const paymentElement = elements.create('payment');
+                        paymentElement.mount('#payment-element');
+                        const linkAuthenticationElement = elements.create("linkAuthentication");
+  linkAuthenticationElement.mount("#link-authentication-element");
                        
                         // Handle form submission
                         const form = document.getElementById('payment-form');
