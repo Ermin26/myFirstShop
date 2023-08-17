@@ -72,7 +72,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const forSession = process.env.DB_PASS
 const nothingSpecial = process.env.IGNORE_ME
 
-const s_sk = process.env.STRIPE_SK;
+const s_sk = process.env.STRIPE_S;
 const s_pk = process.env.STRIPE_PK;
 
 
@@ -482,7 +482,7 @@ app.get('/order', async (req, res) => {
     let cartItems = []
     let count = 0
     deleteZeroQty();
-    const publishableKey = process.env.STRIPE_PK;
+    const publishableKey = process.env.STRIPE_P;
     for (let i = 0; i < cart.length; i++) {
         await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
