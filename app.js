@@ -33,7 +33,7 @@ const nodemailer = require('nodemailer');
 
 //const upload = multer({ dest: 'uploads/' })
 const yoo = process.env.YOO;
-
+console.log('yooo sk:', process.env.STRIPE_SK);
 const client = new Client({
     user: process.env.DB_USERN,
     host: process.env.DB_HOST,
@@ -493,21 +493,8 @@ app.get('/order', async (req, res) => {
                     await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                         let userData = user.rows[0]
                         //! only testing, change it for order
-                        const paymentIntent = await stripe.paymentIntents.create({
-                            amount: Math.round(24.99 * 100), // Amount in cents
-                            currency: "eur",
-                            automatic_payment_methods: {
-                              enabled: true,
-                            },
-                          });
-                        /*
-                          res.send({
-                            clientSecret: paymentIntent.client_secret,
-                          });
-                          */
-                        const clientSecret = paymentIntent.client_secret;
-                        
-                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey, clientSecret });
+    
+                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey });
                     })
                 }
             } else {
@@ -655,7 +642,8 @@ app.get("/fetchOrder", async (req, res) => {
       currency: "eur",
       automatic_payment_methods: {
         enabled: true,
-      },
+        },
+      
     });
   
     res.send({
