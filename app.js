@@ -494,7 +494,7 @@ app.get('/order', async (req, res) => {
                         let userData = user.rows[0]
                         //! only testing, change it for order
     
-                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey });
+                        res.render('orders/order', { total, cart,items, userData, s_pk, s_sk, publishableKey });
                     })
                 }
             } else {

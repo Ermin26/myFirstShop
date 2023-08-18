@@ -125,11 +125,11 @@
                         //const str_pk = <%# s_pk %>
                         // Set up Stripe.js with your publishable key
                         //const stripe = Stripe('pk_live_51MdvPOHAKJ9ybQgY3lEYJQ1TxLDsLlBVnPJestkYEqooVkmGw1pbatap5URKu7pN5T4RqAYotFAcWYdP9luqxwjY00Ky97oD6B');
-                        
-                        const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z');
+                        const {publishableKey} = await fetch('/config').then((r) => r.json());
+                        const stripe = Stripe(publishableKey);
                         const apiKey = 'pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z';
                        // const clientSecret = <= clientSecret %>
-                        /*
+                        
                         const {
                         error: backendError,
                         clientSecret
@@ -139,19 +139,7 @@
                     }
                     console.log(`Client secret returned.`);
                     
-                */
-                    const response = await fetch('/fetchOrder');
-                    if(!response.ok){
-                        console.log("this is fucking error",response);
-                    }
-                    const data = await response.json();
-                    const {error, clientSecret} = data;
-                    if(error){
-                        console.log("Error",error.message);
-                    }
-                    console.log('clientSecret returned');
-                
-                    
+            
                           // Create an instance of elements
 
                     const appearance = {
