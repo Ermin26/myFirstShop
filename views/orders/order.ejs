@@ -127,7 +127,7 @@
                         //const stripe = Stripe('pk_live_51MdvPOHAKJ9ybQgY3lEYJQ1TxLDsLlBVnPJestkYEqooVkmGw1pbatap5URKu7pN5T4RqAYotFAcWYdP9luqxwjY00Ky97oD6B');
                         const {publishableKey} = await fetch('/config').then((r) => r.json());
                         const stripe = Stripe(publishableKey);
-                        const apiKey = 'pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z';
+                        const apiKey = publishableKey;
                        // const clientSecret = <= clientSecret %>
                         
                         const {
@@ -199,16 +199,16 @@
                         const paymentElement = elements.create('payment');
                         paymentElement.mount('#payment-element');
                         const linkAuthenticationElement = elements.create("linkAuthentication");
-  linkAuthenticationElement.mount("#link-authentication-element");
+                        linkAuthenticationElement.mount("#link-authentication-element");
                        
                         // Handle form submission
                         const form = document.getElementById('payment-form');
+                        console.log('form:',form);
                         form.addEventListener('submit', async (event) => {
                             event.preventDefault();
 
                             // Disable the submit button to prevent multiple clicks
                             document.getElementById('submit-button').disabled = true;
-
                             const formData = new FormData(form);
                             const firstName = formData.get('name')
                             const lastName = formData.get('lastName')
@@ -241,14 +241,16 @@
                                 // ... rest of your code ...
                                 const result = await stripe.confirmCardPayment(clientSecret, {
                                     payment_method: {
-                                        card: cardElement,
-                                        billing_details: billingDetails,
+                                        payment_element: paymentElement,
+                                        // ... other payment method details
                                     },
+                                    billing_details: billingDetails,
+                                    
                                 });
 
                                 if (result.error) {
                                     // Display an error message to the user
-                                    console.error(result.error.message);
+                                    console.error("This is your error",result.error.message);
                                 } else {
                                     // Payment successful, redirect or show a success message
                                     window.location.href = '/'

@@ -33,7 +33,6 @@ const nodemailer = require('nodemailer');
 
 //const upload = multer({ dest: 'uploads/' })
 const yoo = process.env.YOO;
-console.log('yooo sk:', process.env.STRIPE_SK);
 const client = new Client({
     user: process.env.DB_USERN,
     host: process.env.DB_HOST,
@@ -543,7 +542,9 @@ app.post('/placeOrder', async (req, res) => {
         product_qtys.push(cart[i].qty)
         //product_qtys = cart[i].qty + ',' + product_qtys;
     }
-
+    //! Save order to db and send email to user.
+        
+        /*
         try {
             await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${req.body.billing_details.name}', '${req.body.billing_details.email}', '${req.body.billing_details.address.country}', '${req.body.billing_details.address.city}', '${req.body.billing_details.address.postal_code}', '${req.body.billing_details.address.line1}', '${req.body.billing_details.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
             req.flash('success', "Successfully placed order");
@@ -582,7 +583,7 @@ app.post('/placeOrder', async (req, res) => {
                         padding: 4px;
                         border: 2px solid black;
                       }
-                      /* Add more styles as needed */
+                      
                     </style>
                   </head>
                   <body>
@@ -626,6 +627,7 @@ app.post('/placeOrder', async (req, res) => {
         req.flash("error", e.message, "Error with insert data into orders. Please try again.")
         res.redirect('/order')
     }
+    */
     } catch (error) {
         req.flash('error', error.message)
         res.redirect('/order')
