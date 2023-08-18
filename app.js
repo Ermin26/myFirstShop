@@ -633,7 +633,7 @@ app.post('/placeOrder', async (req, res) => {
 
 })
 
-app.get("/placeOrder", async (req, res) => {
+app.get("/fetchOrder", async (req, res) => {
     let total = req.session.total.toFixed(2)
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
