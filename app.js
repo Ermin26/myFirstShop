@@ -633,9 +633,14 @@ app.post('/placeOrder', async (req, res) => {
     }
 
 })
+app.get('/config', (req, res) => {
+    res.send({
+      publishableKey: process.env.STRIPE_PK,
+    });
+  });
 
 app.get("/fetchOrder", async (req, res) => {
-    let total = req.session.total.toFixed(2)
+    //let total = req.session.total.toFixed(2)
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(24.99 * 100), // Amount in cents
