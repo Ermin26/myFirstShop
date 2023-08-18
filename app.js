@@ -72,7 +72,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const forSession = process.env.DB_PASS
 const nothingSpecial = process.env.IGNORE_ME
 
-const s_sk = process.env.STRIPE_S;
+const s_sk = process.env.STRIPE_SK;
 const s_pk = process.env.STRIPE_PK;
 
 
@@ -482,7 +482,7 @@ app.get('/order', async (req, res) => {
     let cartItems = []
     let count = 0
     deleteZeroQty();
-    const publishableKey = process.env.STRIPE_P;
+    const publishableKey = process.env.STRIPE_PK;
     for (let i = 0; i < cart.length; i++) {
         await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
@@ -511,22 +511,6 @@ app.post('/placeOrder', async (req, res) => {
     let { name,email, country, city,street, zip, phone } = req.body;
     const stripeProducts = stripe.products;
     try {
-        /*
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(costs * 100), // Amount in cents
-            currency: 'eur',
-            description: 'Nakup',
-            payment_method_types: ['card', 'paypal', 'google_pay',],
-            metadata: {
-                name,
-                email,
-                country,
-                city,
-                street,
-                zip,
-                phone,
-            },
-            */
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
