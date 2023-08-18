@@ -128,14 +128,20 @@
                         
                         const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z');
                         const apiKey = 'pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z';
+                       
                         const {
                         error: backendError,
                         clientSecret
                     } = await fetch('/fetchOrder').then(r => r.json());
                     if (backendError) {
-                        console.log(backendError);
+                        console.log("this is fucking error",backendError);
                     }
                     console.log(`Client secret returned.`);
+                    
+                
+                
+                
+                    
                           // Create an instance of elements
 
                     const appearance = {
