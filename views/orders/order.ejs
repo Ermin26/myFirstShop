@@ -128,7 +128,7 @@
                         
                         const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z');
                         const apiKey = 'pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z';
-                       
+                       /*
                         const {
                         error: backendError,
                         clientSecret
@@ -138,8 +138,17 @@
                     }
                     console.log(`Client secret returned.`);
                     
-                
-                
+                */
+                    const response = await fetch('/fetchOrder');
+                    if(!response.ok){
+                        console.log("this is fucking error",response);
+                    }
+                    const data = await response.json();
+                    const {error, clientSecret} = data;
+                    if(error){
+                        console.log("Error",error.message);
+                    }
+                    console.log('clientSecret returned');
                 
                     
                           // Create an instance of elements
