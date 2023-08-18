@@ -27,7 +27,8 @@ const { storage } = require('./cloudinary/cloudConfig');
 const { randomUUID } = require('crypto');
 const { parse } = require('path');
 const upload = multer({ storage })
-const stripe = require('stripe')(process.env.STRIPE_SK);
+const Stripe = require('stripe');
+const stripe = Stripe(process.env.STRIPE_SK)
 const nodemailer = require('nodemailer');
 
 //const upload = multer({ dest: 'uploads/' })
