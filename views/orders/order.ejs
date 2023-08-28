@@ -143,52 +143,66 @@
                           // Create an instance of elements
 
                     const appearance = {
-                        theme: 'night',
-                        labels: 'floating',
                         /*
+                        //theme: 'night',
+                        labels: 'floating',
+                        variables: {
+    fontFamily: 'Sohne, system-ui, sans-serif',
+    fontWeightNormal: '500',
+    borderRadius: '8px',
+    colorBackground: '#0A2540',
+    colorPrimary: 'white',
+    colorPrimaryText: 'white',
+    colorText: 'white',
+    colorTextSecondary: 'white',
+    colorTextPlaceholder: '#3f403f',
+    colorIconTab: 'dark',
+    colorLogo: 'dark'
+  },
                         rules: {
                             '.Tab': {
-                              border: '1px solid #E0E6EB',
+                              border: '2px solid var(--colorTextPlaceholder)',
                               boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02)',
                             },
 
                             '.Tab:hover': {
                              color: 'var(--colorText)',
+                             background: 'var(--colorTextPlaceholder)'
                             },
 
                             '.Tab--selected': {
-                             borderColor: '#E0E6EB',
+                             borderColor: '#e81510',
                              boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02), 0 0 0 2px var(--colorPrimary)',
                             },
                         
                             '.Input--invalid': {
                               boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 0 2px var(--colorDanger)',
                             },
+                            '.Checkbox--checked': {
+                                display: 'none'
+                            },
+                            '.CheckboxInput--checked': {
+                                display: 'none'
+                            },
+                            '.CheckboxLabel--checked':{
+                                display: 'none'
+                            }
+                           
 
       // See all supported class names and selector syntax below
                             },
-                        variables: {
-    fontFamily: 'Sohne, system-ui, sans-serif',
-    fontWeightNormal: '500',
-    borderRadius: '8px',
-    colorBackground: '#0A2540',
-    colorPrimary: '#EFC078',
-    colorPrimaryText: '#1A1B25',
-    colorText: 'white',
-    colorTextSecondary: 'white',
-    colorTextPlaceholder: '#727F96',
-    colorIconTab: 'white',
-    colorLogo: 'dark'
-  },
-                        rules: {
-                            '.Input, .Block': {
-                              backgroundColor: 'transparent',
-                             border: '1.5px solid var(--colorPrimary)'
-                            }
-                        }
                         */
                         };
-                    const options = {mode :'shipping', allowedCountries:['SI','AT','BG','HR', 'HU', 'RO','SK']}    
+                   
+                        const options = {
+                        mode :'shipping', 
+                        allowedCountries:['SI','AT','BG','HR', 'HU', 'RO','SK'],
+                        layout:{
+                            type: 'tabs',
+                            defaultCollapsed: false,
+                        },
+                        business: "SalesterShop" 
+                    }    
 
 // Pass the appearance object to the Elements instance
                         const elements = stripe.elements({clientSecret, appearance});
@@ -239,7 +253,7 @@
                                 const data = await response.json(); // Parse the JSON response
                                 const { clientSecret } = data; // Access the clientSecret
                                 // ... rest of your code ...
-                                const result = await stripe.confirmCardPayment(clientSecret, {
+                                const result = await stripe.confirmPayment(clientSecret, {
                                     payment_method: {
                                         payment_element: paymentElement,
                                         // ... other payment method details
