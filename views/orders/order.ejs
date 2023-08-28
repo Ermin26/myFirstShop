@@ -201,7 +201,18 @@
                             type: 'tabs',
                             defaultCollapsed: false,
                         },
-                        business: "SalesterShop" 
+                        business: "SalesterShop" ,
+                        fields:{
+                            phone: 'always',
+                            name: 'split',
+
+                        },
+                        availablePaymentMethods:{
+                            link: true,
+                            applePay: true,
+                            googlePay: true,
+                            paypal: true,
+                        }
                     }    
 
 // Pass the appearance object to the Elements instance
@@ -215,29 +226,39 @@
                         const linkAuthenticationElement = elements.create("linkAuthentication");
                         linkAuthenticationElement.mount("#link-authentication-element");
                        
+
+
+                        adressData = {};
+
+
+                        addressElement.on('change', function(event) {
+                            if (event.complete) {
+                                    // extract potentially complete address
+                                    addressData = event.value;
+                                }
+                            });
+                            
+
                         // Handle form submission
                         const form = document.getElementById('payment-form');
                         console.log('form:',form);
                         form.addEventListener('submit', async (event) => {
                             event.preventDefault();
-
+                            console.log("addressData: ",addressData)
                             // Disable the submit button to prevent multiple clicks
                             document.getElementById('submit-button').disabled = true;
-                            const formData = new FormData(form);
-                            const firstName = formData.get('name')
-                            const lastName = formData.get('lastName')
                             const billingDetails = {
-                                name: firstName + ' ' + lastName,
-                                email: formData.get('email'),
+                                name: addressData.name,
+                                email: 'email',
                                 address: {
-                                    line1: formData.get('street'),
-                                    country: formData.get('country'),
-                                    city: formData.get('city'),
-                                    postal_code: formData.get('zip'),
+                                    line1: addressData.address.line1,
+                                    country: addressData.address.country,
+                                    city: addressData.address.city,
+                                    postal_code: addressData.address.postal_code,
                                 },
-                                phone: formData.get('phone'),
+                                phone: addressData.phone,
                             };
-
+                            console.log("Billing Details:", billingDetails)
                             // Create a payment intent on the server
                             const response = await fetch('/placeOrder', {
                                 method: 'POST',
@@ -252,25 +273,40 @@
                             if (response.ok) {
                                 const data = await response.json(); // Parse the JSON response
                                 const { clientSecret } = data; // Access the clientSecret
-                                // ... rest of your code ...
-                                const result = await stripe.confirmPayment(clientSecret, {
-                                    payment_method: {
-                                        payment_element: paymentElement,
-                                        // ... other payment method details
-                                    },
-                                    billing_details: billingDetails,
-                                    
-                                });
+                                // ... rest of your code ...ž
+                                const {error : submitError} = await elements.submit();
+                                        if(submitError){
+                                            window.alert(`Error: ${submitError}`)
+                                            console.log("submit error")
+                                        }else{
+                                            console.log("NO Submit error")
+                                            console.log('Elements:', elements.getElement('payment'))
+                                            const result = await stripe.confirmPayment({
+                                                elements,
+                                                clientSecret, 
+                                                confirmParams: {
+                                                    return_url: '/',
+                                                },
+                                                /*
+                                                payment_method: {
+                                                    payment_element: paymentElement,
+                                                    // ... other payment method details
+                                                },
+                                                */
+                                                billing_details: billingDetails,
 
-                                if (result.error) {
-                                    // Display an error message to the user
-                                    console.error("This is your error",result.error.message);
-                                } else {
-                                    // Payment successful, redirect or show a success message
-                                    window.location.href = '/'
-                                    console.log('Payment succeeded!');
-                                }
-
+                                            });
+                                        
+                                            if (result.error) {
+                                                // Display an error message to the user
+                                                console.error("This is your error",result.error.message);
+                                            } else {
+                                                // Payment successful, redirect or show a success message
+                                                //window.location.href = '/'
+                                                console.log('Elements:', elements.getElement('payment'))
+                                                console.log('Payment succeeded!');
+                                            }
+                                        }
                             } else {
                                 console.error('Error placing order'); // Handle the error case
                             }

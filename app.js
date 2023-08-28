@@ -528,9 +528,12 @@ app.post('/placeOrder', async (req, res) => {
                 phone,
             },
         });
+        res.redirect('/')
+        /*
         res.send({
             clientSecret: paymentIntent.client_secret,
           });
+          */
         let orderDate = todayDate.toLocaleString();
         let product_ids = [];
         let product_qtys = [];
