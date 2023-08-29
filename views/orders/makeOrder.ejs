@@ -118,31 +118,174 @@
                         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
                         crossorigin="anonymous"></script>
                     <script src="https://js.stripe.com/v3/"></script>
+<script>
 
+        addEventListener('DOMContentLoaded',async()=>{
+            
+            //const stripe = Stripe('pk_live_51MdvPOHAKJ9ybQgY3lEYJQ1TxLDsLlBVnPJestkYEqooVkmGw1pbatap5URKu7pN5T4RqAYotFAcWYdP9luqxwjY00Ky97oD6B');
+            const {publishableKey} = await fetch('/config').then((r) => r.json());
+            const stripe = Stripe(publishableKey);
+            const apiKey = publishableKey;
+            // const clientSecret = <= clientSecret %>
+             
+             const {
+             error: backendError,
+             clientSecret
+            } = await fetch('/fetchOrder').then(r => r.json());
+            if (backendError) {
+                console.log("this is fucking error",backendError);
+            }
+            console.log(`Client secret returned.`);
+        
+            const appearance = {
+                        /*
+                        //theme: 'night',
+                        labels: 'floating',
+                        variables: {
+    fontFamily: 'Sohne, system-ui, sans-serif',
+    fontWeightNormal: '500',
+    borderRadius: '8px',
+    colorBackground: '#0A2540',
+    colorPrimary: 'white',
+    colorPrimaryText: 'white',
+    colorText: 'white',
+    colorTextSecondary: 'white',
+    colorTextPlaceholder: '#3f403f',
+    colorIconTab: 'dark',
+    colorLogo: 'dark'
+  },
+                        rules: {
+                            '.Tab': {
+                              border: '2px solid var(--colorTextPlaceholder)',
+                              boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02)',
+                            },
 
-                  <script>
+                            '.Tab:hover': {
+                             color: 'var(--colorText)',
+                             background: 'var(--colorTextPlaceholder)'
+                            },
 
-                    addEventListener('DOMContentLoaded',async()=>{
+                            '.Tab--selected': {
+                             borderColor: '#e81510',
+                             boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02), 0 0 0 2px var(--colorPrimary)',
+                            },
                         
-                        const {publishableKey} = await fetch('/config').then((r) => r.json());
-                        console.log(publishableKey)
-                        const stripe = Stripe('pk_test_51MdvPOHAKJ9ybQgYh7CDLxx8Dr0NM4py99cTYnldtQZkI5AfU4bN6xqmRCXPVzoKEjojnpwAZuPBc8idylHdFvWs00MsuVid5z',{
-                            apiVersion: '2020-08-27'
-                        });
+                            '.Input--invalid': {
+                              boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 0 2px var(--colorDanger)',
+                            },
+                            '.Checkbox--checked': {
+                                display: 'none'
+                            },
+                            '.CheckboxInput--checked': {
+                                display: 'none'
+                            },
+                            '.CheckboxLabel--checked':{
+                                display: 'none'
+                            }
+                           
+
+      // See all supported class names and selector syntax below
+                            },
+                        */
+                        };
+                   
+                const options = {
+                mode :'shipping', 
+                allowedCountries:['SI','AT','BG','HR', 'HU', 'RO','SK'],
+                fields:{
+                    phone: 'always',
+                },
+            }    
+
+             // Pass the appearance object to the Elements instance
+             const elements = stripe.elements({clientSecret, appearance});
+
+            // Create a card element and mount it to the card element container
+                const addressElement = elements.create("address", options);
+                addressElement.mount("#address-element");
+                const paymentElement = elements.create('payment');
+                paymentElement.mount('#payment-element');
+                const linkAuthenticationElement = elements.create("linkAuthentication");
+                linkAuthenticationElement.mount("#link-authentication-element");
+               
+                let addressData = {};
                         
-                        const {
-                            error: backendError,
-                            clientSecret
-                        } = await fetch('/fetchOrder').then(r => r.json());
-                        if (backendError) {
-                          console.log(backendError.message);
+
+                addressElement.on('change', function(event) {
+                    if (event.complete) {
+                            // extract potentially complete address
+                            addressData = event.value;
                         }
-                        console.log(`Client secret returned.`);
-                
                     });
+                    
+                let emailData = [];
+                
+                linkAuthenticationElement.on('change', function(event) {
+                        if(event.complete){
+                            emailData.pop();
+                            emailData.push(event.value.email);
+                            console.log("event email: ", emailData)
+                        }
+                    })
+        
+                    const form = document.getElementById('payment-form');
+                        form.addEventListener('submit', async (event) => {
+                            event.preventDefault();
+                        // Disable the submit button to prevent multiple clicks
+                        document.getElementById('submit-button').disabled = true;
+                        const billingDetails = {
+                            name: addressData.name,
+                            email: emailData[0],
+                            address: {
+                                line1: addressData.address.line1,
+                                country: addressData.address.country,
+                                city: addressData.address.city,
+                                postal_code: addressData.address.postal_code,
+                            },
+                            phone: addressData.phone,
+                        };
+                        // Create a payment intent on the server
+                            const response = await fetch('/placeOrder', {
+                                method: 'POST',
+                                headers: {
+                                    Authorization: `Bearer ${apiKey}`,
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    billing_details: billingDetails,
+                                }),
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json(); // Parse the JSON response
+                                const { clientSecret } = data; // Access the clientSecret
+                                // ... rest of your code ...ž
+                                
+                                const result = await stripe.confirmPayment({
+                                    clientSecret, 
+                                    confirmParams: {
+                                        return_url: 'localhost:5000/',
+                                    },
+                                    billing_details: billingDetails,
+                                });
+                            
+                                if (result.error) {
+                                        // Display an error message to the user
+                                        console.error("This is your error",result.error.message);
+                                    } else {
+                                        console.log("Payment successful, redirect or show a success message");
+                                        window.location.href = '/'
+                                        console.log('Payment succeeded!');
+                                    }
+                                        
+                            } else {
+                                console.error('Error placing order'); // Handle the error case
+                            }
+                            
+                            });
 
-                  </script>
+        })
 
-</body>
 
-</html>
+
+</script>

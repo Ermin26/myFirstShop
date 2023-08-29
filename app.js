@@ -493,7 +493,7 @@ app.get('/order', async (req, res) => {
                         let userData = user.rows[0]
                         //! only testing, change it for order
     
-                        res.render('orders/order', { total, cart,items, userData, s_pk, s_sk, publishableKey });
+                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey });
                     })
                 }
             } else {
@@ -509,8 +509,10 @@ app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
     let { name,email, country, city,street, zip, phone } = req.body;
+    console.log(req.body);
     const stripeProducts = stripe.products;
     try {
+        console.log("Trying")
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
@@ -528,12 +530,11 @@ app.post('/placeOrder', async (req, res) => {
                 phone,
             },
         });
-        res.redirect('/')
-        /*
+        
         res.send({
             clientSecret: paymentIntent.client_secret,
           });
-          */
+        
         let orderDate = todayDate.toLocaleString();
         let product_ids = [];
         let product_qtys = [];
@@ -633,6 +634,7 @@ app.post('/placeOrder', async (req, res) => {
     */
     } catch (error) {
         req.flash('error', error.message)
+        console.log('error', error.message)
         res.redirect('/order')
 
     }
