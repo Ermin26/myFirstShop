@@ -65,7 +65,7 @@ app.engine('ejs', layouts);
 app.use(express.urlencoded({ extended: true }));
 app.use(override('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(bodyParser.json());
+app.use(bodyParser.json());
 //app.use(express.json());
 
 
@@ -476,8 +476,20 @@ app.post('/edit_qty', async (req, res) => {
 })
 
 app.get('/order', async (req, res) => {
-    let total = req.session.total.toFixed(2)
     let cart = req.session.cart;
+    if(!cart){
+        res.redirect('/')
+    }else{
+
+    
+    let total = req.session.total.toFixed(2)
+    let totalPrice
+    if(total > 50){
+        discountPrice = total - (total * 0.10).toFixed(2)
+        totalPrice = discountPrice.toFixed(2)
+    }else{
+        totalPrice = total;
+    }
     let items = [];
     let cartItems = []
     let count = 0
@@ -493,7 +505,7 @@ app.get('/order', async (req, res) => {
                         let userData = user.rows[0]
                         //! only testing, change it for order
     
-                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey });
+                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey, totalPrice });
                     })
                 }
             } else {
@@ -502,17 +514,16 @@ app.get('/order', async (req, res) => {
             }
         })
     }
+}
 })
 
 const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
-    let { name,email, country, city,street, zip, phone } = req.body;
-    console.log(req.body);
+    let { billing_details } = req.body;
     const stripeProducts = stripe.products;
     try {
-        console.log("Trying")
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
@@ -520,15 +531,20 @@ app.post('/placeOrder', async (req, res) => {
             automatic_payment_methods: {
                 enabled: true,
               },
+              
             metadata: {
-                name,
-                email,
-                country,
-                city,
-                street,
-                zip,
-                phone,
+                name: billing_details.name,
+                email : billing_details.email ,
+                address:{
+                    line1: billing_details.line1,
+                    country: billing_details.country,
+                    city: billing_details.city,
+                    postal_code: billing_details.postal_code
+                },
+                phone: billing_details.phone
             },
+            stripeAccount: process.env.stripe_id,
+            
         });
         
         res.send({
@@ -647,16 +663,29 @@ app.get('/config', (req, res) => {
   });
 
 app.get("/fetchOrder", async (req, res) => {
-    //let total = req.session.total.toFixed(2)
+    let total = req.session.total.toFixed(2)
+    let discount
+    if(total > 50){
+        discountPrice = total - (total * 0.10).toFixed(2)
+        discount = discountPrice.toFixed(2)
+    }else{
+        discount = total;
+    }
+    console.log("discount", discount)
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(24.99 * 100), // Amount in cents
+        
+      amount: Math.round(discount * 100), // Amount in cents
       currency: "eur",
+      description: 'Nakup',
       automatic_payment_methods: {
         enabled: true,
         },
-      
-    });
+        },
+        {
+            stripeAccount: process.env.stripe_id,
+        }
+    );
   
     res.send({
       clientSecret: paymentIntent.client_secret,
