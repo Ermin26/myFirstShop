@@ -542,9 +542,7 @@ app.post('/placeOrder', async (req, res) => {
                     postal_code: billing_details.postal_code
                 },
                 phone: billing_details.phone
-            },
-            stripeAccount: process.env.stripe_id,
-            
+            }, 
         });
         
         res.send({
@@ -680,11 +678,7 @@ app.get("/fetchOrder", async (req, res) => {
       automatic_payment_methods: {
         enabled: true,
         },
-        },
-        {
-            stripeAccount: process.env.stripe_id,
-        }
-    );
+        });
   
     res.send({
       clientSecret: paymentIntent.client_secret,
