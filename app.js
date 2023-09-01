@@ -671,7 +671,6 @@ app.get("/fetchOrder", async (req, res) => {
     }else{
         discount = total;
     }
-    console.log("discount", discount)
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
         
