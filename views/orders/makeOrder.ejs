@@ -204,14 +204,23 @@
             // Create a card element and mount it to the card element container
                 const addressElement = elements.create("address", options);
                 addressElement.mount("#address-element");
-                const paymentElement = elements.create('payment');
+                const paymentElement = elements.create('payment',{
+                    paymentMethodOrder:['card', 'paypal', 'apple_pay', 'google_pay']
+                });
                 paymentElement.mount('#payment-element');
                 const linkAuthenticationElement = elements.create("linkAuthentication");
                 linkAuthenticationElement.mount("#link-authentication-element");
                
-                let addressData = {};
-                        
+                let paymentMethod =[];
 
+                paymentElement.on('change', function(event){
+                    paymentMethod.pop();
+                    paymentMethod.push(event.value.type);
+                    console.log(paymentMethod)
+                })
+
+                let addressData = {};
+                    
                 addressElement.on('change', function(event) {
                     if (event.complete) {
                             // extract potentially complete address
@@ -253,6 +262,7 @@
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
+                                    payment_Method: paymentMethod[0],
                                     billing_details: billingDetails,
                                 }),
                             });
@@ -260,12 +270,12 @@
                             if (response.ok) {
                                 const data = await response.json(); // Parse the JSON response
                                 //const { clientSecret } = data; // Access the clientSecret
-                                // ... rest of your code ...ž
-                                const submitedElements = elements.submit();
-                                console.log("Submited elements: ",submitedElements);
+                                // ... rest of your code .
+                                elements.submit();
                                 const result = await stripe.confirmPayment({
                                     clientSecret,
                                     elements,
+                                              
                                     confirmParams: {
                                         return_url: 'http://localhost:5000/',
                                     },
@@ -281,7 +291,8 @@
                                         phone: billingDetails.phone
                                     },
                                 });
-                            
+                                console.log("yupiiii")
+                                console.log("result: ", result)
                                 if (result.error) {
                                         // Display an error message to the user
                                         console.log("This is your error",result.error.message);

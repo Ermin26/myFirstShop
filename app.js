@@ -521,17 +521,18 @@ const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
-    let { billing_details } = req.body;
+    let { billing_details, payment_Method } = req.body;
+    console.log("payment method: ",payment_Method);
     const stripeProducts = stripe.products;
     try {
-        const paymentIntent = await stripe.paymentIntents.create({
+            
+        let paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
             description: 'Nakup',
             automatic_payment_methods: {
                 enabled: true,
-              },
-              
+            },
             metadata: {
                 name: billing_details.name,
                 email : billing_details.email ,
@@ -544,9 +545,17 @@ app.post('/placeOrder', async (req, res) => {
                 phone: billing_details.phone
             }, 
         });
-        
+        if (payment_Method === 'paypal') {
+            console.log("Payment method is paypal")
+        } else if (payment_Method === 'card') {
+            
+            console.log("Payment method is card")
+        }
+        console.log("///////////////////")
+        console.log("payment intent: ",paymentIntent)
+        console.log("///////////////////")
         res.send({
-            clientSecret: paymentIntent.client_secret,
+            clientSecret: paymentIntent.client_secret
           });
         
         let orderDate = todayDate.toLocaleString();
@@ -648,7 +657,7 @@ app.post('/placeOrder', async (req, res) => {
     */
     } catch (error) {
         req.flash('error', error.message)
-        console.log('error', error.message)
+        console.log('error jebiga', error.message)
         res.redirect('/order')
 
     }
@@ -676,12 +685,12 @@ app.get("/fetchOrder", async (req, res) => {
       currency: "eur",
       description: 'Nakup',
       automatic_payment_methods: {
-        enabled: true,
+          enabled: true,
         },
         });
   
     res.send({
-      clientSecret: paymentIntent.client_secret,
+      clientSecret: paymentIntent.client_secret
     });
 });
   
