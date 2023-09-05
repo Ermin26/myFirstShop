@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+    <h1>Successfully payed</h1>
+    
+
+    <div id="payment-intent">
+
+    </div>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async() =>{
+            const {publishableKey} = await fetch('/config').then((r) => r.json())
+            console.log("yooo", publishableKey);
+            const stripe = Stripe(publishableKey);
+
+            const clientSecret = new URLSearchParams(window.location.search).get(
+  'redirect_status'
+);
+            console.log("client secret: " ,clientSecret)
+            console.log("///////////////////////////")
+            
+            //const {info} = stripe.retrievePaymentIntent(clientSecret);
+            //console.log("info: " ,info)
+            //const paymentIntentPre = document.getElementById('payment-intent')
+            //paymentIntentPre.innerText = JSON.stringify(info);
+            
+            
+            
+        })  
+        
+    </script>
+</body>
+</html>

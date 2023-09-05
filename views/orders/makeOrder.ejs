@@ -121,7 +121,7 @@
                         crossorigin="anonymous"></script>
 
 <script src="https://js.stripe.com/v3/"></script>
-<!--
+
 <script>
 
         addEventListener('DOMContentLoaded',async()=>{
@@ -130,7 +130,6 @@
             const {publishableKey} = await fetch('/config').then((r) => r.json());
             const stripe = Stripe(publishableKey);
             const apiKey = publishableKey;
-            // const clientSecret = <= clientSecret %>
              
              const {
              error: backendError,
@@ -144,54 +143,7 @@
             const appearance = {
                 theme: 'night',
                 labels: 'floating',
-                /*
-                        variables: {
-    fontFamily: 'Sohne, system-ui, sans-serif',
-    fontWeightNormal: '500',
-    borderRadius: '8px',
-    colorBackground: '#0A2540',
-    colorPrimary: 'white',
-    colorPrimaryText: 'white',
-    colorText: 'white',
-    colorTextSecondary: 'white',
-    colorTextPlaceholder: '#3f403f',
-    colorIconTab: 'dark',
-    colorLogo: 'dark'
-  },
-                        rules: {
-                            '.Tab': {
-                              border: '2px solid var(--colorTextPlaceholder)',
-                              boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02)',
-                            },
-
-                            '.Tab:hover': {
-                             color: 'var(--colorText)',
-                             background: 'var(--colorTextPlaceholder)'
-                            },
-
-                            '.Tab--selected': {
-                             borderColor: '#e81510',
-                             boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02), 0 0 0 2px var(--colorPrimary)',
-                            },
-                        
-                            '.Input--invalid': {
-                              boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 0 2px var(--colorDanger)',
-                            },
-                            '.Checkbox--checked': {
-                                display: 'none'
-                            },
-                            '.CheckboxInput--checked': {
-                                display: 'none'
-                            },
-                            '.CheckboxLabel--checked':{
-                                display: 'none'
-                            }
-                           
-
-      // See all supported class names and selector syntax below
-                            },
-                        */
-                        };
+               };
                    
                 const options = {
                 mode :'shipping', 
@@ -257,7 +209,7 @@
                         };
 
                         try{
-                            // Create a payment intent on the server
+                            // add this without try/catch in if(result) statement
                             const response = await fetch('/placeOrder', {
                                  method: 'POST',
                                  headers: {
@@ -267,16 +219,10 @@
                                  body: JSON.stringify({
                                      payment_Method: paymentMethod[0],
                                      billing_details: billingDetails,
+                                     // add eventType
                                  }),
                             });
 
-                            if (response.ok) {
-                            const data = await response.json();
-                            const {clientSecret} = data;
-                            console.log("Data: ",data);
-                            } else {
-                                console.error('Error placing order'); // Handle the error case
-                                }
                         } catch(e){
 
                         }
@@ -287,6 +233,7 @@
                                               
                                     confirmParams: {
                                         return_url: 'http://localhost:5000/',
+                                        redirect: 'if_required'
                                     },
                                     billing_details: {
                                         name: billingDetails.name,
@@ -300,22 +247,15 @@
                                         phone: billingDetails.phone
                                     },
                                 });
-                                console.log("yupiiii")
-                                console.log("result: ", result)
-                                if (result.error) {
-                                        // Display an error message to the user
-                                        console.log("This is your error",result.error.message);
-                                        window.alert("This is your error",result.error.message);
-                                        
-                                } 
-                                else {
+                                if (result) {
+                                        // here add fetch placeOrder and send eventType to server
+                                 }else {
                                         window.alert("This is your order");
                             
                                         };
                         });
         });
 
-*/
+
 
 </script>
--->

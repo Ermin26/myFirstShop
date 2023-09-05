@@ -28,7 +28,7 @@ const { randomUUID } = require('crypto');
 const { parse } = require('path');
 const upload = multer({ storage })
 const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_S)
+const stripe = Stripe(process.env.STRIPE_SK)
 const nodemailer = require('nodemailer');
 
 //const upload = multer({ dest: 'uploads/' })
@@ -75,6 +75,49 @@ const nothingSpecial = process.env.IGNORE_ME
 const s_sk = process.env.STRIPE_SK;
 const s_pk = process.env.STRIPE_PK;
 
+//! Testing stripe code part
+
+const storeItems = new Map([
+    [1, {price: 1500, name: "First product"}],
+    [2, {price: 1850, name: "Second product"}],
+])
+
+app.get('/testOrder', async(req,res)=>{
+    res.render('orders/order')
+})
+
+app.get('/redirect', async(req,res)=>{
+    res.render('orders/redirect')
+})
+
+app.post('/create-payment-intent', async(req,res)=>{
+    /*
+    let total = req.session.total.toFixed(2)
+    let discount
+    if(total > 50){
+        discountPrice = total - (total * 0.10).toFixed(2)
+        discount = discountPrice.toFixed(2)
+    }else{
+        discount = total;
+    }
+    */
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+        
+      amount: 2099, // Amount in cents
+      currency: "eur",
+      description: 'Nakup',
+      automatic_payment_methods: {
+          enabled: true,
+        },
+        });
+  
+    res.send({
+      clientSecret: paymentIntent.client_secret
+    });
+});
+
+//! End of testing stripe code part
 
 app.use(session({
     store: new PostgreSQLStore({
@@ -519,13 +562,17 @@ app.get('/order', async (req, res) => {
 
 const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
-    let cart = req.session.cart;
-    let costs = req.session.total.toFixed(2)
-    let { billing_details, payment_Method, clientSecret } = req.body;
+    //let cart = req.session.cart;
+    //let costs = req.session.total.toFixed(2)
+
+    //! Working all. I get eventType next is to check payment method and call fuction
+    //! depends on payment method
+
+    let { billing_details, payment_Method, clientSecret, eventType } = req.body;
     
     const stripeProducts = stripe.products;
     try {
-        console.log('trying')
+        console.log('trying', eventType)
         /*    
         let paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(costs * 100), // Amount in cents
@@ -552,7 +599,7 @@ app.post('/placeOrder', async (req, res) => {
           });
         */
           
-        console.log("payment method: ",payment_Method);
+        console.log("payment method: ");
         console.log("///////////////////////////////////");
         let orderDate = todayDate.toLocaleString();
         let product_ids = [];
@@ -661,9 +708,46 @@ app.post('/placeOrder', async (req, res) => {
 })
 app.get('/config', (req, res) => {
     res.send({
-      publishableKey: process.env.STRIPE_P,
+      publishableKey: process.env.STRIPE_PK
     });
   });
+
+//! Webhook code
+
+app.post('/webhook', async (req, res) => {
+    let data, eventType;
+
+    if(process.env.STRIPE_WEBHOOK_SECRET){
+        let event;
+        let signature = req.headers['stripe-signature']
+        try{
+            event = stripe.webhooks.constructEvent(
+                req.rawBody,
+                signature,
+                process.env.STRIPE_WEBHOOK_SECRET
+            )
+        }catch(err){
+            console.log(`Webhook signature verification problem`);
+            return res.sendStatus(400);
+        }
+        data = event.data;
+        eventType = event.type;
+    }else{
+        data = req.body.data;
+        eventType = req.body.type;
+        }
+
+    if(eventType === 'payment_intent.succeeded'){
+        console.log("Successfully placed order");
+    }else if(eventType === 'payment_intent.payment_failed'){
+        console.log('Payment failed');
+    }
+    res.sendStatus(200);
+});
+
+//! End of Webhook code
+
+
 
 app.get("/fetchOrder", async (req, res) => {
     let total = req.session.total.toFixed(2)
@@ -1045,6 +1129,6 @@ app.get('/other', async (req, res) => {
 
 
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 3000
 app.listen(port,
     console.log(`listening on ${port}`))
