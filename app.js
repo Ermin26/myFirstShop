@@ -28,7 +28,7 @@ const { randomUUID } = require('crypto');
 const { parse } = require('path');
 const upload = multer({ storage })
 const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SK)
+const stripe = Stripe(process.env.STRIPE_S)
 const nodemailer = require('nodemailer');
 
 //const upload = multer({ dest: 'uploads/' })
@@ -494,7 +494,7 @@ app.get('/order', async (req, res) => {
     let cartItems = []
     let count = 0
     deleteZeroQty();
-    const publishableKey = process.env.STRIPE_PK;
+    const publishableKey = process.env.STRIPE_P;
     for (let i = 0; i < cart.length; i++) {
         await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
@@ -521,11 +521,12 @@ const productsForStripe = [];
 app.post('/placeOrder', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
-    let { billing_details, payment_Method } = req.body;
-    console.log("payment method: ",payment_Method);
+    let { billing_details, payment_Method, clientSecret } = req.body;
+    
     const stripeProducts = stripe.products;
     try {
-            
+        console.log('trying')
+        /*    
         let paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(costs * 100), // Amount in cents
             currency: 'eur',
@@ -545,19 +546,14 @@ app.post('/placeOrder', async (req, res) => {
                 phone: billing_details.phone
             }, 
         });
-        if (payment_Method === 'paypal') {
-            console.log("Payment method is paypal")
-        } else if (payment_Method === 'card') {
-            
-            console.log("Payment method is card")
-        }
-        console.log("///////////////////")
-        console.log("payment intent: ",paymentIntent)
-        console.log("///////////////////")
+        
         res.send({
             clientSecret: paymentIntent.client_secret
           });
-        
+        */
+          
+        console.log("payment method: ",payment_Method);
+        console.log("///////////////////////////////////");
         let orderDate = todayDate.toLocaleString();
         let product_ids = [];
         let product_qtys = [];
@@ -665,7 +661,7 @@ app.post('/placeOrder', async (req, res) => {
 })
 app.get('/config', (req, res) => {
     res.send({
-      publishableKey: process.env.STRIPE_PK,
+      publishableKey: process.env.STRIPE_P,
     });
   });
 
