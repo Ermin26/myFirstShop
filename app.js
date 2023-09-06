@@ -74,6 +74,7 @@ const nothingSpecial = process.env.IGNORE_ME
 
 const s_sk = process.env.STRIPE_SK;
 const s_pk = process.env.STRIPE_PK;
+const server_url = process.env.SERVER_URL;
 
 //! Testing stripe code part
 
@@ -708,7 +709,7 @@ app.post('/placeOrder', async (req, res) => {
 })
 app.get('/config', (req, res) => {
     res.send({
-      publishableKey: process.env.STRIPE_PK
+      publishableKey: process.env.STRIPE_PK, SERVER_URL: server_url
     });
   });
 

@@ -7,12 +7,13 @@
 </head>
 <body>
 
+    <div id="container" class="container">
+        <%# include('../../flash') %>
+    </div>
+
     <h1>Successfully payed</h1>
     
 
-    <div id="payment-intent">
-
-    </div>
     <script src="https://js.stripe.com/v3/"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async() =>{
@@ -20,16 +21,23 @@
             console.log("yooo", publishableKey);
             const stripe = Stripe(publishableKey);
 
-            const clientSecret = new URLSearchParams(window.location.search).get(
-  'redirect_status'
-);
+            //const clientSecret = new URLSearchParams(window.location.search).get('redirect_status');
+            const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret');
             console.log("client secret: " ,clientSecret)
             console.log("///////////////////////////")
             
-            //const {info} = stripe.retrievePaymentIntent(clientSecret);
-            //console.log("info: " ,info)
-            //const paymentIntentPre = document.getElementById('payment-intent')
-            //paymentIntentPre.innerText = JSON.stringify(info);
+            stripe.retrievePaymentIntent(clientSecret)
+            .then(function(result){
+                if(result.paymentIntent){
+                    let info = result.paymentIntent;
+                    const paymentIntentPre = document.getElementById('container')
+                    paymentIntentPre.innerHTML = JSON.stringify(info.status);
+                }else{
+                    console.log("Error: " ,result.error)
+                    
+                    
+                }
+            })
             
             
             
