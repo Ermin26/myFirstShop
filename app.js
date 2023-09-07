@@ -78,47 +78,30 @@ const server_url = process.env.SERVER_URL;
 
 //! Testing stripe code part
 
-const storeItems = new Map([
-    [1, {price: 1500, name: "First product"}],
-    [2, {price: 1850, name: "Second product"}],
-])
 
-app.get('/testOrder', async(req,res)=>{
-    res.render('orders/order')
-})
+/*
+app.get('/redirect', async (req, res) => {
+   // const fullUrl =  req.originalUrl;
+    const searchIntent = req.query.payment_intent;
+    if (!searchIntent) {
+        res.redirect('/')
+    } else {
+        const ifPayed = await stripe.paymentIntents.retrieve(searchIntent)
+        if (ifPayed.status === 'succedded') {
 
-app.get('/redirect', async(req,res)=>{
-    res.render('orders/redirect')
-})
 
-app.post('/create-payment-intent', async(req,res)=>{
-    /*
-    let total = req.session.total.toFixed(2)
-    let discount
-    if(total > 50){
-        discountPrice = total - (total * 0.10).toFixed(2)
-        discount = discountPrice.toFixed(2)
-    }else{
-        discount = total;
+
+            res.render('orders/redirect')
+        } else {
+            console.log(ifPayed.status)
+            res.redirect('/order')
+        }
     }
-    */
-    // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
-        
-      amount: 2099, // Amount in cents
-      currency: "eur",
-      description: 'Nakup',
-      automatic_payment_methods: {
-          enabled: true,
-        },
-        });
-  
-    res.send({
-      clientSecret: paymentIntent.client_secret
-    });
-});
+    
+})
 
-//! End of testing stripe code part
+*/
+
 
 app.use(session({
     store: new PostgreSQLStore({
@@ -450,7 +433,7 @@ app.post('/add-to-cart', async (req, res) => {
         res.redirect(`/product/${product_id}`)
 
     } else {
-        let product = { product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price, user_id: user_id };
+        let product = { user_id: user_id , product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
         req.session.cart = [product]
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')
@@ -525,7 +508,7 @@ app.get('/order', async (req, res) => {
         res.redirect('/')
     }else{
 
-    
+    console.log("This is your cart: ",cart)
     let total = req.session.total.toFixed(2)
     let totalPrice
     if(total > 50){
@@ -538,7 +521,7 @@ app.get('/order', async (req, res) => {
     let cartItems = []
     let count = 0
     deleteZeroQty();
-    const publishableKey = process.env.STRIPE_P;
+    const publishableKey = process.env.STRIPE_PK;
     for (let i = 0; i < cart.length; i++) {
         await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
             if (!err) {
@@ -562,196 +545,141 @@ app.get('/order', async (req, res) => {
 })
 
 const productsForStripe = [];
-app.post('/placeOrder', async (req, res) => {
-    //let cart = req.session.cart;
-    //let costs = req.session.total.toFixed(2)
+app.get('/redirect', async (req, res) => {
+    let cart = req.session.cart;
+    let costs = req.session.total.toFixed(2)
 
-    //! Working all. I get eventType next is to check payment method and call fuction
-    //! depends on payment method
+    const searchIntent = req.query.payment_intent;
+    if (!searchIntent) {
+        res.redirect('/')
+    } else {
+        const ifPayed = await stripe.paymentIntents.retrieve(searchIntent)
+        if (ifPayed.status === 'succedded') {
+            let orderDate = todayDate.toLocaleString();
+            let product_ids = [];
+            let product_qtys = [];
+            //let product_qtys = "";
+            let cart = req.session.cart;
+            let user_id = cart[0].user_id;
+            for (let i = 0; i < cart.length; i++) {
+                product_ids.push(cart[i].sku)
+                product_qtys.push(cart[i].qty)
+                //product_qtys = cart[i].qty + ',' + product_qtys;
+            }
+        //! Save order to db and send email to user.
 
-    let { billing_details, payment_Method, clientSecret, eventType } = req.body;
+
+            try {
+                await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${req.body.billing_details.name}', '${req.body.billing_details.email}', '${req.body.billing_details.address.country}', '${req.body.billing_details.address.city}', '${req.body.billing_details.address.postal_code}', '${req.body.billing_details.address.line1}', '${req.body.billing_details.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
+                req.flash('success', "Successfully placed order");
+                req.session.cart = "";
+
+                let transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: "jolda.ermin@gmail.com",
+                        pass: `${yoo}`,
+                    },
+                    tls: {
+                        rejectUnauthorized: false,
+                    }
+                });
+
+                let mailOptions = {
+                    from: "jolda.ermin@gmail.com",
+                    to: "ermin.alma1011@gmail.com",
+                    subject: "NAROČILO",
+                    html: `
+                    <html>
+                      <head>
+                        <style>
+                          body {
+                            font-family: Arial, sans-serif;
+                            background-color: white;
+                          }
+                          p {
+                            color: cyan;
+                          }
+                          .container{
+                            height: 20vh;
+                            width: 15vh
+                            margin: 2px;
+                            padding: 4px;
+                            border: 2px solid black;
+                          }
+
+                        </style>
+                      </head>
+                      <body>
+                        <div class="container">
+                            <p>Korisnik <stron>${req.body.billing_details.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
+                            <!-- Add the rest of your HTML content here -->
+                        </div>
+                        </body>
+                    </html>
+                  `,
+                };
+
+                transporter.sendMail(mailOptions, function (err, success) {
+                    if (err) {
+                        console.log(err.message);
+                    } else {
+                        console.log("Email sended");
+                    }
+
+                })
+
+                // Update qty after user has confirmed payment
+
+                for (let j = 0; j < product_ids.length; j++) {
+                    await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
+                        if (!e) {
+                            const qty = result.rows[0].qty - parseInt(product_qtys[j]);
+                            await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
+                            console.log( "Successfully updated")
+                        }
+                        else {
+                            req.flash('error', e.message);
+                            res.redirect('/order');
+                        }
+                     })
+                 }
+             
+                res.render('orders/redirect')
+            } catch (e) {
+            
+                req.flash("error", e.message, "Error with insert data into orders. Please try again.")
+                res.redirect('/order')
+            }
     
-    const stripeProducts = stripe.products;
-    try {
-        console.log('trying', eventType)
-        /*    
-        let paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(costs * 100), // Amount in cents
-            currency: 'eur',
-            description: 'Nakup',
-            automatic_payment_methods: {
-                enabled: true,
-            },
-            metadata: {
-                name: billing_details.name,
-                email : billing_details.email ,
-                address:{
-                    line1: billing_details.line1,
-                    country: billing_details.country,
-                    city: billing_details.city,
-                    postal_code: billing_details.postal_code
-                },
-                phone: billing_details.phone
-            }, 
-        });
         
-        res.send({
-            clientSecret: paymentIntent.client_secret
-          });
-        */
-          
-        console.log("payment method: ");
-        console.log("///////////////////////////////////");
-        let orderDate = todayDate.toLocaleString();
-        let product_ids = [];
-        let product_qtys = [];
-        //let product_qtys = "";
-        let cart = req.session.cart;
-        let user_id = cart[0].user_id;
-    for (let i = 0; i < cart.length; i++) {
-        product_ids.push(cart[i].sku)
-        product_qtys.push(cart[i].qty)
-        //product_qtys = cart[i].qty + ',' + product_qtys;
-    }
-    //! Save order to db and send email to user.
-        
-        /*
-        try {
-            await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${req.body.billing_details.name}', '${req.body.billing_details.email}', '${req.body.billing_details.address.country}', '${req.body.billing_details.address.city}', '${req.body.billing_details.address.postal_code}', '${req.body.billing_details.address.line1}', '${req.body.billing_details.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
-            req.flash('success', "Successfully placed order");
-            req.session.cart = "";
-            
-            let transporter = nodemailer.createTransport({
-                service: "gmail",
-                auth: {
-                    user: "jolda.ermin@gmail.com",
-                    pass: `${yoo}`,
-                },
-                tls: {
-                    rejectUnauthorized: false,
-                }
-            });
-            
-            let mailOptions = {
-                from: "jolda.ermin@gmail.com",
-                to: "ermin.alma1011@gmail.com",
-                subject: "NAROČILO",
-                html: `
-                <html>
-                  <head>
-                    <style>
-                      body {
-                        font-family: Arial, sans-serif;
-                        background-color: white;
-                      }
-                      p {
-                        color: cyan;
-                      }
-                      .container{
-                        height: 20vh;
-                        width: 15vh
-                        margin: 2px;
-                        padding: 4px;
-                        border: 2px solid black;
-                      }
-                      
-                    </style>
-                  </head>
-                  <body>
-                    <div class="container">
-                        <p>Korisnik <stron>${req.body.billing_details.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
-                        <!-- Add the rest of your HTML content here -->
-                    </div>
-                    </body>
-                </html>
-              `,
-            };
-            
-            transporter.sendMail(mailOptions, function (err, success) {
-                if (err) {
-                    console.log(err.message);
-                } else {
-                    console.log("Email sended");
-                }
-                
-            })
-            
-            // Update qty after user has confirmed payment
-
-            for (let j = 0; j < product_ids.length; j++) {
-                await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
-                    if (!e) {
-                        const qty = result.rows[0].qty - parseInt(product_qtys[j]);
-                        await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
-                        console.log( "Successfully updated")
-                    }
-                    else {
-                        req.flash('error', e.message);
-                        res.redirect('/order');
-                    }
-                 })
-             }
-            
-            res.json({ clientSecret: paymentIntent.client_secret })
-        } catch (e) {
-        
-        req.flash("error", e.message, "Error with insert data into orders. Please try again.")
-        res.redirect('/order')
-    }
-    */
-    } catch (error) {
-        req.flash('error', error.message)
-        console.log('error jebiga', error.message)
-        res.redirect('/order')
-
+        } else {
+            console.log(ifPayed)
+            req.flash('error',"Prosimo izberite način plačila. Ko bo plačilo potrjeno naročilo bo sprocesirano.")
+            res.redirect('/order')
+        }
     }
 
 })
-app.get('/config', (req, res) => {
-    res.send({
-      publishableKey: process.env.STRIPE_PK, SERVER_URL: server_url
-    });
-  });
 
-//! Webhook code
-
-app.post('/webhook', async (req, res) => {
-    let data, eventType;
-
-    if(process.env.STRIPE_WEBHOOK_SECRET){
-        let event;
-        let signature = req.headers['stripe-signature']
-        try{
-            event = stripe.webhooks.constructEvent(
-                req.rawBody,
-                signature,
-                process.env.STRIPE_WEBHOOK_SECRET
-            )
-        }catch(err){
-            console.log(`Webhook signature verification problem`);
-            return res.sendStatus(400);
-        }
-        data = event.data;
-        eventType = event.type;
-    }else{
-        data = req.body.data;
-        eventType = req.body.type;
-        }
-
-    if(eventType === 'payment_intent.succeeded'){
-        console.log("Successfully placed order");
-    }else if(eventType === 'payment_intent.payment_failed'){
-        console.log('Payment failed');
-    }
-    res.sendStatus(200);
+app.get('/payed', async (req, res) => {
+    req.flash('success', "Hvala za vaše zaupanje.")
+    console.log('Okey dela!');
+    res.redirect('/')
 });
 
-//! End of Webhook code
-
+app.get('/config', (req, res) => {
+    const user_id = req.session.user_id
+    res.send({
+      publishableKey: process.env.STRIPE_PK, SERVER_URL: server_url, users_id: user_id
+    });
+  });
 
 
 app.get("/fetchOrder", async (req, res) => {
     let total = req.session.total.toFixed(2)
+    let user_id = req.session.cart[0].user_id;
+    console.log("User_id on MakeOrder page load: ", user_id);
     let discount
     if(total > 50){
         discountPrice = total - (total * 0.10).toFixed(2)
@@ -764,12 +692,16 @@ app.get("/fetchOrder", async (req, res) => {
         
       amount: Math.round(discount * 100), // Amount in cents
       currency: "eur",
-      description: 'Nakup',
+      description: 'Salester, plačilo nakupa.',
       automatic_payment_methods: {
           enabled: true,
         },
+        metadata: {
+        user_id: `${user_id}`,  
+      },
+      receipt_email: 'jolda.ermin@gmail.com'
         });
-  
+        console.log("Payment intent on order",paymentIntent)
     res.send({
       clientSecret: paymentIntent.client_secret
     });

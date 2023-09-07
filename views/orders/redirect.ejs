@@ -18,18 +18,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', async() =>{
             const {publishableKey} = await fetch('/config').then((r) => r.json())
-            console.log("yooo", publishableKey);
+            
             const stripe = Stripe(publishableKey);
 
             //const clientSecret = new URLSearchParams(window.location.search).get('redirect_status');
             const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret');
-            console.log("client secret: " ,clientSecret)
-            console.log("///////////////////////////")
+            
             
             stripe.retrievePaymentIntent(clientSecret)
             .then(function(result){
                 if(result.paymentIntent){
                     let info = result.paymentIntent;
+                    console.log("This is info after redirect: ", info)
                     const paymentIntentPre = document.getElementById('container')
                     paymentIntentPre.innerHTML = JSON.stringify(info.status);
                 }else{

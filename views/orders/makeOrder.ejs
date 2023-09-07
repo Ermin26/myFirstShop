@@ -13,6 +13,10 @@
 <body>
     <%- include('../partials/nav.ejs') %>
 
+    <div class="flash">
+        <%# include('../../flash') %>
+    </div>
+
     <div class="container text-center justify-content-center" style="margin-bottom: 15vh;">
         <%- include('../../flash') %>
             <div class="info text-center">
@@ -126,7 +130,7 @@
         addEventListener('DOMContentLoaded',async()=>{
             
             //const stripe = Stripe('pk_live_51MdvPOHAKJ9ybQgY3lEYJQ1TxLDsLlBVnPJestkYEqooVkmGw1pbatap5URKu7pN5T4RqAYotFAcWYdP9luqxwjY00Ky97oD6B');
-            const {publishableKey, SERVER_URL} = await fetch('/config').then((r) => r.json());
+            const {publishableKey, SERVER_URL, user_id} = await fetch('/config').then((r) => r.json());
             const stripe = Stripe(publishableKey);
             const apiKey = publishableKey;
              
@@ -193,7 +197,6 @@
                     const form = document.getElementById('payment-form');
                         form.addEventListener('submit', async (event) => {
                             event.preventDefault();
-                            console.log("addressData: ", addressData);
                         // Disable the submit button to prevent multiple clicks
                         document.getElementById('submit-button').disabled = true;
                         const billingDetails = {
@@ -210,7 +213,7 @@
 
                                 elements.submit();
                                 let eventType
-
+                                
                                 if(paymentMethod[0] === 'card'){
 
                                      const result = await stripe.confirmPayment({
@@ -218,8 +221,8 @@
                                         elements,
                                         confirmParams: {
                                             return_url: `${SERVER_URL}/redirect`,
-                                            },  
-                                        redirect: 'if_required',
+                                            },
+                                            redirect: 'if_required',
                                         billing_details: {
                                             name: billingDetails.name,
                                             email : billingDetails.email ,
@@ -231,23 +234,16 @@
                                             },
                                             phone: billingDetails.phone
                                         },
+                                        metadata: {
+                                            user_id: user_id,
+                                        },
+                                        receipt_email: billingDetails.email,
                                     });
-                                    if (result) {
-                                        console.log("result",result.paymentIntent.status)
-               
-                                        const response = await fetch('/placeOrder', {
-                                             method: 'POST',
-                                             headers: {
-                                                 Authorization: `Bearer ${publishableKey}`,
-                                                 'Content-Type': 'application/json',
-                                             },
-                                             body: JSON.stringify({
-                                                payment_Method: paymentMethod[0],
-                                                billing_details: billingDetails,
-                                                eventType: result.paymentIntent.status
-                                             }),
-                                         });
-                                     }else {
+                                    if (result.paymentIntent) {
+                                        console.log("result",result.paymentIntent)
+                                        window.location = '/';
+                                        
+                                        }else {
                                             window.alert("Some error occurred");
                                     
                                             };
@@ -258,13 +254,6 @@
                                         return_url: `${SERVER_URL}/redirect`,
                                         
                                         });
-                                    if(result.paymentIntent){
-                                        //window.alert("PayPal payment successful", result.paymentIntent)
-                                        console.log("client side", result.paymentIntent)
-                                    }
-                                    else if(result.error){
-                                        console.log("result returned with error object",result.error)
-                                    }
                                 }
                             });
         });
