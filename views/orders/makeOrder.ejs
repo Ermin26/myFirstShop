@@ -163,7 +163,8 @@
                 const addressElement = elements.create("address", options);
                 addressElement.mount("#address-element");
                 const paymentElement = elements.create('payment',{
-                    paymentMethodOrder:['card', 'paypal', 'apple_pay', 'google_pay']
+                    paymentMethodOrder:['card', 'paypal', 'apple_pay', 'google_pay'],
+                    
                 });
                 paymentElement.mount('#payment-element');
                 const linkAuthenticationElement = elements.create("linkAuthentication");
@@ -193,7 +194,7 @@
                             emailData.push(event.value.email);
                         }
                     })
-        
+                    console.log("This is email before submit",emailData);
                     const form = document.getElementById('payment-form');
                         form.addEventListener('submit', async (event) => {
                             event.preventDefault();
@@ -213,8 +214,9 @@
 
                                 elements.submit();
                                 let eventType
+                                console.log("email data: ", emailData)
                                 
-                                if(paymentMethod[0] === 'card'){
+                                //if(paymentMethod[0] === 'card'){
 
                                      const result = await stripe.confirmPayment({
                                         clientSecret,
@@ -222,7 +224,7 @@
                                         confirmParams: {
                                             return_url: `${SERVER_URL}/redirect`,
                                             },
-                                            redirect: 'if_required',
+                                           redirect: 'if_required',
                                         billing_details: {
                                             name: billingDetails.name,
                                             email : billingDetails.email ,
@@ -238,23 +240,47 @@
                                             user_id: user_id,
                                         },
                                         receipt_email: billingDetails.email,
+                                        payment_method_data: {
+                                            billing_details: {
+                                            name: billingDetails.name,
+                                            email : billingDetails.email ,
+                                            address:{
+                                                line1: billingDetails.address.line1,
+                                                country: billingDetails.address.country,
+                                                city: billingDetails.address.city,
+                                                postal_code: billingDetails.address.postal_code
+                                            },
+                                            phone: billingDetails.phone
+                                        },
+                                        }
                                     });
-                                    if (result.paymentIntent) {
+                                    if (result) {
                                         console.log("result",result.paymentIntent)
-                                        window.location = '/';
+                                        await fetch('/testingPostRoute', {
+                                            method: 'POST',
+                                            headers: {
+                                                Authorization: `Bearer ${publishableKey}`,
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                paymentIntent: result.paymentIntent,
+                                            }),
+                                        });
                                         
                                         }else {
                                             window.alert("Some error occurred");
                                     
                                             };
-                                } 
-                                else if(paymentMethod[0] === 'paypal'){
+                                //} 
+                                /*
+                               else if(paymentMethod[0] === 'paypal'){
                                     console.log("Paypal payment")
                                     const result = await stripe.confirmPayPalPayment(`${clientSecret}`,{
                                         return_url: `${SERVER_URL}/redirect`,
                                         
                                         });
                                 }
+                                */
                             });
         });
 

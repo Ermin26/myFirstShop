@@ -507,8 +507,6 @@ app.get('/order', async (req, res) => {
     if(!cart){
         res.redirect('/')
     }else{
-
-    console.log("This is your cart: ",cart)
     let total = req.session.total.toFixed(2)
     let totalPrice
     if(total > 50){
@@ -544,18 +542,39 @@ app.get('/order', async (req, res) => {
 }
 })
 
+
+//! Only for testing
+
+app.post('/testingPostRoute', async (req, res) => { 
+
+    const {paymentIntent} = req.body;
+
+    console.log("This is sended by json after confirm payment: ",paymentIntent);
+});
+
+//!
+
+
 const productsForStripe = [];
 app.get('/redirect', async (req, res) => {
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
 
     const searchIntent = req.query.payment_intent;
+    console.log("This is search intents",searchIntent);
     if (!searchIntent) {
         res.redirect('/')
     } else {
         const ifPayed = await stripe.paymentIntents.retrieve(searchIntent)
-        if (ifPayed.status === 'succedded') {
-            let orderDate = todayDate.toLocaleString();
+        if (ifPayed.status === 'succeeded') {
+            const paymenthMethod = await stripe.paymentMethods.retrieve(ifPayed.payment_method);
+            const shippingInfo = ifPayed.shipping;
+            console.log("////////////////////////////",)
+            console.log("This is shippingInfo: ",shippingInfo)
+            console.log("////////////////////////////",)
+            console.log("////////////////////////////",)
+            console.log("This is paymenth method", paymenthMethod.billing_details.email)
+            let orderDate = todayDate.toLocaleString(); 
             let product_ids = [];
             let product_qtys = [];
             //let product_qtys = "";
@@ -568,9 +587,9 @@ app.get('/redirect', async (req, res) => {
             }
         //! Save order to db and send email to user.
 
-
+/*
             try {
-                await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${req.body.billing_details.name}', '${req.body.billing_details.email}', '${req.body.billing_details.address.country}', '${req.body.billing_details.address.city}', '${req.body.billing_details.address.postal_code}', '${req.body.billing_details.address.line1}', '${req.body.billing_details.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
+                await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${shippingInfo.name}', '${paymentMethod.billing_details.email.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','${ifPayed.status}','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
                 req.flash('success', "Successfully placed order");
                 req.session.cart = "";
 
@@ -612,7 +631,7 @@ app.get('/redirect', async (req, res) => {
                       </head>
                       <body>
                         <div class="container">
-                            <p>Korisnik <stron>${req.body.billing_details.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
+                            <p>Korisnik <stron>${shippingInfo.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
                             <!-- Add the rest of your HTML content here -->
                         </div>
                         </body>
@@ -651,8 +670,8 @@ app.get('/redirect', async (req, res) => {
                 req.flash("error", e.message, "Error with insert data into orders. Please try again.")
                 res.redirect('/order')
             }
-    
-        
+    */
+            res.render('orders/redirect')
         } else {
             console.log(ifPayed)
             req.flash('error',"Prosimo izberite način plačila. Ko bo plačilo potrjeno naročilo bo sprocesirano.")
@@ -671,7 +690,7 @@ app.get('/payed', async (req, res) => {
 app.get('/config', (req, res) => {
     const user_id = req.session.user_id
     res.send({
-      publishableKey: process.env.STRIPE_PK, SERVER_URL: server_url, users_id: user_id
+      publishableKey: process.env.STRIPE_PK, SERVER_URL: server_url, user_id: user_id
     });
   });
 
@@ -679,7 +698,8 @@ app.get('/config', (req, res) => {
 app.get("/fetchOrder", async (req, res) => {
     let total = req.session.total.toFixed(2)
     let user_id = req.session.cart[0].user_id;
-    console.log("User_id on MakeOrder page load: ", user_id);
+    let cart = req.session.cart;
+    console.log(cart);
     let discount
     if(total > 50){
         discountPrice = total - (total * 0.10).toFixed(2)
@@ -695,21 +715,25 @@ app.get("/fetchOrder", async (req, res) => {
       description: 'Salester, plačilo nakupa.',
       automatic_payment_methods: {
           enabled: true,
+          allow_redirects: 'never',
         },
         metadata: {
-        user_id: `${user_id}`,  
-      },
-      receipt_email: 'jolda.ermin@gmail.com'
+        // order_id: same id save to the database when user confirm payment and with that id retrieve bayed products to the user show page after redirected.
+        //invoice: number
+        //user_id: `${user_id}`,  
+        },
+        
+      //receipt_email: 'jolda.ermin@gmail.com'
         });
-        console.log("Payment intent on order",paymentIntent)
+        //console.log("Payment intent on order",paymentIntent)
+    
+   
     res.send({
       clientSecret: paymentIntent.client_secret
     });
 });
   
-app.get('/done', async (req, res) => {
-    res.send('<h1>Done!</h1>');
-})
+
 
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
