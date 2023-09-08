@@ -569,6 +569,9 @@ app.get('/redirect', async (req, res) => {
         if (ifPayed.status === 'succeeded') {
             const paymenthMethod = await stripe.paymentMethods.retrieve(ifPayed.payment_method);
             const shippingInfo = ifPayed.shipping;
+            await stripe.paymentIntents.update(ifPayed.id, {
+                receipt_email: paymenthMethod.billing_details.email,
+            });
             console.log("////////////////////////////",)
             console.log("This is shippingInfo: ",shippingInfo)
             console.log("////////////////////////////",)
