@@ -192,6 +192,7 @@
                         if(event.complete){
                             emailData.pop();
                             emailData.push(event.value.email);
+                            console.log("email daza: " ,emailData)
                         }
                     })
                     console.log("This is email before submit",emailData);
@@ -214,8 +215,7 @@
 
                                 elements.submit();
                                 let eventType
-                                console.log("email data: ", emailData)
-                                
+                                console.log(emailData)
                                 //if(paymentMethod[0] === 'card'){
 
                                      const result = await stripe.confirmPayment({
@@ -264,6 +264,7 @@
                                             },
                                             body: JSON.stringify({
                                                 paymentIntent: result.paymentIntent,
+                                                billing_details: billingDetails,
                                             }),
                                         });
                                         
@@ -271,16 +272,7 @@
                                             window.alert("Some error occurred");
                                     
                                             };
-                                //} 
-                                /*
-                               else if(paymentMethod[0] === 'paypal'){
-                                    console.log("Paypal payment")
-                                    const result = await stripe.confirmPayPalPayment(`${clientSecret}`,{
-                                        return_url: `${SERVER_URL}/redirect`,
-                                        
-                                        });
-                                }
-                                */
+                                
                             });
         });
 

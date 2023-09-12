@@ -547,9 +547,13 @@ app.get('/order', async (req, res) => {
 
 app.post('/testingPostRoute', async (req, res) => { 
 
-    const {paymentIntent} = req.body;
+    const {paymentIntent, billing_details} = req.body;
 
-    console.log("This is sended by json after confirm payment: ",paymentIntent);
+    console.log("This is paymenIntent sended by json after confirm payment: ",paymentIntent);
+    console.log("//////////////");
+    console.log("This is sbilling details ended by json after confirm payment: ",billing_details);
+
+    res.render('orders/redirect')
 });
 
 //!
