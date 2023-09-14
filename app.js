@@ -543,21 +543,6 @@ app.get('/order', async (req, res) => {
 })
 
 
-//! Only for testing
-
-app.post('/testingPostRoute', async (req, res) => { 
-
-    const {paymentIntent, billing_details} = req.body;
-
-    console.log("This is paymenIntent sended by json after confirm payment: ",paymentIntent);
-    console.log("//////////////");
-    console.log("This is sbilling details ended by json after confirm payment: ",billing_details);
-
-    res.render('orders/redirect')
-});
-
-//!
-
 
 const productsForStripe = [];
 app.get('/redirect', async (req, res) => {
@@ -576,10 +561,7 @@ app.get('/redirect', async (req, res) => {
             await stripe.paymentIntents.update(ifPayed.id, {
                 receipt_email: paymenthMethod.billing_details.email,
             });
-            console.log("////////////////////////////",)
             console.log("This is shippingInfo: ",shippingInfo)
-            console.log("////////////////////////////",)
-            console.log("////////////////////////////",)
             console.log("This is paymenth method", paymenthMethod.billing_details.email)
             let orderDate = todayDate.toLocaleString(); 
             let product_ids = [];
@@ -687,7 +669,28 @@ app.get('/redirect', async (req, res) => {
     }
 
 })
+//! Only for testing
 
+app.post('/testingPostRoute', async (req, res) => { 
+
+    const {paymentIntent, billing_details} = req.body;
+    
+    if(paymentIntent.status === 'succeeded'){
+        const paymenthMethod = await stripe.paymentMethods.retrieve(paymentIntent.payment_method);
+        console.log('Billing data: ', billing_details);
+        console.log('----///////-------');
+        console.log('Payment Method: ', paymenthMethod);
+        res.redirect('/')
+    }else{
+        console.log("//////////////");
+        console.log("Not payed: ");
+        res.redirect('order')
+    }
+    //console.log("This is billing details ended by json after confirm payment: ",billing_details);
+
+});
+
+//!
 app.get('/payed', async (req, res) => {
     req.flash('success', "Hvala za vaše zaupanje.")
     console.log('Okey dela!');
