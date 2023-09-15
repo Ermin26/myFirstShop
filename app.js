@@ -680,7 +680,7 @@ app.post('/testingPostRoute', async (req, res) => {
         console.log('Billing data: ', billing_details);
         console.log('----///////-------');
         console.log('Payment Method: ', paymenthMethod);
-        res.redirect('/')
+        res.status(302).redirect('payed')
     }else{
         console.log("//////////////");
         console.log("Not payed: ");
@@ -690,12 +690,13 @@ app.post('/testingPostRoute', async (req, res) => {
 
 });
 
-//!
 app.get('/payed', async (req, res) => {
     req.flash('success', "Hvala za vaše zaupanje.")
     console.log('Okey dela!');
     res.redirect('/')
 });
+
+//!
 
 app.get('/config', (req, res) => {
     const user_id = req.session.user_id
