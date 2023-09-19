@@ -546,14 +546,14 @@ app.get('/order', async (req, res) => {
 
 const productsForStripe = [];
 app.get('/redirect', async (req, res) => {
+    console.log("Payed with paypal")
     let cart = req.session.cart;
     let costs = req.session.total.toFixed(2)
 
     const searchIntent = req.query.payment_intent;
     console.log("This is search intents",searchIntent);
-    if (!searchIntent) {
-        res.redirect('/')
-    } else {
+    if (searchIntent) {
+    
         const ifPayed = await stripe.paymentIntents.retrieve(searchIntent)
         if (ifPayed.status === 'succeeded') {
             const paymenthMethod = await stripe.paymentMethods.retrieve(ifPayed.payment_method);
@@ -561,8 +561,8 @@ app.get('/redirect', async (req, res) => {
             await stripe.paymentIntents.update(ifPayed.id, {
                 receipt_email: paymenthMethod.billing_details.email,
             });
-            console.log("This is shippingInfo: ",shippingInfo)
-            console.log("This is paymenth method", paymenthMethod.billing_details.email)
+            //console.log("This is shippingInfo: ",shippingInfo)
+            //console.log("This is paymenth method", paymenthMethod.billing_details.email)
             let orderDate = todayDate.toLocaleString(); 
             let product_ids = [];
             let product_qtys = [];
@@ -576,11 +576,11 @@ app.get('/redirect', async (req, res) => {
             }
         //! Save order to db and send email to user.
 
-/*
+
             try {
-                await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${shippingInfo.name}', '${paymentMethod.billing_details.email.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','${ifPayed.status}','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
+                await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${shippingInfo.name}', '${paymenthMethod.billing_details.email.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','true','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
                 req.flash('success', "Successfully placed order");
-                req.session.cart = "";
+                
 
                 let transporter = nodemailer.createTransport({
                     service: "gmail",
@@ -652,27 +652,40 @@ app.get('/redirect', async (req, res) => {
                         }
                      })
                  }
-             
-                res.render('orders/redirect')
+                 await conn.query(`SELECT * FROM orders WHERE user_id = '${user_id}'`, async(err, result)=>{
+                     const orderData = result.rows[0];
+                     console.log("This shit works?", orderData)
+                    if(!orderData.length){
+                        res.redirect('order');
+                    }else{
+                        console.log("Order Data second: ", orderData)
+                        res.render('orders/redirect', {orderData});
+                        
+                    }
+                 })
+                 req.session.cart = "";
             } catch (e) {
             
                 req.flash("error", e.message, "Error with insert data into orders. Please try again.")
                 res.redirect('/order')
             }
-    */
-            res.render('orders/redirect')
+    
+
         } else {
             console.log(ifPayed)
             req.flash('error',"Prosimo izberite način plačila. Ko bo plačilo potrjeno naročilo bo sprocesirano.")
             res.redirect('/order')
         }
-    }
+        }else{
+            res.redirect('order')
+        }
+    
 
 })
 //! Only for testing
 
 app.post('/testingPostRoute', async (req, res) => { 
-
+    console.log("Payed with card")
     const {paymentIntent, billing_details} = req.body;
     
     if(paymentIntent.status === 'succeeded'){

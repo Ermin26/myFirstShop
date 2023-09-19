@@ -195,17 +195,20 @@
                             console.log("email daza: " ,emailData)
                         }
                     })
-                    let redirecturl ;
-                    if(paymentMethod === 'paypal'){
-                        redirectUrl = 'redirect';
-                    }else{
-                        redirectUrl ='payed';
-                    }
+                    
+                    
                     const form = document.getElementById('payment-form');
                         form.addEventListener('submit', async (event) => {
                             event.preventDefault();
                         // Disable the submit button to prevent multiple clicks
                         document.getElementById('submit-button').disabled = true;
+                        let redirecturl ;
+                        if(paymentMethod[0] == 'paypal'){
+                            redirectUrl = 'redirect';
+                            console.log("Client side:", redirectUrl, paymentMethod);
+                        }else{
+                            redirectUrl ='payed';
+                        }
                         const billingDetails = {
                             name: addressData.name,
                             email: emailData[0],
@@ -259,7 +262,8 @@
                                         }
                                    
                                     });
-                                    
+                                    if (paymentMethod !== 'paypal'){
+
                                     if (result) {
                                         console.log("result",result.paymentIntent)
                                         await fetch('/testingPostRoute', {
@@ -278,6 +282,7 @@
                                         }else {
                                             window.alert("Some error occurred");
                                     
+                                            };
                                             };
                             });
         });
