@@ -9,12 +9,18 @@
 
     <div id="container" class="container">
         <%# include('../../flash') %>
-        <% for(data of orderData) {%>
-            <%= data %>
-            <% } %>
+        
     </div>
-
-    <h1>Successfully payed</h1>
+    <h1>Successfully payed</h1> 
+    <a href="/">Home</a>
+    <% for(data of orderData) {%>
+        <%= data.name %>
+        <%= data.country %>
+        <%= data.city %>
+        <%= data.zip %>
+        <%= data.street %>
+        <% } %>
+    
     
 
     <script src="https://js.stripe.com/v3/"></script>

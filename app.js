@@ -652,24 +652,26 @@ app.get('/redirect', async (req, res) => {
                         }
                      })
                  }
-                 await conn.query(`SELECT * FROM orders WHERE user_id = '${user_id}'`, async(err, result)=>{
-                     const orderData = result.rows[0];
-                     console.log("This shit works?", orderData)
-                    if(!orderData.length){
-                        res.redirect('order');
-                    }else{
-                        console.log("Order Data second: ", orderData)
-                        res.render('orders/redirect', {orderData});
-                        
-                    }
-                 })
-                 req.session.cart = "";
+                 
             } catch (e) {
             
                 req.flash("error", e.message, "Error with insert data into orders. Please try again.")
                 res.redirect('/order')
             }
-    
+            await conn.query(`SELECT * FROM orders WHERE user_id = '${user_id}'`, async(err, result)=>{
+                const orderData = result.rows;
+                console.log("This shit works?", orderData)
+                if (!orderData.length) {
+                   console.log("check if data")
+                   res.redirect('order');
+                }else{
+                   console.log("check else data")
+                   console.log("Order Data second: ", orderData)
+                   res.render('orders/redirect', {orderData});
+                   
+               }
+            })
+            req.session.cart = "";
 
         } else {
             console.log(ifPayed)
