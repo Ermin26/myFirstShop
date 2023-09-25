@@ -578,7 +578,7 @@ app.get('/redirect', async (req, res) => {
 
 
             try {
-                await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${shippingInfo.name}', '${paymenthMethod.billing_details.email.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','true','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
+                await conn.query(`INSERT INTO orders(name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','true','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
                 req.flash('success', "Successfully placed order");
                 
 
