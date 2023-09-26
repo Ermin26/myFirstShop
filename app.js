@@ -706,9 +706,19 @@ app.post('/testingPostRoute', async (req, res) => {
 });
 
 app.get('/payed', async (req, res) => {
-    req.flash('success', "Hvala za vaše zaupanje.")
-    console.log('Okey dela!');
-    res.redirect('/')
+    console.log('Okey dela!',req.session);
+    const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
+    if(ifPayed.status == 'succeeded'){
+        //! Here go data to save order and to edit qty of products
+        req.flash('success', "Hvala za vaše zaupanje.")
+        console.log(ifPayed)
+        res.redirect('/')
+    }else{
+        //! PAYMENT Error handling
+
+        req.flash('error', "Prosim, izberite način plačila");
+        res.redirect('/order')
+    }
 });
 
 //!
@@ -725,7 +735,8 @@ app.get("/fetchOrder", async (req, res) => {
     let total = req.session.total.toFixed(2)
     let user_id = req.session.cart[0].user_id;
     let cart = req.session.cart;
-    console.log(cart);
+    let invoice = Math.floor(1000 + Math.random() * 9000) + "-" + year + "-" + Math.floor(Math.random() * 10);
+    let trackingNumber = Math.floor(10000 + Math.random() * 90000);
     let discount
     if(total > 50){
         discountPrice = total - (total * 0.10).toFixed(2)
@@ -741,18 +752,17 @@ app.get("/fetchOrder", async (req, res) => {
       description: 'Salester, plačilo nakupa.',
       automatic_payment_methods: {
           enabled: true,
-          allow_redirects: 'never',
         },
         metadata: {
-        // order_id: same id save to the database when user confirm payment and with that id retrieve bayed products to the user show page after redirected.
-        //invoice: number
-        //user_id: `${user_id}`,  
+        order_id: trackingNumber,
+        //invoice: invoice must update after user confirmed payment,
+        user_id: `${user_id}`,  
         },
         
-      //receipt_email: 'jolda.ermin@gmail.com'
         });
-        //console.log("Payment intent on order",paymentIntent)
-    
+        console.log("Payment intent on fetchOrder",paymentIntent)
+        req.session.payment = paymentIntent.id;
+        req.session.trackNum = paymentIntent.metadata.order_id;
    
     res.send({
       clientSecret: paymentIntent.client_secret
