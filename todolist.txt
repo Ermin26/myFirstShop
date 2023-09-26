@@ -1,6 +1,14 @@
 
+✘ @cancelled(23-09-26 14:10)
+
+    daj končaj že enkrat, tolko da se lahko naročuje in plača! Fix redirects, save payment_id to the session and then retrieve data if needed
+    create order number with every created payment intent... order number must be 4-4-year number and save number to the payment intent and create "TRAKING NUMBER" for user to check status of his order!
+
+✘ @cancelled(23-09-26 14:10)
+
+
 NEXT ----
-    ✘  Make code for email stripe send and invoices @cancelled(23-09-08 14:07)
+    ✘  Make code for email stripe send and invoice (not send invoice on mail onla a bill and code for check order status) @cancelled(23-09-08 14:07)
     ✘  Make app only for adding images!!!!!! @cancelled(23-03-29 14:38)
     ☐  Must add checkbox for pyment after product received?
     ☐  Make table for addOns
