@@ -379,6 +379,7 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
+    console.log("Cart route session:", req.session)
     deleteZeroQty();
     if (cart) {
         if (!cart.length) {
@@ -672,6 +673,7 @@ app.get('/redirect', async (req, res) => {
                }
             })
             req.session.cart = "";
+            reqession.trackingNumber = "";
 
         } else {
             console.log(ifPayed)
@@ -709,9 +711,122 @@ app.get('/payed', async (req, res) => {
     console.log('Okey dela!',req.session);
     const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
     if(ifPayed.status == 'succeeded'){
-        //! Here go data to save order and to edit qty of products
+        //! Here go data to save order and to edit qty of products, create order invoice
         req.flash('success', "Hvala za vaše zaupanje.")
-        console.log(ifPayed)
+      
+        const shippingInfo = ifPayed.shipping;
+        const paymenthMethod = await stripe.paymentMethods.retrieve(ifPayed.payment_method);
+        await stripe.paymentIntents.update(ifPayed.id, {
+            receipt_email: paymenthMethod.billing_details.email,
+            //invoice: "",
+            //processing: "V obdelavi"
+        });
+        const updated = await stripe.paymentIntents.retrieve(req.session.payment);
+        //console.log("Updated payment: ", updated);
+
+
+        //! Start of code for saving data to dbs
+
+        let orderDate = todayDate.toLocaleString(); 
+            let product_ids = [];
+            let product_qtys = [];
+            //let product_qtys = "";
+            let cart = req.session.cart;
+            let user_id = cart[0].user_id;
+            for (let i = 0; i < cart.length; i++) {
+                product_ids.push(cart[i].sku)
+                product_qtys.push(cart[i].qty)
+                //product_qtys = cart[i].qty + ',' + product_qtys;
+            }
+        //! Save order to db and send email to user.
+
+
+            try {
+                await conn.query(`INSERT INTO orders(trackingNum, invoice, name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${ifPayed.metadat.trackOrder_id}','${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','true','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
+                req.flash('success', "Successfully placed order");
+                
+
+                let transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: "jolda.ermin@gmail.com",
+                        pass: `${yoo}`,
+                    },
+                    tls: {
+                        rejectUnauthorized: false,
+                    }
+                });
+
+                let mailOptions = {
+                    from: "jolda.ermin@gmail.com",
+                    to: "ermin.alma1011@gmail.com",
+                    subject: "NAROČILO",
+                    html: `
+                    <html>
+                      <head>
+                        <style>
+                          body {
+                            font-family: Arial, sans-serif;
+                            background-color: white;
+                          }
+                          p {
+                            color: cyan;
+                          }
+                          .container{
+                            height: 20vh;
+                            width: 15vh
+                            margin: 2px;
+                            padding: 4px;
+                            border: 2px solid black;
+                          }
+
+                        </style>
+                      </head>
+                      <body>
+                        <div class="container">
+                            <p>Korisnik <stron>${shippingInfo.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
+                            <!-- Add the rest of your HTML content here -->
+                        </div>
+                        </body>
+                    </html>
+                  `,
+                };
+
+                transporter.sendMail(mailOptions, function (err, success) {
+                    if (err) {
+                        console.log(err.message);
+                    } else {
+                        console.log("Email sended");
+                    }
+
+                })
+
+                // Update qty after user has confirmed payment
+
+                for (let j = 0; j < product_ids.length; j++) {
+                    await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
+                        if (!e) {
+                            const qty = result.rows[0].qty - parseInt(product_qtys[j]);
+                            await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
+                            console.log( "Successfully updated")
+                        }
+                        else {
+                            req.flash('error', e.message);
+                            res.redirect('/order');
+                        }
+                     })
+                 }
+                 
+            } catch (e) {
+            
+                req.flash("error", e.message, "Error with insert data into orders. Please try again.")
+                res.redirect('/order')
+            }
+            req.session.cart = "";
+            reqession.trackingNumber = "";
+
+
+
         res.redirect('/')
     }else{
         //! PAYMENT Error handling
@@ -736,7 +851,12 @@ app.get("/fetchOrder", async (req, res) => {
     let user_id = req.session.cart[0].user_id;
     let cart = req.session.cart;
     let invoice = Math.floor(1000 + Math.random() * 9000) + "-" + year + "-" + Math.floor(Math.random() * 10);
-    let trackingNumber = Math.floor(10000 + Math.random() * 90000);
+    
+    let checkTrackNum = req.session.trackingNumber;
+    if (!checkTrackNum) {
+        req.session.trackingNumber = Math.floor(10000 + Math.random() * 90000) + year + "-" + Math.floor(Math.random() * 7500);
+    }
+    console.log(req.session)
     let discount
     if(total > 50){
         discountPrice = total - (total * 0.10).toFixed(2)
@@ -744,6 +864,9 @@ app.get("/fetchOrder", async (req, res) => {
     }else{
         discount = total;
     }
+
+    
+
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
         
@@ -754,16 +877,15 @@ app.get("/fetchOrder", async (req, res) => {
           enabled: true,
         },
         metadata: {
-        order_id: trackingNumber,
+        trackOrder_id: req.session.trackingNumber,
         //invoice: invoice must update after user confirmed payment,
         user_id: `${user_id}`,  
         },
         
         });
-        console.log("Payment intent on fetchOrder",paymentIntent)
+       // console.log("Payment intent on fetchOrder",paymentIntent)
         req.session.payment = paymentIntent.id;
-        req.session.trackNum = paymentIntent.metadata.order_id;
-   
+        
     res.send({
       clientSecret: paymentIntent.client_secret
     });
