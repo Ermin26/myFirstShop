@@ -175,7 +175,6 @@
                 paymentElement.on('change', function(event){
                     paymentMethod.pop();
                     paymentMethod.push(event.value.type);
-                    console.log(paymentMethod)
                 })
 
                 let addressData = {};
@@ -192,7 +191,6 @@
                         if(event.complete){
                             emailData.pop();
                             emailData.push(event.value.email);
-                            console.log("email daza: " ,emailData)
                         }
                     })
                     
@@ -202,13 +200,6 @@
                             event.preventDefault();
                         // Disable the submit button to prevent multiple clicks
                         document.getElementById('submit-button').disabled = true;
-                        let redirecturl ;
-                        if(paymentMethod[0] == 'paypal'){
-                            redirectUrl = 'redirect';
-                            console.log("Client side:", redirectUrl, paymentMethod);
-                        }else{
-                            redirectUrl ='payed';
-                        }
                         const billingDetails = {
                             name: addressData.name,
                             email: emailData[0],
@@ -222,8 +213,6 @@
                         };
 
                                 elements.submit();
-                                let eventType
-                                //if(paymentMethod[0] === 'card'){
 
                                      const result = await stripe.confirmPayment({
                                         clientSecret,
@@ -231,7 +220,7 @@
                                         confirmParams: {
                                             return_url: `${SERVER_URL}/payed`,
                                             },
-                                          redirect: 'if_required',
+                                         // redirect: 'if_required',
                                         billing_details: {
                                             name: billingDetails.name,
                                             email : billingDetails.email ,
@@ -262,28 +251,7 @@
                                         }
                                    
                                     });
-                                    if (paymentMethod !== 'paypal'){
-
-                                    if (result) {
-                                        console.log("result",result.paymentIntent)
-                                        await fetch('/testingPostRoute', {
-                                            method: 'POST',
-                                            headers: {
-                                                Authorization: `Bearer ${publishableKey}`,
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({
-                                                paymentIntent: result.paymentIntent,
-                                                billing_details: billingDetails,
-                                            }),
-                                        });
-                                        window.location.href= '/';
-                                        
-                                        }else {
-                                            window.alert("Some error occurred");
-                                    
-                                            };
-                                            };
+                                   
                             });
         });
 

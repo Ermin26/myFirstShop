@@ -12,46 +12,25 @@
         
     </div>
     <h1>Successfully payed</h1> 
-    <a href="/">Home</a>
-    <% for(data of orderData) {%>
-        <%= data.name %>
-        <%= data.country %>
-        <%= data.city %>
-        <%= data.zip %>
-        <%= data.street %>
-        <%= data.email %>
+    <div class="div">
+
+        <a href="/" class="btn btn-primary ">Home</a>
+    </div>
+    <% for(data of myOrder) {%>
+       Tracking Number <%= data.trackingNum %>
+       Name <%= data.name %>
+       Country <%= data.country %>
+       city <%= data.city %>
+       Zip <%= data.zip %>
+       Street <%= data.street %>
+       Email <%= data.email %>
         <% } %>
     
     
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async() =>{
-            const {publishableKey} = await fetch('/config').then((r) => r.json())
-            
-            const stripe = Stripe(publishableKey);
-
-            //const clientSecret = new URLSearchParams(window.location.search).get('redirect_status');
-            const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret');
-            
-            
-            stripe.retrievePaymentIntent(clientSecret)
-            .then(function(result){
-                if(result.paymentIntent){
-                    let info = result.paymentIntent;
-                    console.log("This is info after redirect: ", info)
-                    const paymentIntentPre = document.getElementById('container')
-                    paymentIntentPre.innerHTML = JSON.stringify(info.status);
-                }else{
-                    console.log("Error: " ,result.error)
-                    
-                    
-                }
-            })
-            
-            
-            
-        })  
+       
         
     </script>
 </body>
