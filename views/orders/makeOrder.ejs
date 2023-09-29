@@ -108,7 +108,7 @@
                         </div>
                         
            
-                        <button type="submit" id="submit-button">Pay Now</button>
+                        <button type="submit" class="btn btn-outline-primary mt-4 mb-5" id="submit-button">Pay Now</button>
                     </form> 
                     </div>
                 </div>
@@ -128,7 +128,6 @@
 <script>
 
         addEventListener('DOMContentLoaded',async()=>{
-            
             //const stripe = Stripe('pk_live_51MdvPOHAKJ9ybQgY3lEYJQ1TxLDsLlBVnPJestkYEqooVkmGw1pbatap5URKu7pN5T4RqAYotFAcWYdP9luqxwjY00Ky97oD6B');
             const {publishableKey, SERVER_URL, user_id} = await fetch('/config').then((r) => r.json());
             const stripe = Stripe(publishableKey);
@@ -141,7 +140,6 @@
             if (backendError) {
                 console.log("this is fucking error",backendError);
             }
-            console.log(`Client secret returned.`);
         
             const appearance = {
                 theme: 'night',
@@ -175,6 +173,7 @@
                 paymentElement.on('change', function(event){
                     paymentMethod.pop();
                     paymentMethod.push(event.value.type);
+                    
                 })
 
                 let addressData = {};
@@ -211,14 +210,12 @@
                             },
                             phone: addressData.phone,
                         };
-
-                                elements.submit();
-
-                                     const result = await stripe.confirmPayment({
+                            elements.submit();
+                             const result = await stripe.confirmPayment({
                                         clientSecret,
                                         elements,
                                         confirmParams: {
-                                            return_url: `${SERVER_URL}/payed`,
+                                            return_url: `${SERVER_URL}/payment`,
                                             },
                                          // redirect: 'if_required',
                                         billing_details: {
@@ -251,7 +248,12 @@
                                         }
                                    
                                     });
-                                   
+                                   if(result.error){
+                                    console.log(result.error);
+                                   // window.alert(result.error.message); make modal for this
+                                    document.getElementById('submit-button').disabled = false;
+                                   // window.location.reload();
+                                   }
                             });
         });
 

@@ -180,6 +180,7 @@ function handleColorSelection(color) {
         const firstSku = firstSizeDiv.getAttribute('product-sku');
         document.getElementById('p_size').value = firstSize;
         document.getElementById('p_sku').value = firstSku;
+        document.getElementById('btn').removeAttribute('disabled');
       }else{
           const sizeDivs = [];
           sizeSection.innerHTML = ''; // Clear previous sizes
@@ -189,7 +190,7 @@ function handleColorSelection(color) {
             sizeDiv.classList.add('size');
             sizeDiv.textContent = sizes.size;
             sizeDiv.setAttribute('product-sku', sizes.sku);
-      
+            document.getElementById('btn').setAttribute('disabled', 'true');
             sizeDiv.addEventListener('click', function () {
               const selectedSize = this.textContent;
               const selectedSku = this.getAttribute('product-sku');

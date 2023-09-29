@@ -1,37 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-</head>
-<body>
+<% layout('layouts/boilerplate') %>
+    <% include('../../flash') %>
 
-    <div id="container" class="container">
-        <%# include('../../flash') %>
+    <div id="container" class="container text-center justify content-center">
+        <h1>Podatki o naročilu</h1> 
+    
+       
+    <% for(data of myOrder) {%> <br>
+       
+
+        <div class="card ms-auto me-auto border border-1" style="width: 28rem; margin-bottom: 15vh;">
+            <div class="card-header p-2">
+                <div class="row border-bottom border-2 text-center"><strong>Številka za sledenje naročila</strong></div>
+                <div class="col text-start"><%= data.trackingnum %></div>
+            </div>
+            <div class="card-body p-2">
+                <div class="row border-bottom border-2 text-center"><strong>Podatki za dostavo</strong></div>
+                <div class="col text-start"><%= data.country %></div>
+                <div class="col text-start"><%= data.city %></div>
+                <div class="col text-start"><%= data.street %></div>
+                <div class="col text-start"><%= data.zip %></div>
+            </div>
+            <div class="card-footer p-2">
+                <div class="row border-bottom border-2 text-center"><strong>Kontakt</strong></div>
+                <div class="col text-start"><%= data.name %></div>
+                <div class="col text-start"><%= data.phone %></div>
+                <div class="col text-start"><%= data.email %></div>
+            </div>
+        </div>
+        <% } %>
         
     </div>
-    <h1>Successfully payed</h1> 
-    <div class="div">
-
-        <a href="/" class="btn btn-primary ">Home</a>
-    </div>
-    <% for(data of myOrder) {%>
-       Tracking Number <%= data.trackingNum %>
-       Name <%= data.name %>
-       Country <%= data.country %>
-       city <%= data.city %>
-       Zip <%= data.zip %>
-       Street <%= data.street %>
-       Email <%= data.email %>
-        <% } %>
+    
     
     
 
     <script src="https://js.stripe.com/v3/"></script>
-    <script>
-       
-        
-    </script>
-</body>
-</html>
+   

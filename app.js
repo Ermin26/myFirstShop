@@ -75,31 +75,6 @@ const s_sk = process.env.STRIPE_SK;
 const s_pk = process.env.STRIPE_PK;
 const server_url = process.env.SERVER_URL;
 
-//! Testing stripe code part
-
-
-/*
-app.get('/redirect', async (req, res) => {
-   // const fullUrl =  req.originalUrl;
-    const searchIntent = req.query.payment_intent;
-    if (!searchIntent) {
-        res.redirect('/')
-    } else {
-        const ifPayed = await stripe.paymentIntents.retrieve(searchIntent)
-        if (ifPayed.status === 'succedded') {
-
-
-
-            res.render('orders/redirect')
-        } else {
-            console.log(ifPayed.status)
-            res.redirect('/order')
-        }
-    }
-    
-})
-
-*/
 
 
 app.use(session({
@@ -176,7 +151,8 @@ app.use((req, res, next) => {
     res.locals.logedUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
-    next();
+    next(); // Pass the request to the next middleware/route handler
+    
 })
 
 let todayDate = new Date();
@@ -331,33 +307,6 @@ app.get("/users", async (req, res) => {
     })
 })
 
-function isProductInCart(cart, id) {
-    if (cart) {
-        for (let i = 0; i < cart.length; i++) {
-            if (cart[i].sku == id) {
-                req.slash('error', 'Product je že v košarici')
-                res.redirect(`product/${cart[i].id}`)
-            } else {
-                let user_id = randomUUID();
-                //console.log( product_id, product_name, product_color, size, product_price, sku_num)
-                if (req.session.cart) {
-                    let product = { product_id: product_id, sku: sku_num, name: product_name, color: product_color, size: size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, };
-                    let cart = req.session.cart;
-                    cart.push(product)
-                    req.flash('success', 'Successfully added to cart')
-                    res.redirect(`/product/${product_id}`)
-                } else {
-                    let product = { product_id: product_id, sku: sku_num, name: product_name, color: product_color, size: size, qty: 1, price: product_price, cat: product_cat, subcat: product_subcat, user_id: user_id };
-                    req.session.cart = [product]
-                    let cart = req.session.cart;
-                    req.flash('success', 'Successfully added to cart')
-                    res.redirect(`/product/${product_id}`)
-                }
-            }
-        }
-    }
-
-}
 
 function calculateTotal(cart, req) {
     total = 0;
@@ -378,7 +327,6 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
-    console.log("Cart route session:", req.session)
     deleteZeroQty();
     if (cart) {
         if (!cart.length) {
@@ -422,19 +370,30 @@ app.get("/cart", async (req, res) => {
 
 app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, product_sku } = req.body;
-
+    let exist ;
     let user_id = randomUUID();
     if (req.session.cart) {
-
-        let product = { product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
-        let cart = req.session.cart;
-        cart.push(product)
-        req.flash('success', 'Successfully added to cart')
-        res.redirect(`/product/${product_id}`)
+        for (let i = 0; i < req.session.cart.length; i++) { 
+            if (req.session.cart[i].sku === product_sku) {
+                exist = true;
+            }
+        }
+        if (exist) {
+            req.flash('error', "Izdelek je že dodan v košarico.")
+                res.redirect(`/product/${product_id}`)
+        } else {
+            let product = { product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
+            let cart = req.session.cart;
+            cart.push(product)
+            req.flash('success', 'Successfully added to cart')
+            res.redirect(`/product/${product_id}`)
+            
+         }
 
     } else {
         let product = { user_id: user_id , product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
         req.session.cart = [product]
+        req.session.userID = user_id;
         let cart = req.session.cart;
         req.flash('success', 'Successfully added to cart')
         res.redirect(`/product/${product_id}`)
@@ -545,24 +504,22 @@ app.get('/order', async (req, res) => {
 
 
 const productsForStripe = [];
-app.get('/redirect', async (req, res) => {
+app.get('/redirect', checkCart, async (req, res) => {
     if (req.session.payment) {
         const data = await stripe.paymentIntents.retrieve(req.session.payment);
-        
-        await conn.query(`SELECT * FROM orders WHERE user_id = '${req.session.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
+        await conn.query(`SELECT * FROM orders WHERE user_id = '${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
             if (error) {
                 console.log("this is error", error.message)
                 res.redirect('/')
             } else {
                 const myOrder = order.rows;
-                if (!myOrder) {
+                if (!myOrder.length) {
                     req.flash('error', "Nothin saved to db")
+                    req.session.payment = '';
                     res.redirect('/')
                 } else {
-                    console.log("My order", myOrder)
-                    console.log("-------------------")
-                    console.log("My data: ", data)
                     req.session.payment = '';
+                    console.log(req.session);
                     res.render('orders/redirect', { myOrder })
                 }
             }
@@ -573,53 +530,34 @@ app.get('/redirect', async (req, res) => {
 })
 //! Only for testing
 
-app.post('/testingPostRoute', async (req, res) => { 
-    console.log("Payed with card")
-    const {paymentIntent, billing_details} = req.body;
-    
-    if(paymentIntent.status === 'succeeded'){
-        const paymenthMethod = await stripe.paymentMethods.retrieve(paymentIntent.payment_method);
-        console.log('Billing data: ', billing_details);
-        console.log('----///////-------');
-        console.log('Payment Method: ', paymenthMethod);
-        res.status(302).redirect('payed')
-    }else{
-        console.log("//////////////");
-        console.log("Not payed: ");
-        res.redirect('order')
-    }
-    //console.log("This is billing details ended by json after confirm payment: ",billing_details);
-
-});
-
-app.get('/payed', checkCart, async (req, res) => {
-    //console.log('Okey dela!',req.session);
+app.get('/payment', checkCart, async (req, res) => { 
     const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
-    let invoice ;
-    if (ifPayed) {   
-        if (ifPayed.status == 'succeeded') {
-            //! Here go data to save order and to edit qty of products, create order invoice
-            req.flash('success', "Hvala za vaše zaupanje.")
-      
-            await conn.query(`SELECT invoice FROM orders ORDER BY invoice DESC limit 1`, async (e, result) => {
+    let invoicePrefix = Math.floor(1000 + Math.random() * 9000) + "-" + year;
+    let invoice;
+    if (ifPayed) {
+        if (ifPayed.status == 'succeeded') { 
+            
+            //? Create a new invoice
+
+            await conn.query(`SELECT * FROM orders`, async (e, result) => {
                 if (e) {
                     console.log('Error was returned', e.message)
                 } else {
                     let data = result.rows;
-                    console.log("this is data", data);
                     if (!data.length) {
-                        console.log("this is if");
-                        invoice = Math.floor(1000 + Math.random() * 9000) + "-" + year + "-" + 1
-                        console.log("if invoice", invoice)
+                        invoice = invoicePrefix + "-" + 1
                     } else {
-                        invoice = parseInt(data) + 1;
-                        console.log("this is else", invoice);
+                        invoiceNum = data.length + 1;
+                        console.log("invoiceNum: ",invoiceNum)
+                        invoice =invoicePrefix + "-" + invoiceNum;
                     }
             
                 }
     
             })
-        
+
+            //! Update payment object, added invoice number
+
             const shippingInfo = ifPayed.shipping;
             const paymenthMethod = await stripe.paymentMethods.retrieve(ifPayed.payment_method);
             await stripe.paymentIntents.update(ifPayed.id, {
@@ -628,11 +566,8 @@ app.get('/payed', checkCart, async (req, res) => {
                     invoice: `${invoice}`,
                 }
             });
-            console.log("This is invoice", invoice);
             const updated = await stripe.paymentIntents.retrieve(req.session.payment);
-            //console.log("Updated payment: ", updated);
-
-
+            
             //! Start of code for saving data to dbs
 
             let orderDate = todayDate.toLocaleString();
@@ -646,110 +581,104 @@ app.get('/payed', checkCart, async (req, res) => {
                 product_qtys.push(cart[i].qty)
                 //product_qtys = cart[i].qty + ',' + product_qtys;
             }
-            //! Save order to db and send email to user.
-
 
             try {
-                await conn.query(`INSERT INTO orders(trackingNum, invoice, name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${ifPayed.metadata.trackOrder_id}', '${invoice}','${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','false','${orderDate}', '${costs}', '${product_ids}', '${product_qtys}', '${user_id}')`)
-                
-                
-
-                let transporter = nodemailer.createTransport({
-                    service: "gmail",
-                    auth: {
-                        user: "jolda.ermin@gmail.com",
-                        pass: `${yoo}`,
-                    },
-                    tls: {
-                        rejectUnauthorized: false,
-                    }
-                });
-
-                let mailOptions = {
-                    from: "jolda.ermin@gmail.com",
-                    to: "ermin.alma1011@gmail.com",
-                    subject: "NAROČILO",
-                    html: `
-                    <html>
-                      <head>
-                        <style>
-                          body {
-                            font-family: Arial, sans-serif;
-                            background-color: white;
-                          }
-                          p {
-                            color: cyan;
-                          }
-                          .container{
-                            height: 20vh;
-                            width: 15vh
-                            margin: 2px;
-                            padding: 4px;
-                            border: 2px solid black;
-                          }
-
-                        </style>
-                      </head>
-                      <body>
-                        <div class="container">
-                            <p>Korisnik <stron>${shippingInfo.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
-                            <!-- Add the rest of your HTML content here -->
-                        </div>
-                        </body>
-                    </html>
-                  `,
-                };
-
-                transporter.sendMail(mailOptions, function (err, success) {
-                    if (err) {
-                        console.log(err.message);
+                await conn.query(`INSERT INTO orders(trackingNum, invoice, name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${ifPayed.metadata.trackOrder_id}', '${invoice}','${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','false','${orderDate}', '${req.session.total}', '${product_ids}', '${product_qtys}', '${user_id}')`, async (err, result) => {
+                    if (err) { 
+                        req.flash('error', "Error: " + err.message);
+                        res.redirect('/order')
                     } else {
-                        console.log("Email sended");
-                    }
+                        req.session.cart = "";
+                        req.session.total = "";
+                        req.session.trackingNumber = "";
 
-                })
-
-                // Update qty after user has confirmed payment
-
-                for (let j = 0; j < product_ids.length; j++) {
-                    await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
-                        if(e){
-                            console.log("error update qty products", e.message);
-                        }
-                        else{
-                            const qty = result.rows[0].qty - parseInt(product_qtys[j]);
-                            await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
-                            console.log("Successfully updated")
-                        }
-                    })
-                }
-                
-            } catch (e) {
-            
-                req.flash("error", e.message, "Error with insert data into orders. Please try again.")
-                res.redirect('/order')
-            }
-            req.session.cart = "";
-            req.session.trackingNumber = "";
-            console.log("kaj zdaj jebe")
-            res.redirect('/')
-           
-            
-        } else {
-            //! PAYMENT Error handling
-
-            req.flash('error', "Prosim, izberite način plačila");
-            res.redirect('/order')
-        }
+                        let transporter = nodemailer.createTransport({
+                            service: "gmail",
+                            auth: {
+                                user: "jolda.ermin@gmail.com",
+                                pass: `${yoo}`,
+                            },
+                            tls: {
+                                rejectUnauthorized: false,
+                            }
+                        });
         
-    } else {
-        req.flash('error', "Prosim, izberite način plačila");
-            res.redirect('/order')
-    }
-    
-});
+                        let mailOptions = {
+                            from: "jolda.ermin@gmail.com",
+                            to: "ermin.alma1011@gmail.com",
+                            subject: "NAROČILO",
+                            html: `
+                            <html>
+                              <head>
+                                <style>
+                                  body {
+                                    font-family: Arial, sans-serif;
+                                    background-color: white;
+                                  }
+                                  p {
+                                    color: cyan;
+                                  }
+                                  .container{
+                                    height: 20vh;
+                                    width: 15vh
+                                    margin: 2px;
+                                    padding: 4px;
+                                    border: 2px solid black;
+                                  }
+        
+                                </style>
+                              </head>
+                              <body>
+                                <div class="container">
+                                    <p>Korisnik <stron>${shippingInfo.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
+                                    <!-- Add the rest of your HTML content here -->
+                                </div>
+                                </body>
+                            </html>
+                          `,
+                        };
+        
+                        transporter.sendMail(mailOptions, function (err, success) {
+                            if (err) {
+                                console.log(err.message);
+                            } else {
+                                console.log("Email sended");
+                            }
+        
+                        })
 
-//!
+                        for (let j = 0; j < product_ids.length; j++) {
+                            await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
+                                if(e){
+                                    console.log("error update qty products", e.message);
+                                }
+                                else{
+                                    const qty = result.rows[0].qty - parseInt(product_qtys[j]);
+                                    await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
+                                    console.log("Successfully updated")
+                                }
+                            })
+                        }
+
+                        req.flash('success', "Hvala za zaupanje. Vaše naročilo je v obdelavi")
+                        res.redirect('/redirect')
+                    }
+                })
+                
+            } catch (e) { 
+                req.flash('error', "Error: ", e.message)
+                res.redirect('/order');
+            }
+            
+
+            
+        }
+    } else {
+        res.redirect('/');
+    }
+})
+
+
 
 app.get('/config', (req, res) => {
     const user_id = req.session.user_id
