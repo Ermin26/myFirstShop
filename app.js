@@ -504,7 +504,7 @@ app.get('/order', async (req, res) => {
 
 
 const productsForStripe = [];
-app.get('/redirect', checkCart, async (req, res) => {
+app.get('/redirect', async (req, res) => {
     if (req.session.payment) {
         const data = await stripe.paymentIntents.retrieve(req.session.payment);
         await conn.query(`SELECT * FROM orders WHERE user_id = '${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
