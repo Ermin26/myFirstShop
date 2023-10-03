@@ -162,7 +162,30 @@ let year = todayDate.getFullYear();
 let subtotal = [];
 
 async function deleteZeroQty() {
-    await conn.query(`DELETE FROM varijacije WHERE qty = $1`, [0]);
+    await conn.query(`DELETE FROM varijacije WHERE qty = '0' RETURNING product_id`, async(err, result) => {
+        if (!err) { 
+            const data = result.rows;          
+            if (data.length) {
+                for (let i = 0; i < data.length; i++) {
+                    await conn.query(`SELECT * FROM varijacije WHERE product_id ='${data[i].product_id}`, async (e, info) => {
+                        if (!info) {
+                            console.log("Info: ",!info, "Data.product_id: ", data[i].product_id)
+                            await conn.query(`DELETE FROM inventory WHERE id='${data[i].product_id}' RETURNING name`, async (err, answer) => {
+                                if (!err) {
+                                    console.log("Answer rows: ", answer.rows);
+                                } else {
+                                    console.log("Error deleting from inventory: ", err);
+                                }
+                            })
+                        } 
+                    })
+                }
+            }
+            
+        } else {
+            console.log(err.message);
+        }
+    });
 }
 
 deleteZeroQty();
@@ -170,7 +193,6 @@ deleteZeroQty();
 app.get('/', async (req, res) => {
     let date = new Date();
     let day = date.getDay()
-    deleteZeroQty();
     await conn.query(`SELECT * FROM inventory`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -179,7 +201,16 @@ app.get('/', async (req, res) => {
         } else {
             if (!err) {
                 //console.log(products)
-                res.render('pages/home', { products })
+                await conn.query(`SELECT * FROM varijacije`, async (e, vari) => {
+                    if (e) {
+                        console.log("Error: ", e.message);
+
+                    } else {
+                        const varijacije = vari.rows
+                        //console.log(varijacije)
+                        res.render('pages/home', { products, varijacije })
+                    }
+                })
             }
         }
     })
@@ -327,7 +358,6 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
-    deleteZeroQty();
     if (cart) {
         if (!cart.length) {
             await conn.query(`SELECT * FROM inventory`, async (err, result) => {
@@ -477,7 +507,6 @@ app.get('/order', async (req, res) => {
     let items = [];
     let cartItems = []
     let count = 0
-    deleteZeroQty();
     const publishableKey = process.env.STRIPE_PK;
     for (let i = 0; i < cart.length; i++) {
         await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
@@ -519,7 +548,7 @@ app.get('/redirect', async (req, res) => {
                     res.redirect('/')
                 } else {
                     req.session.payment = '';
-                    console.log(req.session);
+                    deleteZeroQty();
                     res.render('orders/redirect', { myOrder })
                 }
             }
@@ -672,6 +701,9 @@ app.get('/payment', checkCart, async (req, res) => {
             
 
             
+        } else {
+            req.flash('error', "Prosim, izberite način plačila.")
+            res.redirect('/order');
         }
     } else {
         res.redirect('/');

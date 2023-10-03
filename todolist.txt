@@ -1,4 +1,9 @@
 
+query db by last number 
+SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER) asc LIMIT 100
+
+////////
+
 ✘ @cancelled(23-09-26 14:10)
 
     daj končaj že enkrat, tolko da se lahko naročuje in plača! Fix redirects, save payment_id to the session and then retrieve data if needed

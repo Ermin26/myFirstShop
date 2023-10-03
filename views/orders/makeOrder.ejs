@@ -13,9 +13,7 @@
 <body>
     <%- include('../partials/nav.ejs') %>
 
-    <div class="flash">
-        <%# include('../../flash') %>
-    </div>
+    
 
     <div class="container text-center justify-content-center" style="margin-bottom: 15vh;">
         <%- include('../../flash') %>
@@ -199,6 +197,7 @@
                             event.preventDefault();
                         // Disable the submit button to prevent multiple clicks
                         document.getElementById('submit-button').disabled = true;
+                        if(addressData.name && addressData.address.line1 && addressData.address.country && addressData.address.city && addressData.address.postal_code && addressData.phone && emailData.length){
                         const billingDetails = {
                             name: addressData.name,
                             email: emailData[0],
@@ -254,7 +253,12 @@
                                     document.getElementById('submit-button').disabled = false;
                                    // window.location.reload();
                                    }
-                            });
+                                }else{
+                                    window.alert('Polja za naslov dostave so obvezna')
+                                    window.location.reload();
+                                }
+
+                            });             
         });
 
 
