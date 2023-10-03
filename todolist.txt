@@ -27,14 +27,15 @@ NEXT ----
 ☐ DOING ------- @started(23-03-28 14:55)
     ☐  Send order on mail (Company/User) @started(23-07-21 13:57)
     ✘ Fix redirect to some page after user payed and make page for get info about order @cancelled(23-06-11 20:04)
-    ✘ payment works. Next work on redirects after payment, one redirect for paypal other for card method.  @cancelled(23-09-08 14:04)
     ✘ set up redirect after paypal payment, save data to all dbs but redirect to payed pag don't work! @cancelled(23-09-19 21:37)
     ☐ IMPORTANT!!!
-
+    
     ✘ Set stripe manualy add card svg  on the left side on the right input fields @cancelled(23-08-04 14:38)
     for entering data for card
     
- ✔ DONE ----- @done(23-03-28 14:54)
+✔ DONE ----- @done(23-03-28 14:54) 
+    ✔ Added function to delete zero qty products from "varijacije" and "inventory" @done(23-10-03 14:49)
+    ✔ payment works. Next work on redirects after payment, one redirect for paypal other for card method. @done(23-10-03 14:49)
     ✔ Make options for user to choose how will pay (default is with card) @done(23-09-19 21:37)
     ✘ -------------------------@cancelled(23-09-08 14:06)
     ✔ DELETED PAYPAL CONFIRM PAYMENT, USING ONLY ONE AUTHOMATIC PAYMENT CONFIRMATION @done(23-09-08 14:06)
