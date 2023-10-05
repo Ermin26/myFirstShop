@@ -3,7 +3,9 @@
         "artikli",
         "Bigserial",
         "bruto",
+        "loged",
         "redirecturl",
+        "Salester",
         "USERN",
         "womens",
         "yooo"
@@ -25,5 +27,7 @@
             "database": "yugabyte",
             "username": "ermin"
         }
-    ]
+    ],
+    "console-ninja.installBinToPath": true,
+    "console-ninja.outputMode": "Beside File"
 }

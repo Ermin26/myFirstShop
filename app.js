@@ -200,14 +200,12 @@ app.get('/', async (req, res) => {
             res.redirect('add')
         } else {
             if (!err) {
-                //console.log(products)
                 await conn.query(`SELECT * FROM varijacije`, async (e, vari) => {
                     if (e) {
                         console.log("Error: ", e.message);
 
                     } else {
-                        const varijacije = vari.rows
-                        //console.log(varijacije)
+                        const varijacije = vari.rows;
                         res.render('pages/home', { products, varijacije })
                     }
                 })
