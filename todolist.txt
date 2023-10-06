@@ -2,6 +2,7 @@
 query db by last number 
 SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER) asc LIMIT 100
 
+
 ////////
 
 ✘ @cancelled(23-09-26 14:10)
