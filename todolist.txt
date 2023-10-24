@@ -10,7 +10,7 @@ SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER)
     daj končaj že enkrat, tolko da se lahko naročuje in plača! Fix redirects, save payment_id to the session and then retrieve data if needed
     create order number with every created payment intent... order number must be 4-4-year number and save number to the payment intent and create "TRAKING NUMBER" for user to check status of his order!
 
-✘ @cancelled(23-09-26 14:10)
+✘ REKLAME BOJO NA VRHU KOT SLIDESHOW @cancelled(23-09-26 14:10)
 
 
 NEXT ----
