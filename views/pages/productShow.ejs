@@ -128,6 +128,42 @@
     <div id="other-row" class="row">
       <div class="info text-center">
         <p>Here will be more random products</p>
+        <% for(products of randomProducts) {%>
+        <% for(product of products) {%>
+          <div class="card" style="width: 16rem;">
+            <div class="card-body">
+            <div id="carouselExampleControls3" class="carousel slide m-0">
+            <div id="carousel" class="carousel-inner text-center">
+                <%product.links.forEach((img, i)=>{%>
+                    <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
+                        <img id="card-img" class="img-fluid" id="topImg" alt="" src="<%= img %>">
+                    </div>
+                    <%}) %>
+                    
+            </div>
+            
+            <% if(product.links.length> 1) {%>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls3"
+                    data-bs-slide="prev" data-bs-theme="dark">
+                    <span id="prevBtn" class="carousel-control-prev-icon bg-secondary" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls3"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-secondary" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                <% } %>
+                
+            </div>
+          </div>
+          <div class="card-footer">
+           <h3><%= product.name %></h3> 
+           <h1><%= product.neto_price %> €</h1> 
+          </div>
+          </div>
+          <%} %>
+          <%} %>
       </div>
     </div>
 

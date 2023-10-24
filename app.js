@@ -165,6 +165,7 @@ async function deleteZeroQty() {
     await conn.query(`DELETE FROM varijacije WHERE qty = '0' RETURNING *`, async(err, result) => {
         if (!err) { 
             const data = result.rows;
+            console.log("DATA:",data)
             if (data.length) {
                 for (let i = 0; i < data.length; i++) {
                     let product = data[i].product_id;
@@ -248,6 +249,7 @@ app.get('/product/:id', async (req, res) => {
                 let colors = color.rows;
 
                 // Retrieve sizes for each color
+                let randomProducts= [];
                 let products = [];
                 let sizes = [];
                 for (let i = 0; i < colors.length; i++) {
@@ -258,14 +260,23 @@ app.get('/product/:id', async (req, res) => {
                         //console.log("Sizes", size)
                         products.push({ color: colorName, size });
                         // For numbers
+                        /*
+                        const productsRandom = await conn.query(`SELECT * FROM inventory ORDER BY RANDOM() LIMIT 15`)
+                        randomProducts.push(productsRandom.rows)
+                        console.log(randomProducts)
+                        */
                     }
                     else {
                         const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
                         const size = sizesResult.rows.map((row) => row);
                         products.push({ color: colorName, size });
+                        
+                    }
                 }
-                }
-                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products) });
+                const productsRandom = await conn.query(`SELECT * FROM inventory ORDER BY RANDOM() LIMIT 15`)
+                        randomProducts.push(productsRandom.rows)
+                        console.log(randomProducts)
+                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts });
                 
             });
         } else {
@@ -820,8 +831,9 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             
         }
         else {
+            console.log("Here is error jebeni: ", err)
             req.flash('error', `Something went wrong. ${err.message}`);
-            res.redirect('add');
+            res.redirect('/add');
         }
     })
     res.redirect('/add')
