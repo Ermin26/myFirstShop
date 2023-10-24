@@ -162,21 +162,23 @@ let year = todayDate.getFullYear();
 let subtotal = [];
 
 async function deleteZeroQty() {
-    await conn.query(`DELETE FROM varijacije WHERE qty = '0' RETURNING product_id`, async(err, result) => {
+    await conn.query(`DELETE FROM varijacije WHERE qty = '0' RETURNING *`, async(err, result) => {
         if (!err) { 
-            const data = result.rows;          
+            const data = result.rows;
             if (data.length) {
                 for (let i = 0; i < data.length; i++) {
-                    await conn.query(`SELECT * FROM varijacije WHERE product_id ='${data[i].product_id}`, async (e, info) => {
-                        if (!info) {
-                            console.log("Info: ",!info, "Data.product_id: ", data[i].product_id)
-                            await conn.query(`DELETE FROM inventory WHERE id='${data[i].product_id}' RETURNING name`, async (err, answer) => {
+                    let product = data[i].product_id;
+                    await conn.query(`SELECT * FROM varijacije WHERE product_id ='${product}'`, async (e, info) => {
+                        if (!info.rows.length) {
+                            await conn.query(`DELETE FROM inventory WHERE id='${product}' RETURNING *`, async (err, answer) => {
                                 if (!err) {
-                                    console.log("Answer rows: ", answer.rows);
+                                    let result = answer.rows;
+                                    await conn.query(`INSERT INTO deleted (id, sku, name, neto_price, info, description,category, subcategory, links) VALUES( '${data[i].product_id}', '${data[i].sku}', '${result[0].name}', '${result[0].neto_price}', '${result[0].info}', '${result[0].description}', '${result[0].category}','${result[0].subcategory}', '${result[0].links}')`)
                                 } else {
                                     console.log("Error deleting from inventory: ", err);
                                 }
                             })
+                            
                         } 
                     })
                 }
@@ -529,34 +531,6 @@ app.get('/order', async (req, res) => {
 })
 
 
-
-const productsForStripe = [];
-app.get('/redirect', async (req, res) => {
-    if (req.session.payment) {
-        const data = await stripe.paymentIntents.retrieve(req.session.payment);
-        await conn.query(`SELECT * FROM orders WHERE user_id = '${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
-            if (error) {
-                console.log("this is error", error.message)
-                res.redirect('/')
-            } else {
-                const myOrder = order.rows;
-                if (!myOrder.length) {
-                    req.flash('error', "Nothin saved to db")
-                    req.session.payment = '';
-                    res.redirect('/')
-                } else {
-                    req.session.payment = '';
-                    deleteZeroQty();
-                    res.render('orders/redirect', { myOrder })
-                }
-            }
-        })
-    } else {
-        res.redirect('/')
-    }
-})
-//! Only for testing
-
 app.get('/payment', checkCart, async (req, res) => { 
     const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
     let invoicePrefix = Math.floor(1000 + Math.random() * 9000) + "-" + year;
@@ -708,7 +682,30 @@ app.get('/payment', checkCart, async (req, res) => {
     }
 })
 
-
+app.get('/redirect', async (req, res) => {
+    if (req.session.payment) {
+        const data = await stripe.paymentIntents.retrieve(req.session.payment);
+        await conn.query(`SELECT * FROM orders WHERE user_id = '${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
+            if (error) {
+                console.log("this is error", error.message)
+                res.redirect('/')
+            } else {
+                const myOrder = order.rows;
+                if (!myOrder.length) {
+                    req.flash('error', "Nothin saved to db")
+                    req.session.payment = '';
+                    res.redirect('/')
+                } else {
+                    req.session.payment = '';
+                    deleteZeroQty();
+                    res.render('orders/redirect', { myOrder })
+                }
+            }
+        })
+    } else {
+        res.redirect('/')
+    }
+})
 
 app.get('/config', (req, res) => {
     const user_id = req.session.user_id
@@ -764,7 +761,6 @@ app.get("/fetchOrder", async (req, res) => {
 });
   
 
-
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
 })
@@ -809,7 +805,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     // console.log(Object.keys(req.files).length)
     //----------------------------------------------------------
     //? Dela
-    await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[])) RETURNING id`, async (err, result) => {
+    await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
                 for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {

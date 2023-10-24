@@ -35,6 +35,7 @@ NEXT ----
     for entering data for card
     
 ✔ DONE ----- @done(23-03-28 14:54) 
+    ✔ Added delete db for saving deleted products with zero qty @done(23-10-15 21:22)
     ✔ Added function to delete zero qty products from "varijacije" and "inventory" @done(23-10-03 14:49)
     ✔ payment works. Next work on redirects after payment, one redirect for paypal other for card method. @done(23-10-03 14:49)
     ✔ Make options for user to choose how will pay (default is with card) @done(23-09-19 21:37)
