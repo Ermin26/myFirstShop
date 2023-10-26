@@ -77,12 +77,13 @@
                                     Košarico</button>
                         </form>
                         </div>
-                    </div>
-
                 </div>
+
             </div>
-          </div>
-          <div id="badgeWrapper" class="row justify-content-evenly mb-5">
+            
+    </div>
+
+    <div id="badgeWrapper" class="row justify-content-evenly mb-5 bg-success">
             <div class="col btn btn-primary m-2 p-2">
               <div class="">
                   <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
@@ -107,13 +108,13 @@
             </div>
             <div class="col btn btn-primary m-2 p-2">Zanesljiv in kvaliteten nakup</div>
             <div class="col btn btn-primary m-2 p-2">100% jamstvo zadovoljstva</div>
-          </div>
-          <div class="more-imgs text-center">
-            <h4><%= info.info %></h4>
-          </div>
-          <% } %>
+    </div>
+    
+    
+    
     <div id="next-row" class="row m-0 p-0">
-      
+      <h4 class="text-center"><%= info.info %></h4>
+      <% } %>
       <picture id="picture" class="m-0 p-0">
         <% for(images of shirts) {%>
           <% images.links.forEach((img)=>{%>
@@ -125,46 +126,42 @@
 
     </div>
 
-    <div id="other-row" class="row">
+    <div id="other-row" class="row justify-content-center">
       <div class="info text-center">
         <p>Here will be more random products</p>
-        <% for(products of randomProducts) {%>
-        <% for(product of products) {%>
-          <div class="card" style="width: 16rem;">
-            <div class="card-body">
-            <div id="carouselExampleControls3" class="carousel slide m-0">
-            <div id="carousel" class="carousel-inner text-center">
-                <%product.links.forEach((img, i)=>{%>
-                    <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
-                        <img id="card-img" class="img-fluid" id="topImg" alt="" src="<%= img %>">
-                    </div>
-                    <%}) %>
-                    
-            </div>
-            
-            <% if(product.links.length> 1) {%>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls3"
-                    data-bs-slide="prev" data-bs-theme="dark">
-                    <span id="prevBtn" class="carousel-control-prev-icon bg-secondary" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls3"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon bg-secondary" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-                <% } %>
-                
-            </div>
-          </div>
-          <div class="card-footer">
-           <h3><%= product.name %></h3> 
-           <h1><%= product.neto_price %> €</h1> 
-          </div>
-          </div>
-          <%} %>
-          <%} %>
       </div>
+
+      <div id="carouselOut" class="justify-content-center">
+      <% for(product of randomProducts) {%>
+        <div id="otherCard" class="card d-inline-flex">
+            <div id="carouselExampleControls<%= product.id %>" class="carousel slide m-0">
+              <div id="carousel" class="carousel-inner text-center">
+                  <%product.links.forEach((img, i)=>{%>
+                      <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
+                          <img class="img-fluid" id="slideShowImg" alt="" src="<%= img %>">
+                      </div>
+                      <%}) %>
+
+              </div>
+          
+          <% if(product.links.length> 1) {%>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls<%= product.id %>"
+                  data-bs-slide="prev" data-bs-theme="dark">
+                  <span id="prevBtn" class="carousel-control-prev-icon bg-secondary" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls<%= product.id %>"
+                  data-bs-slide="next">
+                  <span class="carousel-control-next-icon bg-secondary" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+              </button>
+              <% } %>
+              
+          </div>
+        </div>
+        <%} %>
+      </div>
+      
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

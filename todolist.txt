@@ -1,4 +1,7 @@
 
+
+
+
 query db by last number 
 SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER) asc LIMIT 100
 
@@ -11,7 +14,7 @@ SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER)
     create order number with every created payment intent... order number must be 4-4-year number and save number to the payment intent and create "TRAKING NUMBER" for user to check status of his order!
 
 ✘ REKLAME BOJO NA VRHU KOT SLIDESHOW @cancelled(23-09-26 14:10)
-
+✘ dodan slide show on productshowpage --> dokončaj @cancelled(23-10-26 14:39)
 
 NEXT ----
     ✘  Make code for email stripe send and invoice (not send invoice on mail onla a bill and code for check order status) @cancelled(23-09-08 14:07)

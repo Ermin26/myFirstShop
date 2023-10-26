@@ -75,6 +75,8 @@ body {
 
 #badgeWrapper{
     display: flex;
+    height:auto;
+    width:100%;
     flex-direction: row;
     flex-wrap: wrap;
 }
@@ -118,10 +120,39 @@ body {
 }
 
 #other-row{
-    height: 50vh;
-    margin-top: 20vh;
+    display:flex;
+    width: 100%;
+    margin-top: 30vh;
     margin-bottom: 10vh;
-    background-color: azure;
+    flex-direction: row;
+    box-sizing: border-box;
+}
+
+#carouselOut{
+    display:flex;
+    flex-direction: row;
+    width:100%;  
+    box-sizing: border-box;
+}
+#otherCard{
+    display: inline-flex;
+    transition: none;
+    border: none;
+    margin: 5px;
+    max-width: 150px;
+    height:auto;
+    border: 1px solid black;
+}
+
+
+#slideShowImg{
+    max-width: 150px;
+    height:auto;
+    
+}
+
+#otherCard:hover{
+    transform:none;
 }
 
 #footer{

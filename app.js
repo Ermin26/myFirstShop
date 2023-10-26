@@ -249,7 +249,8 @@ app.get('/product/:id', async (req, res) => {
                 let colors = color.rows;
 
                 // Retrieve sizes for each color
-                let randomProducts= [];
+                //let randomProducts= [];
+                let randomProducts;
                 let products = [];
                 let sizes = [];
                 for (let i = 0; i < colors.length; i++) {
@@ -274,7 +275,8 @@ app.get('/product/:id', async (req, res) => {
                     }
                 }
                 const productsRandom = await conn.query(`SELECT * FROM inventory ORDER BY RANDOM() LIMIT 15`)
-                        randomProducts.push(productsRandom.rows)
+                        randomProducts = productsRandom.rows
+                        //randomProducts.push(productsRandom.rows)
                         console.log(randomProducts)
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts });
                 
