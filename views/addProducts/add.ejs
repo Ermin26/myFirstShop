@@ -523,6 +523,7 @@
                 </div>
             </div>
         </div>
+        <div class="row row-cols row-cols-md-2">
         <div class="col">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="p_price" name="p_price" placeholder="29,99 €" required>
@@ -532,9 +533,11 @@
                 </div>
             </div>
         </div>
+        <div class="col" id="imgForToys">
+            
         </div>
-
-        
+    </div>
+        </div>
 
         <div class="footer text-center mt-5 mb-5">
             <button class="btn btn-primary">Submit</button>
@@ -589,7 +592,7 @@
                     document.getElementById("adultClothes").style.display = "flex";
                     document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
                     document.getElementById("adultShoes").style.display = "none";
-
+                    document.getElementById("imgForToys").style.display = "none";
                     for (let i = 0; i < infoAdultShoes.length; i++) {
                         infoAdultShoes[i].setAttribute('disabled', 'disabled');
                     }
@@ -638,6 +641,7 @@
                     document.getElementById("kidsClothes").style.display = "flex";
                     document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
                     document.getElementById("kidsShoes").style.display = "none";
+                    document.getElementById("imgForToys").style.display = "none";
                     for (let i = 0; i < infoKidsShoes.length; i++) {
                         infoKidsShoes[i].setAttribute('disabled', 'disabled');
                     }
@@ -651,12 +655,25 @@
                     document.getElementById("kidsClothes").style.display = "none";
                     document.getElementById("kidsShoes").classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
                     document.getElementById("kidsShoes").style.display = "flex";
+                    document.getElementById("imgForToys").style.display = "none";
                     for (let i = 0; i < infoKidsClothes.length; i++) {
                         infoKidsClothes[i].setAttribute('disabled', 'disabled');
                     }
                     for (let i = 0; i < infoKidsShoes.length; i++) {
                         infoKidsShoes[i].removeAttribute('disabled');
                     }
+                }
+                if(subCategory == 'Toys'){
+                    document.getElementById("imgForToys").style.display = "flex";
+                    const imgField = document.getElementById('imgForToys');
+                    const box = document.createElement('div');
+                    box.classList.add('input-group-sm');
+                    box.innerHTML =`<label for="formFileMultiple" class="form-label custom-file-label"></label>
+                <input class="form-control text-primary" type="file" id="formFileMultiple" name="image1" multiple required>
+                <div class="invalid-feedback">
+                    Looks good!
+                </div>`;
+                imgField.appendChild(box);
                 }
             }
             if(category == 'Other'){

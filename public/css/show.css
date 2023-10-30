@@ -126,6 +126,8 @@ body {
     margin-bottom: 10vh;
     flex-direction: row;
     box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0.651);
+    border-radius:10px;
 }
 
 #carouselOut{
@@ -138,16 +140,17 @@ body {
     display: inline-flex;
     transition: none;
     border: none;
-    margin: 5px;
+    margin: 10px;
     max-width: 150px;
     height:auto;
-    border: 1px solid black;
 }
 
 
 #slideShowImg{
-    max-width: 150px;
-    height:auto;
+    width: 100%;
+    height:200px;
+    object-fit: contain;
+    object-position: center;
     
 }
 
