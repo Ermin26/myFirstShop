@@ -159,6 +159,8 @@ let todayDate = new Date();
 let date = todayDate.toLocaleDateString()
 let year = todayDate.getFullYear();
 
+
+
 let subtotal = [];
 
 async function deleteZeroQty() {
@@ -240,14 +242,19 @@ app.post('/search', async (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
-
-    await conn.query(`SELECT * FROM inventory WHERE id = '${id}'`, async (err, result) => {
+    console.log(id)
+    await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows;
+            console.log("Shirts")
+            console.log(shirts)
 
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
-
+                console.log("-----------------")
+                console.log("-----------------")
+                console.log("-----------------")
+                console.log("colorsc",colors)
                 // Retrieve sizes for each color
                 //let randomProducts= [];
                 let randomProducts;
@@ -277,7 +284,6 @@ app.get('/product/:id', async (req, res) => {
                 const productsRandom = await conn.query(`SELECT * FROM inventory ORDER BY RANDOM() LIMIT 15`)
                         randomProducts = productsRandom.rows
                         //randomProducts.push(productsRandom.rows)
-                        console.log(randomProducts)
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts });
                 
             });
@@ -818,7 +824,11 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     // console.log(Object.keys(req.files).length)
     //----------------------------------------------------------
     //? Dela
-    await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}') RETURNING id`, async (err, result) => {
+    //console.log(req.body.p_subcat)
+    
+    if(product.p_subcat !== 'Toys'){
+        console.log("Not toys")
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
                 for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {
@@ -837,8 +847,28 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             req.flash('error', `Something went wrong. ${err.message}`);
             res.redirect('/add');
         }
-    })
+        })
+    }else{
+        console.log("toys")
+        let month = todayDate.getMonth() + 1;
+        let day = todayDate.getDate();
+        let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;
+        let randomNum = parseInt(Math.random(15 * 12489) * 1000)
+        let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
+            if(e){
+                req.flash('error', "Error inserting product into database", e.message)
+                console.log("Error", e.message)
+            }else{
+                console.log("Added")
+            }
+
+        })
+        
+    }
+    
     res.redirect('/add')
+    //res.send(req.body)
 
 })
 async function DeleteZeroQty() {

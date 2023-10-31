@@ -179,7 +179,13 @@
         const colorSection = document.getElementById('colorSection');
         const sizeSection = document.getElementById('sizeSection');
         const products = JSON.parse('<%- productsJSON %>');
+          if(!products.length){
+            btnInfo.removeAttribute('disabled').
+            document.getElementById('p_sku').value = shirts[0].inventory_sku
 
+          }else{
+
+          
         function handleColors(colors) {
            colors.forEach((color) => {
       const colorDiv = document.createElement('div');
@@ -205,7 +211,7 @@
 
         let selectedColorDiv = null; // Variable to keep track of the selected color div
 
-function handleColorSelection(color) {
+  function handleColorSelection(color) {
   if (selectedColorDiv) {
     // Remove the previous selected class
     selectedColorDiv.classList.remove('selected');
@@ -300,8 +306,10 @@ function handleColorSelection(color) {
             renderSizes(selectedColor);
           });
         });
+      
+        }
       });
-
+    
       
 
 
