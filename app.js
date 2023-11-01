@@ -827,7 +827,8 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;
         let randomNum = parseInt(Math.random(15 * 12489) * 1000)
         let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
-    if(product.p_subcat !== 'Toys'){
+    if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Jewerly'){
+        console.log(product.p_subcat !== 'Toys' || product.p_subcat !== 'Jewerly')
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
@@ -843,7 +844,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             
         }
         else {
-            console.log("Here is error jebeni: ", err)
+            console.log("Here is error jebeni: ", err.message)
             req.flash('error', `Something went wrong. ${err.message}`);
             res.redirect('/add');
         }
@@ -855,6 +856,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
                 req.flash('error', "Error inserting product into database", e.message)
                 console.log("Error", e.message)
             }else{
+                req.flash('success', 'Uspešno dodano')
                 console.log("Added")
             }
 
