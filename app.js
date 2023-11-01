@@ -246,17 +246,14 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows;
+            let invt_sku = shirts[0].inventory_sku
             console.log("Shirts")
-            console.log(shirts)
+            console.log(invt_sku)
 
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
-                console.log("-----------------")
-                console.log("-----------------")
-                console.log("-----------------")
-                console.log("colorsc",colors)
+                
                 // Retrieve sizes for each color
-                //let randomProducts= [];
                 let randomProducts;
                 let products = [];
                 let sizes = [];
@@ -282,9 +279,8 @@ app.get('/product/:id', async (req, res) => {
                     }
                 }
                 const productsRandom = await conn.query(`SELECT * FROM inventory ORDER BY RANDOM() LIMIT 15`)
-                        randomProducts = productsRandom.rows
-                        //randomProducts.push(productsRandom.rows)
-                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts });
+                        randomProducts = productsRandom.rows;
+                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_sku });
                 
             });
         } else {
@@ -384,6 +380,7 @@ app.get("/cart", async (req, res) => {
                 res.render('orders/cart', { items, allProducts, s_pk })
             })
         } else {
+            console.log(cart);
             for (let i = 0; i < cart.length; i++) {
                 await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
                     if (!e) {
@@ -825,10 +822,13 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     //----------------------------------------------------------
     //? Dela
     //console.log(req.body.p_subcat)
-    
+        let month = todayDate.getMonth() + 1;
+        let day = todayDate.getDate();
+        let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;
+        let randomNum = parseInt(Math.random(15 * 12489) * 1000)
+        let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
     if(product.p_subcat !== 'Toys'){
-        console.log("Not toys")
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}') RETURNING id`, async (err, result) => {
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
                 for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {
@@ -850,11 +850,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         })
     }else{
         console.log("toys")
-        let month = todayDate.getMonth() + 1;
-        let day = todayDate.getDate();
-        let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;
-        let randomNum = parseInt(Math.random(15 * 12489) * 1000)
-        let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
             if(e){
                 req.flash('error', "Error inserting product into database", e.message)

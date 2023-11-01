@@ -83,6 +83,7 @@
             <% } %>
     </div>
 
+    <%= shirts[0].inventory_sku %>
     <div id="badgeWrapper" class="row justify-content-evenly mb-5">
             <div class="col btn btn-primary m-2 p-2">
               <div class="">
@@ -172,7 +173,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
-
+        //let toys_sku = <%# invt_sku %>;
         let btnInfo = document.getElementById('btn');
         btnInfo.setAttribute('disabled', 'true');
         document.addEventListener('DOMContentLoaded', function () {
@@ -180,9 +181,9 @@
         const sizeSection = document.getElementById('sizeSection');
         const products = JSON.parse('<%- productsJSON %>');
           if(!products.length){
-            btnInfo.removeAttribute('disabled').
-            document.getElementById('p_sku').value = shirts[0].inventory_sku
-
+            btnInfo.removeAttribute('disabled');
+            document.getElementById('p_sku').value = toys_sku;
+            console.log("Yoooo if statement", toys_sku)
           }else{
 
           
