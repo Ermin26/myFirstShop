@@ -1,0 +1,46 @@
+*, *::after, *::before{
+    box-sizing: border-box;
+}
+html{
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+body{
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+#searched{
+    width: 25%;
+}
+
+
+
+@media(max-width: 3000px){
+    
+    
+}
+
+@media(max-width: 1200px){
+    #searched{
+        width: 50%;
+    }
+  
+}
+
+
+@media(max-width: 600px){
+    #searched{
+        width: 100%;
+    }
+    
+}
+
+@media(max-width: 360px){
+
+}

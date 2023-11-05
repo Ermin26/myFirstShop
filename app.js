@@ -245,10 +245,8 @@ app.get('/product/:id', async (req, res) => {
     console.log(id)
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
-            let shirts = result.rows;
-            let invt_sku = shirts[0].inventory_sku
-            console.log("Shirts")
-            console.log(invt_sku)
+            let shirts = result.rows[0];
+            let invt_sku = shirts.inventory_sku
 
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
@@ -259,7 +257,7 @@ app.get('/product/:id', async (req, res) => {
                 let sizes = [];
                 for (let i = 0; i < colors.length; i++) {
                     const colorName = colors[i].color;
-                    if (shirts[0].category === 'Kids' || shirts[0].subcategory === 'Shoes') {
+                    if (shirts.category === 'Kids' || shirts.subcategory === 'Shoes') {
                         const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
                         const size = sizesResult.rows.map((row) => row);
                         //console.log("Sizes", size)
@@ -278,7 +276,7 @@ app.get('/product/:id', async (req, res) => {
                         
                     }
                 }
-                const productsRandom = await conn.query(`SELECT * FROM inventory ORDER BY RANDOM() LIMIT 15`)
+                const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 4`)
                         randomProducts = productsRandom.rows;
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_sku });
                 
@@ -816,12 +814,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         imgsUrl.push(images);
     }
 
-    //console.log(req.files[`image${imgNum}`][0].path,' yoooooooooooo')
-
-    // console.log(Object.keys(req.files).length)
-    //----------------------------------------------------------
-    //? Dela
-    //console.log(req.body.p_subcat)
         let month = todayDate.getMonth() + 1;
         let day = todayDate.getDate();
         let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;

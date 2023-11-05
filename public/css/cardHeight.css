@@ -37,7 +37,7 @@ body{
 }
 #cardBody {
     box-sizing: border-box;
-    height: 4rem;
+    height: 6rem;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -61,13 +61,17 @@ a{
 }
 
 @media(max-width: 1200px){
-   
+    #searched{
+        width: 50%;
+    }
   
 }
 
 
 @media(max-width: 600px){
-   
+    #searched{
+        width: 100%;
+    }
     
 }
 
