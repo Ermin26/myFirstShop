@@ -154,10 +154,11 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
-        //let toys_sku = <%# invt_sku %>;
+        
         let btnInfo = document.getElementById('btn');
         btnInfo.setAttribute('disabled', 'true');
         document.addEventListener('DOMContentLoaded', function () {
+          let toys_sku = <%= invt_sku %>;
         const colorSection = document.getElementById('colorSection');
         const sizeSection = document.getElementById('sizeSection');
         const products = JSON.parse('<%- productsJSON %>');

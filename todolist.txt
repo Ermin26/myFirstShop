@@ -1,7 +1,8 @@
 
 
+✘ TOP PRIORITY @cancelled(23-11-07 21:58)
 
-
+ ☐  fIX ADD PRODUCTS FOR TOYS AND JEWERLY VARIATIONS!!!!
 query db by last number 
 SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER) asc LIMIT 100
 

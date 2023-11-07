@@ -242,7 +242,6 @@ app.post('/search', async (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
-    console.log(id)
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows[0];
@@ -842,14 +841,19 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }
         })
     }else{
+        
         console.log("toys")
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku,colors) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
             if(e){
                 req.flash('error', "Error inserting product into database", e.message)
                 console.log("Error", e.message)
             }else{
-                req.flash('success', 'Uspešno dodano')
-                console.log("Added")
+                for (let i = 0; i < product.color.length; i++) {
+                        let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
+                        await conn.query(`INSERT INTO varijacije(product_id, size, var_sku, img_link, qty,color) VALUES('${result.rows[0].id}', 'odrasli', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`]}', '${product.color[i]}')`)
+    
+                    sizeCount += 1;
+                }
             }
 
         })
@@ -869,79 +873,79 @@ DeleteZeroQty();
 // ARTICL PAGES
 
 //! MENS
-app.get('/mens', async (req, res) => {
+app.get('/category/mens', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens'`, async (err, result) => {
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/womens/womenAll', { shirts })
+                res.render('artikli/mens/mens', { products })
             }
         }
     })
 })
 
-app.get('/men_Shirts', async (req, res) => {
+app.get('/category/mens/shirts', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Shirts'`, async (err, result) => {
         //console.log(result.rows.length)
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/mens')
         } else {
             if (!err) {
-                res.render('artikli/mens/mensShirts', { shirts })
+                res.render('artikli/mens/shirts', { products })
             }
         }
     })
 
 })
 
-app.get('/men_Jackets', async (req, res) => {
+app.get('/category/mens/jackets', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Jackets'`, async (err, result) => {
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/mens/mensJackets', { shirts })
+                res.render('artikli/mens/jackets', { products })
             }
         }
     })
 
 })
 
-app.get('/men_Pants', async (req, res) => {
+app.get('/category/mens/pants', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Pants'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/mens/mensPants', { shirts })
+                res.render('artikli/mens/pants', { products })
 
             }
         }
     })
 })
 
-app.get('/men_Underwear', async (req, res) => {
+app.get('/category/mens/underwear', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Underwear'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/mens/mensUnderwear', { shirts })
+                res.render('artikli/mens/underwear', { products })
 
             }
         }
@@ -950,82 +954,80 @@ app.get('/men_Underwear', async (req, res) => {
 
 //! WOMENS
 
-app.get('/womens', async (req, res) => {
+app.get('/category/womens', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens'`, async (err, result) => {
-
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/womens/womenAll', { shirts })
+                res.render('artikli/womens/womens', { products })
 
             }
         }
     })
 })
 
-app.get('/women_Shirts', async (req, res) => {
+app.get('/category/womens/shirts', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Shirts'`, async (err, result) => {
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/womens/womenShirts', { shirts })
+                res.render('artikli/womens/shirts', { products })
             }
         }
     })
 
 })
 
-app.get('/women_Jackets', async (req, res) => {
+app.get('/category/womens/jackets', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Jackets'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/womens/womenJackets', { shirts })
+                res.render('artikli/womens/jackets', { products })
 
             }
         }
     })
 })
 
-app.get('/women_Pants', async (req, res) => {
+app.get('/category/womens/pants', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Pants'`, async (err, result) => {
-
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/womens/womenPants', { shirts })
+                res.render('artikli/womens/pants', { products })
 
             }
         }
     })
 })
 
-app.get('/women_Underwear', async (req, res) => {
+app.get('/category/womens/underwear', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Underwear'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/womens/womenUnderwear', { shirts })
+                res.render('artikli/womens/underwear', { products })
             }
         }
     })
@@ -1033,31 +1035,30 @@ app.get('/women_Underwear', async (req, res) => {
 
 //! KIDS
 
-app.get('/baby', async (req, res) => {
+app.get('/category/baby', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Baby'`, async (err, result) => {
-
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/kids/kidsBaby', { shirts })
+                res.render('artikli/kids/baby', { products })
             }
         }
     })
 })
-app.get('/kids', async (req, res) => {
+app.get('/category/kids', async (req, res) => {
     let allProducts = [];
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids'`, async (err, result) => {
         if (!err) {
-            let shirts = result.rows;
+            let products = result.rows;
             //console.log(shirts[0].id)
-            if (!shirts.length) {
+            if (!products.length) {
                 req.flash('error', ' Nothing to display.')
                 res.redirect('/');
             } else {
-                res.render('artikli/kids/kidsAll', { shirts })
+                res.render('artikli/kids/kids', { products })
             }
         } else {
             req.flash('error', err.message);
@@ -1068,17 +1069,17 @@ app.get('/kids', async (req, res) => {
 
 })
 
-app.get('/kids_Shirts', async (req, res) => {
+app.get('/category/kids/shirts', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Shirts'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/kids/kidsShirts', { shirts })
+                res.render('artikli/kids/shirts', { products })
 
             }
         }
@@ -1086,57 +1087,57 @@ app.get('/kids_Shirts', async (req, res) => {
 
 })
 
-app.get('/kids_Jackets', async (req, res) => {
+app.get('/category/kids/jackets', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Jackets'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/kids/kidsJackets', { shirts })
+                res.render('artikli/kids/jackets', { products })
             }
         }
     })
 })
 
-app.get('/kids_Pants', async (req, res) => {
+app.get('/category/kids/pants', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Pants'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/kids/kidsPants', { shirts })
+                res.render('artikli/kids/kidsPants', { products })
 
             }
         }
     })
 })
 
-app.get('/kids_Underwear', async (req, res) => {
+app.get('/category/kids/underwear', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Underwear'`, async (err, result) => {
 
-        let shirts = result.rows
-        if (!shirts.length) {
+        let products = result.rows
+        if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('/')
         } else {
             if (!err) {
 
-                res.render('artikli/kids/kidsUnderwear', { shirts })
+                res.render('artikli/kids/kidsUnderwear', { products })
             }
         }
 
     })
 })
 
-app.get('/other', async (req, res) => {
+app.get('/category/other', async (req, res) => {
     res.render('artikli/other/other')
 })
 

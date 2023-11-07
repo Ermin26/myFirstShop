@@ -529,7 +529,7 @@
                 </div>
             </div>
         </div>
-        <div class="row row-cols-md-2">
+        <div class="row row-cols-md-4">
         <div class="col">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="p_price" name="p_price" placeholder="29,99 €" required>
@@ -547,6 +547,12 @@
                     Looks good!
                 </div>
             </div>
+        </div>
+        <div id="colorForToys" class="col d-flex flex-column">
+            <input type="text" class="form-control m- p-3" id="color" name="color[]" placeholder="Barva" value="" required>
+        </div>
+        <div id="qtyForToys" class="col d-flex flex-column">
+            <input type="text" class="form-control m- p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
         </div>
         </div>
         </div>
@@ -569,7 +575,13 @@
         //document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
         document.getElementById("adultShoes").style.display = "none";
         let toysField = document.getElementById("imgForToys");
+        let colorForToys = document.getElementById("colorForToys");
+        let qtyForToys = document.getElementById("qtyForToys");
         toysField.style.display = "none";
+        colorForToys.style.display = "none";
+        qtyForToys.style.display = "none";
+        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+        colorForToys.classList.remove('col', 'd-flex', 'flex-column')
 
         let infoKidsClothes = document.getElementById("kidsClothes").getElementsByTagName('input')
         let infoKidsShoes = document.getElementById("kidsShoes").getElementsByTagName('input')
@@ -592,6 +604,10 @@
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "none";
+                colorForToys.style.display = "none";
+                qtyForToys.style.display = "none";
+                qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                 for (let i = 0; i < infoKidsClothes.length; i++) {
                     infoKidsClothes[i].setAttribute('disabled', 'disabled');
                 }
@@ -607,6 +623,10 @@
                     document.getElementById("adultShoes").style.display = "none";
                     document.getElementById("imgForToys").style.display = "none";
                     toysField.style.display = "none";
+                    colorForToys.style.display = "none";
+        qtyForToys.style.display = "none";
+        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                     for (let i = 0; i < infoAdultShoes.length; i++) {
                         infoAdultShoes[i].setAttribute('disabled', 'disabled');
                     }
@@ -623,6 +643,10 @@
                     document.getElementById("adultShoes").classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultShoes").style.display = "flex";
                     toysField.style.display = "none";
+                    colorForToys.style.display = "none";
+        qtyForToys.style.display = "none";
+        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                     for (let i = 0; i < infoAdultClothes.length; i++) {
                         infoAdultClothes[i].setAttribute('disabled', 'disabled');
                     }
@@ -630,7 +654,7 @@
                         infoAdultShoes[i].removeAttribute('disabled');
                     }
                 }
-                if (subCategory == 'Jewerly'){
+                if (subCategory == 'Jewerly' || subCategory == 'Toys'){
                     document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
                     document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
@@ -644,6 +668,10 @@
                     document.getElementById('new').value = "New";
                     document.getElementById('new').text = "New";
                     toysField.style.display = "flex";
+                    colorForToys.style.display = "flex";
+                    qtyForToys.style.display = "flex";
+                    qtyForToys.classList.add('col', 'd-flex', 'flex-column')
+                    colorForToys.classList.add('col', 'd-flex', 'flex-column')
                 }
             }
 
@@ -657,6 +685,10 @@
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "none";
+                colorForToys.style.display = "none";
+        qtyForToys.style.display = "none";
+        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                 for (let i = 0; i < infoAdultClothes.length; i++) {
                     infoAdultClothes[i].setAttribute('disabled', 'disabled');
                 }
@@ -672,6 +704,10 @@
                     document.getElementById("kidsShoes").style.display = "none";
                     document.getElementById("imgForToys").style.display = "none";
                     toysField.style.display = "none";
+                    colorForToys.style.display = "none";
+        qtyForToys.style.display = "none";
+        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                     for (let i = 0; i < infoKidsShoes.length; i++) {
                         infoKidsShoes[i].setAttribute('disabled', 'disabled');
                     }
@@ -687,6 +723,10 @@
                     document.getElementById("kidsShoes").style.display = "flex";
                     document.getElementById("imgForToys").style.display = "none";
                     toysField.style.display = "none";
+                    colorForToys.style.display = "none";
+        qtyForToys.style.display = "none";
+        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                     for (let i = 0; i < infoKidsClothes.length; i++) {
                         infoKidsClothes[i].setAttribute('disabled', 'disabled');
                     }
@@ -694,8 +734,12 @@
                         infoKidsShoes[i].removeAttribute('disabled');
                     }
                 }
-                if(subCategory == 'Toys'){
+                if(subCategory == 'Toys' || subCategory == 'Jewerly' || subCategory == 'Other'){
                     toysField.style.display = "flex";
+                    colorForToys.style.display = "flex";
+                    qtyForToys.style.display = "flex";
+                    qtyForToys.classList.add('col', 'd-flex', 'flex-column')
+                    colorForToys.classList.add('col', 'd-flex', 'flex-column')
                     document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
                     document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
@@ -708,7 +752,8 @@
                     document.getElementById('newCat').text = "NewCat";
                     document.getElementById('new').value = "New";
                     document.getElementById('new').text = "New";
-                }   
+                } 
+                /*
                 if (subCategory == 'Jewerly'){
                     document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
@@ -724,7 +769,9 @@
                     document.getElementById('new').text = "New";
                     toysField.style.display = "flex";
                 }
+            */
             }   
+            /*
             if(category == 'Other'){
                 document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultClothes").style.display = "none";
@@ -744,6 +791,7 @@
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
             }
+            */
             if(category == 'NewCat' || category == 'null'){
                 document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultClothes").style.display = "none";
@@ -758,6 +806,10 @@
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "flex";
+                colorForToys.style.display = "flex";
+        qtyForToys.style.display = "flex";
+        qtyForToys.classList.add('col', 'd-flex', 'flex-column')
+                colorForToys.classList.add('col', 'd-flex', 'flex-column')
                 let userEnter = prompt('Name of Category')
                 document.getElementById('newCat').value = userEnter;
                 document.getElementById('newCat').text = userEnter;
@@ -776,6 +828,10 @@
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "none";
+                colorForToys.style.display = "none";
+        qtyForToys.style.display = "none";
+        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                 let userEnter = prompt('Name of subcategory')
                 document.getElementById('new').value = userEnter;
                 document.getElementById('new').text = userEnter;
