@@ -11,7 +11,7 @@
 
     <form class="validated-form mt-5" action="/addProduct" method="post" enctype="multipart/form-data" novalidate>
 
-        <div class="row mt-4 mb-2 g-0">
+        <div class="row mt-4 mb-2 p-2 shadow">
             <div class="col">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="p_name" name="p_name" placeholder="name" required>
@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <div class="row d-flex flex-column flex-md-row mb-2">
+        <div class="row d-flex flex-column flex-md-row mb-2 p-2 shadow">
             <div class="col mt-2">
                 <div class="input-group">
                     <div class="form-floating">
@@ -69,6 +69,39 @@
             </div>
         </div>
         
+        
+
+        <div class="row d-flex flex-column flex-md-row mb-2 p-2 shadow">
+            <div class="col mt-2">
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="This customer see" id="p_desc" name="p_desc"
+                        required></textarea>
+                    <label for="p_desc">Description</label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+            <div class="col mt-2">
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="This customer see when open product info"
+                        id="p_fulldescription" name="p_fulldescription" required></textarea>
+                    <label for="p_fulldescription">Full description</label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+            <div class="col mt-2">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="p_price" name="p_price" placeholder="29,99 €" required>
+                    <label for="p_price">Neto cena</label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- KIDS -->
         <div id="kidsClothes" class="">
@@ -505,57 +538,31 @@
                 <div class="btn btn-primary mt-3" onclick="addRow()">Add row</div>
             </div>
         </div>
-        <div id="addRow" class="mb-4"></div>
 
-        <div class="row d-flex flex-column flex-md-row mb-2">
-            <div class="col mt-2">
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="This customer see" id="p_desc" name="p_desc"
-                        required></textarea>
-                    <label for="p_desc">Description</label>
-                    <div class="valid-feedback">
+        
+        <div id="toys" class="row row-cols-1 row-cols-md-2 p-2 shadow">
+            <div class="col mt-2" id="imgForToys">
+                <div class="input-group-sm d-flex align-self-center w-100">
+                    <label for="formFileMultiple" class="form-label custom-file-label"></label>
+                    <input class="form-control text-primary" type="file" id="formFileMultiple" name="image1" multiple required>
+                    <div class="invalid-feedback">
                         Looks good!
                     </div>
                 </div>
             </div>
-            <div class="col mt-2">
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="This customer see when open product info"
-                        id="p_fulldescription" name="p_fulldescription" required></textarea>
-                    <label for="p_fulldescription">Full description</label>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
+            <div id="colorForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="color" name="color[]" placeholder="Barva" value="" required>
+            </div>
+            <div id="qtyForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
+            </div>
+            <div class="col">
+                <div class="btn btn-primary mt-3" id="addRowBtn" onclick="addRow()">Add row</div>
             </div>
         </div>
-        <div class="row row-cols-md-4">
-        <div class="col">
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="p_price" name="p_price" placeholder="29,99 €" required>
-                <label for="p_price">Neto cena</label>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
         </div>
-        <div class="col" id="imgForToys">
-            <div class="input-group-sm">
-                <label for="formFileMultiple" class="form-label custom-file-label"></label>
-                <input class="form-control text-primary" type="file" id="formFileMultiple" name="image1" multiple required>
-                <div class="invalid-feedback">
-                    Looks good!
-                </div>
-            </div>
-        </div>
-        <div id="colorForToys" class="col d-flex flex-column">
-            <input type="text" class="form-control m- p-3" id="color" name="color[]" placeholder="Barva" value="" required>
-        </div>
-        <div id="qtyForToys" class="col d-flex flex-column">
-            <input type="text" class="form-control m- p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
-        </div>
-        </div>
-        </div>
+
+        <div id="addRow" class="mb-4"></div>
 
         <div class="footer text-center mt-5 mb-5">
             <button class="btn btn-primary">Submit</button>
@@ -574,14 +581,15 @@
         document.getElementById("adultClothes").style.display = "none";
         //document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center');
         document.getElementById("adultShoes").style.display = "none";
-        let toysField = document.getElementById("imgForToys");
-        let colorForToys = document.getElementById("colorForToys");
-        let qtyForToys = document.getElementById("qtyForToys");
+        let toysField = document.getElementById("toys");
+        //let colorForToys = document.getElementById("colorForToys");
+        //let qtyForToys = document.getElementById("qtyForToys");
         toysField.style.display = "none";
-        colorForToys.style.display = "none";
-        qtyForToys.style.display = "none";
-        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-        colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+        toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+        //colorForToys.style.display = "none";
+        //qtyForToys.style.display = "none";
+        //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+        //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
 
         let infoKidsClothes = document.getElementById("kidsClothes").getElementsByTagName('input')
         let infoKidsShoes = document.getElementById("kidsShoes").getElementsByTagName('input')
@@ -595,158 +603,171 @@
             category = document.getElementById("p_cat").value;
             subCategory = document.getElementById("p_subcat").value;
             if (category == 'Mens' || category == 'Womens') {
-                document.getElementById("kidsClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsClothes").style.display = "none";
-                document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsShoes").style.display = "none";
                 document.getElementById('newCat').value = "NewCat";
                 document.getElementById('newCat').text = "NewCat";
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "none";
-                colorForToys.style.display = "none";
-                qtyForToys.style.display = "none";
-                qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-                colorForToys.classList.remove('col', 'd-flex', 'flex-column')
-                for (let i = 0; i < infoKidsClothes.length; i++) {
-                    infoKidsClothes[i].setAttribute('disabled', 'disabled');
+                toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                //colorForToys.style.display = "none";
+                //qtyForToys.style.display = "none";
+                //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+                if(infoKidsClothes.length) {
+                    document.getElementById('addRow').innerHTML="";
                 }
-                for (let i = 0; i < infoKidsShoes.length; i++) {
-                    infoKidsShoes[i].setAttribute('disabled', 'disabled');
+                if (infoKidsShoes.length) {
+                    document.getElementById('addRow').innerHTML="";
                 }
 
                 if (subCategory !== 'Select Subcategory' && subCategory !== 'Shoes' && subCategory !== 'Toys' && subCategory !== 'Jewerly') {
                     console.log("subCategory selected", subCategory)
-                    document.getElementById("adultClothes").classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultClothes").classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "flex";
-                    document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultShoes").style.display = "none";
                     document.getElementById("imgForToys").style.display = "none";
                     toysField.style.display = "none";
-                    colorForToys.style.display = "none";
-        qtyForToys.style.display = "none";
-        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    for (let i = 0; i < infoAdultShoes.length; i++) {
-                        infoAdultShoes[i].setAttribute('disabled', 'disabled');
+                    toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                    //colorForToys.style.display = "none";
+                    //qtyForToys.style.display = "none";
+                    //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    if(infoAdultShoes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
-                    for (let i = 0; i < infoKidsShoes.length; i++) {
-                        infoKidsShoes[i].setAttribute('disabled', 'disabled');
+                    if (infoKidsShoes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
-                    for (let i = 0; i < infoAdultClothes.length; i++) {
-                        infoAdultClothes[i].removeAttribute('disabled');
+                    if(infoAdultClothes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
                 }
                 if (subCategory == 'Shoes') {
-                    document.getElementById("adultClothes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
-                    document.getElementById("adultShoes").classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultShoes").classList.add('row', 'row-cols-3','row-cols-md-5','d-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultShoes").style.display = "flex";
                     toysField.style.display = "none";
-                    colorForToys.style.display = "none";
-        qtyForToys.style.display = "none";
-        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    for (let i = 0; i < infoAdultClothes.length; i++) {
-                        infoAdultClothes[i].setAttribute('disabled', 'disabled');
+                    toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                    //colorForToys.style.display = "none";
+                    //qtyForToys.style.display = "none";
+                    //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    if( infoAdultClothes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
-                    for (let i = 0; i < infoAdultShoes.length; i++) {
-                        infoAdultShoes[i].removeAttribute('disabled');
+                    if( infoAdultShoes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
                 }
                 if (subCategory == 'Jewerly' || subCategory == 'Toys'){
-                    document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
-                    document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultShoes").style.display = "none";
-                    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsClothes").style.display = "none";
-                    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsShoes").style.display = "none";
                     document.getElementById('newCat').value = "NewCat";
                     document.getElementById('newCat').text = "NewCat";
                     document.getElementById('new').value = "New";
                     document.getElementById('new').text = "New";
                     toysField.style.display = "flex";
-                    colorForToys.style.display = "flex";
-                    qtyForToys.style.display = "flex";
-                    qtyForToys.classList.add('col', 'd-flex', 'flex-column')
-                    colorForToys.classList.add('col', 'd-flex', 'flex-column')
+                    toysField.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                    //colorForToys.style.display = "flex";
+                    //qtyForToys.style.display = "flex";
+                    //qtyForToys.classList.add('col', 'd-flex', 'flex-column')
+                    //colorForToys.classList.add('col', 'd-flex', 'flex-column')
                 }
             }
 
             if (category == 'Kids') {
-                document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultClothes").style.display = "none";
-                document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultShoes").style.display = "none";
                 document.getElementById('newCat').value = "NewCat";
                 document.getElementById('newCat').text = "NewCat";
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "none";
-                colorForToys.style.display = "none";
-        qtyForToys.style.display = "none";
-        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-                colorForToys.classList.remove('col', 'd-flex', 'flex-column')
-                for (let i = 0; i < infoAdultClothes.length; i++) {
-                    infoAdultClothes[i].setAttribute('disabled', 'disabled');
+                toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                //colorForToys.style.display = "none";
+                //qtyForToys.style.display = "none";
+                //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+                if( infoAdultClothes.length) {
+                    document.getElementById('addRow').innerHTML="";
                 }
 
-                for (let i = 0; i < infoAdultShoes.length; i++) {
-                    infoAdultShoes[i].setAttribute('disabled', 'disabled');
+                if( infoAdultShoes.length) {
+                    document.getElementById('addRow').innerHTML="";
                 }
 
                 if (subCategory == 'Jackets' || subCategory == 'Shirts' || subCategory == 'Pants' || subCategory == 'Underwear' || subCategory == 'Dress') {
-                    document.getElementById("kidsClothes").classList.add('row', 'row-cols-md-3','row-cols-lg-6', 'd-flex', 'flex-wrap', 'mt-4', 'mb-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsClothes").classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'mb-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsClothes").style.display = "flex";
-                    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsShoes").style.display = "none";
                     document.getElementById("imgForToys").style.display = "none";
                     toysField.style.display = "none";
-                    colorForToys.style.display = "none";
-        qtyForToys.style.display = "none";
-        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    for (let i = 0; i < infoKidsShoes.length; i++) {
-                        infoKidsShoes[i].setAttribute('disabled', 'disabled');
+                    toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                    //colorForToys.style.display = "none";
+                    //qtyForToys.style.display = "none";
+                    //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    if(infoKidsShoes.length ) {
+                        document.getElementById('addRow').innerHTML="";
                     }
+                    /*
                     for (let i = 0; i < infoKidsClothes.length; i++) {
                         infoKidsClothes[i].removeAttribute('disabled');
+                    }
+                    */
+                    if(infoKidsClothes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
                 }
 
                 if (subCategory == 'Shoes') {
-                    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsClothes").style.display = "none";
-                    document.getElementById("kidsShoes").classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsShoes").classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsShoes").style.display = "flex";
                     document.getElementById("imgForToys").style.display = "none";
                     toysField.style.display = "none";
-                    colorForToys.style.display = "none";
-        qtyForToys.style.display = "none";
-        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    colorForToys.classList.remove('col', 'd-flex', 'flex-column')
-                    for (let i = 0; i < infoKidsClothes.length; i++) {
-                        infoKidsClothes[i].setAttribute('disabled', 'disabled');
+                    toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                    //colorForToys.style.display = "none";
+                    //qtyForToys.style.display = "none";
+                    //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+                    if(infoKidsClothes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
-                    for (let i = 0; i < infoKidsShoes.length; i++) {
-                        infoKidsShoes[i].removeAttribute('disabled');
+                    if(infoKidsShoes.length) {
+                        document.getElementById('addRow').innerHTML="";
                     }
                 }
                 if(subCategory == 'Toys' || subCategory == 'Jewerly' || subCategory == 'Other'){
                     toysField.style.display = "flex";
-                    colorForToys.style.display = "flex";
-                    qtyForToys.style.display = "flex";
-                    qtyForToys.classList.add('col', 'd-flex', 'flex-column')
-                    colorForToys.classList.add('col', 'd-flex', 'flex-column')
-                    document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    toysField.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                    //colorForToys.style.display = "flex";
+                    //qtyForToys.style.display = "flex";
+                    //qtyForToys.classList.add('col', 'd-flex', 'flex-column')
+                    //colorForToys.classList.add('col', 'd-flex', 'flex-column')
+                    document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
-                    document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultShoes").style.display = "none";
-                    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsClothes").style.display = "none";
-                    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsShoes").style.display = "none";
                     document.getElementById('newCat').value = "NewCat";
                     document.getElementById('newCat').text = "NewCat";
@@ -771,67 +792,48 @@
                 }
             */
             }   
-            /*
-            if(category == 'Other'){
-                document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
-                document.getElementById("adultClothes").style.display = "none";
-                document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
-                document.getElementById("adultShoes").style.display = "none";
-                document.getElementById("kidsClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
-                document.getElementById("kidsClothes").style.display = "none";
-                document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
-                document.getElementById("kidsShoes").style.display = "none";
-                document.getElementById('newCat').value = "NewCat";
-                document.getElementById('newCat').text = "NewCat";
-                document.getElementById('new').value = "New";
-                document.getElementById('new').text = "New";
-                toysField.style.display = "flex";
-                document.getElementById('newCat').value = "NewCat";
-                document.getElementById('newCat').text = "NewCat";
-                document.getElementById('new').value = "New";
-                document.getElementById('new').text = "New";
-            }
-            */
             if(category == 'NewCat' || category == 'null'){
-                document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultClothes").style.display = "none";
-                document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultShoes").style.display = "none";
-                document.getElementById("kidsClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsClothes").style.display = "none";
-                document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsShoes").style.display = "none";
                 document.getElementById('newCat').value = "NewCat";
                 document.getElementById('newCat').text = "NewCat";
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "flex";
-                colorForToys.style.display = "flex";
-        qtyForToys.style.display = "flex";
-        qtyForToys.classList.add('col', 'd-flex', 'flex-column')
-                colorForToys.classList.add('col', 'd-flex', 'flex-column')
+                toysField.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                //colorForToys.style.display = "flex";
+                //qtyForToys.style.display = "flex";
+                //qtyForToys.classList.add('col', 'd-flex', 'flex-column')
+                //colorForToys.classList.add('col', 'd-flex', 'flex-column')
                 let userEnter = prompt('Name of Category')
                 document.getElementById('newCat').value = userEnter;
                 document.getElementById('newCat').text = userEnter;
             }
             if(subCategory == 'New'){
-                document.getElementById("adultClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultClothes").style.display = "none";
-                document.getElementById("adultShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultShoes").style.display = "none";
-                document.getElementById("kidsClothes").classList.remove('row', 'row-cols-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsClothes").style.display = "none";
-                document.getElementById("kidsShoes").classList.remove('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsShoes").style.display = "none";
                 document.getElementById('newCat').value = "NewCat";
                 document.getElementById('newCat').text = "NewCat";
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
                 toysField.style.display = "none";
-                colorForToys.style.display = "none";
-        qtyForToys.style.display = "none";
-        qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
-                colorForToys.classList.remove('col', 'd-flex', 'flex-column')
+                toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                //colorForToys.style.display = "none";
+                //qtyForToys.style.display = "none";
+                //qtyForToys.classList.remove('col', 'd-flex', 'flex-column')
+                //colorForToys.classList.remove('col', 'd-flex', 'flex-column')
                 let userEnter = prompt('Name of subcategory')
                 document.getElementById('new').value = userEnter;
                 document.getElementById('new').text = userEnter;
@@ -843,14 +845,17 @@
         function addRow() {
             cate = document.getElementById("p_cat").value;
             subCat = document.getElementById("p_subcat").value;
-
             
-            if(cate == 'Kids'){
-                if (subCat !== 'Shoes' && subCat !== 'Toys') {
+            if(imageNum == 11){
+                document.getElementById('addRowBtn').setAttribute('disabled', 'true')
+                window.alert("Maximalan broj varijacija je 10!")
+            }else{
+                if(cate == 'Kids'){
+                if (subCat !== 'Shoes' && subCat !== 'Toys' && subCat !== 'Jewerly') {
                     console.log(`yooo ${imageNum}`)
                     const boxWrapper = document.getElementById("addRow");
                     const box = document.createElement("div");
-                    box.classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
+                    box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
                     box.innerHTML = `<div class="mb-3 group-item d-flex flex-column">
                 <label for="num_56">56</label>
                 <input type="number" id="num_56" name="size${imageNum}" placeholder="velikost" value="56" readonly style="display: none;">
@@ -989,7 +994,7 @@
                 else if(subCategory == 'Shoes'){
                     const boxWrapper = document.getElementById("addRow");
                     const box = document.createElement("div");
-                    box.classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
+                    box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
                     box.innerHTML = `<div class="mb-3 group-item d-flex flex-column">
                 <label for="num_18">18</label>
                 <input type="number" id="num_18" name="size${imageNum}" placeholder="velikost" value="18" readonly style="display: none;">
@@ -1129,14 +1134,33 @@
                     boxWrapper.appendChild(box);
                     imageNum += 1;     
                 }else{
-
-                }
+                    const boxWrapper = document.getElementById("addRow");
+                    const box = document.createElement("div");
+                    box.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'p-2', 'shadow',)
+                    box.innerHTML = `<div class="col mt-2" id="imgForToys">
+                <div class="input-group-sm d-flex align-self-center w-100">
+                    <label for="formFileMultiple" class="form-label custom-file-label"></label>
+                    <input class="form-control text-primary" type="file" id="formFileMultiple" name="image1" multiple required>
+                    <div class="invalid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+            <div id="colorForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="color" name="color[]" placeholder="Barva" value="" required>
+            </div>
+            <div id="qtyForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
+            </div>`;
+                    boxWrapper.appendChild(box);
+                    imageNum += 1;       
+        }
             }
-            else if(cate = 'Mens' || cate== 'Womens'){
+                else if(cate = 'Mens' || cate== 'Womens'){
                 if(subCat !== 'Shoes' && subCat !== 'Toys'){
                     const boxWrapper = document.getElementById("addRow");
                     const box = document.createElement("div");
-                    box.classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4','mb-2', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
+                    box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4','mb-2', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
                     box.innerHTML = `<div class="mb-3 group-item d-flex flex-column">
                 <label for="num_xs">XS</label>
                 <input type="number" id="num_xs" name="size${imageNum}" placeholder="velikost" value="XS" readonly style="display: none;">
@@ -1211,7 +1235,7 @@
                 }else if(subCat == 'Shoes'){
                     const boxWrapper = document.getElementById("addRow");
                     const box = document.createElement("div");
-                    box.classList.add('row', 'row-cols-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
+                    box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
                     box.innerHTML = `<div class="mb-3 group-item d-flex flex-column">
                 <label for="num_38">38</label>
                 <input type="number" id="num_38" name="size${imageNum}" placeholder="velikost" value="38" readonly style="display: none;">
@@ -1284,10 +1308,29 @@
                     boxWrapper.appendChild(box);
                     imageNum += 1;         
                 }else{
-
-                }
+                    const boxWrapper = document.getElementById("addRow");
+                    const box = document.createElement("div");
+                    box.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'p-2', 'shadow',)
+                    box.innerHTML = `<div class="col mt-2" id="imgForToys">
+                <div class="input-group-sm d-flex align-self-center w-100">
+                    <label for="formFileMultiple" class="form-label custom-file-label"></label>
+                    <input class="form-control text-primary" type="file" id="formFileMultiple" name="image1" multiple required>
+                    <div class="invalid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+            <div id="colorForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="color" name="color[]" placeholder="Barva" value="" required>
+            </div>
+            <div id="qtyForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
+            </div>`;
+                    boxWrapper.appendChild(box);
+                    imageNum += 1;       
+        }
             }
-
+            }
         }
 
 
