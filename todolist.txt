@@ -2,8 +2,9 @@
 
 ✘ TOP PRIORITY @cancelled(23-11-07 21:58)
 
- ☐  fIX ADD PRODUCTS FOR TOYS AND JEWERLY VARIATIONS!!!!
-query db by last number 
+ ✔  fIX ADD PRODUCTS FOR TOYS AND JEWERLY VARIATIONS!!!! @done(23-11-14 22:45)
+ ☐  Now test add every category and sub category 
+ query db by last number 
 SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER) asc LIMIT 100
 
 
