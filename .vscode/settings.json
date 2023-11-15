@@ -3,9 +3,11 @@
         "artikli",
         "Bigserial",
         "bruto",
+        "Jewerly",
         "loged",
         "redirecturl",
         "Salester",
+        "subcat",
         "USERN",
         "womens",
         "yooo"
@@ -14,8 +16,8 @@
         {
             "pgOptions": {
                 "ssl": {
-                    "cert": "C:\\Users\\lerve\\OneDrive\\Namizje\\Ermin\\myFirstShop\\root.crt",
-                    "ca": "C:\\Users\\lerve\\OneDrive\\Namizje\\Ermin\\myFirstShop\\root.crt"
+                    "cert": "C:\\Users\\warehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt",
+                    "ca": "C:\\Users\\warehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt"
                 }
             },
             "previewLimit": 50,

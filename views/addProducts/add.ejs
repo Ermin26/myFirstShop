@@ -567,23 +567,22 @@
         document.getElementById("adultClothes").style.display = "none";
         document.getElementById("adultShoes").style.display = "none";
         document.getElementById('showAddBtn').style.display = "none";
+
         let toysField = document.getElementById("toys");
         toysField.style.display = "none";
         toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
-        
-        let infoKidsClothes = document.getElementById("kidsClothes").getElementsByTagName('input')
-        let infoKidsShoes = document.getElementById("kidsShoes").getElementsByTagName('input')
-        let infoAdultClothes = document.getElementById("adultClothes").getElementsByTagName('input')
-        let infoAdultShoes = document.getElementById("adultShoes").getElementsByTagName('input')
-        
+
+        let infoKidsClothes = document.getElementById("kidsClothes").getElementsByTagName('input');
+        let infoKidsShoes = document.getElementById("kidsShoes").getElementsByTagName('input');
+        let infoAdultClothes = document.getElementById("adultClothes").getElementsByTagName('input');
+        let infoAdultShoes = document.getElementById("adultShoes").getElementsByTagName('input');
+        let infoToys = document.getElementById("toys").getElementsByTagName('input');
         category = "";
         subCategory = "";
 
         function subSelected() {
             category = document.getElementById("p_cat").value;
             subCategory = document.getElementById("p_subcat").value;
-            console.log("Selected category", category);
-            console.log("Selected subCategory", subCategory);
             if (category == 'Mens' || category == 'Womens') {
                 document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsClothes").style.display = "none";
@@ -596,9 +595,21 @@
                 toysField.style.display = "none";
                 toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                 if(infoKidsClothes.length) {
+                    for(let i = 0; i < infoKidsClothes.length; i++){
+                        infoKidsClothes[i].setAttribute('disabled', true);
+                    }
                     document.getElementById('addRow').innerHTML="";
                 }
                 if (infoKidsShoes.length) {
+                    for(let i = 0; i < infoKidsShoes.length; i++){
+                        infoKidsShoes[i].setAttribute('disabled', true);
+                    }
+                    document.getElementById('addRow').innerHTML="";
+                }
+                if (infoToys.length) {
+                    for(let i = 0; i < infoToys.length; i++){
+                        infoToys[i].setAttribute('disabled', true);
+                    }
                     document.getElementById('addRow').innerHTML="";
                 }
 
@@ -611,12 +622,27 @@
                     toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                     document.getElementById('showAddBtn').style.display = "flex";
                     if(infoAdultShoes.length) {
+                        for(let i = 0; i < infoAdultShoes.length; i++){
+                        infoAdultShoes[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
-                    if (infoKidsShoes.length) {
+                    if(infoKidsShoes.length) {
+                        for(let i = 0; i < infoKidsShoes.length; i++){
+                        infoKidsShoes[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                     if(infoAdultClothes.length) {
+                        for(let i = 0; i < infoAdultClothes.length; i++){
+                        infoAdultClothes[i].removeAttribute('disabled');
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoToys.length) {
+                        for(let i = 0; i < infoToys.length; i++){
+                            infoToys[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                 }
@@ -629,9 +655,21 @@
                     toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                     document.getElementById('showAddBtn').style.display = "flex";
                     if( infoAdultClothes.length) {
+                        for(let i = 0; i < infoAdultClothes.length; i++){
+                        infoAdultClothes[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                     if( infoAdultShoes.length) {
+                        for(let i = 0; i < infoAdultShoes.length; i++){
+                        infoAdultShoes[i].removeAttribute('disabled');
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if (infoToys.length) {
+                        for(let i = 0; i < infoToys.length; i++){
+                            infoToys[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                 }
@@ -651,6 +689,36 @@
                     toysField.style.display = "flex";
                     toysField.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                     document.getElementById('showAddBtn').style.display = "flex";
+                    if(infoKidsClothes.length) {
+                    for(let i = 0; i < infoKidsClothes.length; i++){
+                        infoKidsClothes[i].setAttribute('disabled', true);
+                    }
+                    document.getElementById('addRow').innerHTML="";
+                }
+                    if(infoKidsShoes.length) {
+                        for(let i = 0; i < infoKidsShoes.length; i++){
+                            infoKidsShoes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoAdultClothes.length) {
+                        for(let i = 0; i < infoAdultClothes.length; i++){
+                        infoAdultClothes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoAdultShoes.length) {
+                        for(let i = 0; i < infoAdultShoes.length; i++){
+                        infoAdultShoes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if (infoToys.length) {
+                        for(let i = 0; i < infoToys.length; i++){
+                            infoToys[i].removeAttribute('disabled');
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
                 }
             }
 
@@ -665,13 +733,19 @@
                 document.getElementById('new').text = "New";
                 toysField.style.display = "none";
                 toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
-                if( infoAdultClothes.length) {
+                if(infoAdultClothes.length) {
+                        for(let i = 0; i < infoAdultClothes.length; i++){
+                        infoAdultClothes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                if(infoAdultShoes.length) {
+                    for(let i = 0; i < infoAdultShoes.length; i++){
+                        infoAdultShoes[i].setAttribute('disabled', true);
+                        }
                     document.getElementById('addRow').innerHTML="";
                 }
 
-                if( infoAdultShoes.length) {
-                    document.getElementById('addRow').innerHTML="";
-                }
 
                 if (subCategory == 'Jackets' || subCategory == 'Shirts' || subCategory == 'Pants' || subCategory == 'Underwear' || subCategory == 'Dress') {
                     document.getElementById("kidsClothes").classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'mb-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
@@ -682,9 +756,21 @@
                     toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                     document.getElementById('showAddBtn').style.display = "flex";
                     if(infoKidsShoes.length ) {
+                        for(let i = 0; i < infoKidsShoes.length; i++){
+                            infoKidsShoes[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                     if(infoKidsClothes.length) {
+                        for(let i = 0; i < infoKidsClothes.length; i++){
+                        infoKidsClothes[i].removeAttribute('disabled');
+                    }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if (infoToys.length) {
+                        for(let i = 0; i < infoToys.length; i++){
+                            infoToys[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                 }
@@ -698,9 +784,21 @@
                     toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                     document.getElementById('showAddBtn').style.display = "flex";
                     if(infoKidsClothes.length) {
+                        for(let i = 0; i < infoKidsClothes.length; i++){
+                            infoKidsClothes[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                     if(infoKidsShoes.length) {
+                        for(let i = 0; i < infoKidsShoes.length; i++){
+                        infoKidsShoes[i].removeAttribute('disabled');
+                    }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoToys.length) {
+                        for(let i = 0; i < infoToys.length; i++){
+                            infoToys[i].setAttribute('disabled', true);
+                        }
                         document.getElementById('addRow').innerHTML="";
                     }
                 }
@@ -708,9 +806,6 @@
                     toysField.style.display = "flex";
                     toysField.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                     document.getElementById('showAddBtn').style.display = "flex";
-                    //qtyForToys.style.display = "flex";
-                    //qtyForToys.classList.add('col', 'd-flex', 'flex-column')
-                    //colorForToys.classList.add('col', 'd-flex', 'flex-column')
                     document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
                     document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
@@ -723,8 +818,26 @@
                     document.getElementById('newCat').text = "NewCat";
                     document.getElementById('new').value = "New";
                     document.getElementById('new').text = "New";
-                } 
-            }   
+                    if(infoKidsClothes.length) {
+                        for(let i = 0; i < infoKidsClothes.length; i++){
+                            infoKidsClothes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoKidsShoes.length) {
+                        for(let i = 0; i < infoKidsShoes.length; i++){
+                            infoKidsShoes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoToys.length) {
+                        for(let i = 0; i < infoToys.length; i++){
+                            infoToys[i].removeAttribute('disabled');
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                }
+            }
             if(category == 'NewCat' || category == 'null'){
                 document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("adultClothes").style.display = "none";

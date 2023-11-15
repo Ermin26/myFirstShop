@@ -246,7 +246,7 @@ app.get('/product/:id', async (req, res) => {
         if (!err) {
             let shirts = result.rows[0];
             let invt_sku = shirts.inventory_sku
-
+            console.log("inventory sku",invt_sku)
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
                 
@@ -377,21 +377,15 @@ app.get("/cart", async (req, res) => {
                 res.render('orders/cart', { items, allProducts, s_pk })
             })
         } else {
-            console.log(cart);
             for (let i = 0; i < cart.length; i++) {
                 await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
                     if (!e) {
-                        //console.log(results.rows)
-                        //console.log('------------------')
-                        //sizes.push(results.rows[i].sku_num,results.rows[i].img_link);
                         let ordered = results.rows;
+                        console.log(ordered)
                         items.push(results.rows)
                         countSizes += 1;
                         if (cart.length === countSizes) {
-                            //console.log(items, "Drugic")
-
                             res.render('orders/cart', { items, cart, allProducts, ordered, s_pk })
-
                         }
                     }
                     else {
@@ -412,7 +406,7 @@ app.get("/cart", async (req, res) => {
 })
 
 app.post('/add-to-cart', async (req, res) => {
-    let { product_id, product_name, product_color, product_size, product_price, product_sku } = req.body;
+    let { product_id, product_name, product_color, product_size, product_price, product_sku, invt_sku } = req.body;
     let exist ;
     let user_id = randomUUID();
     if (req.session.cart) {
@@ -425,7 +419,7 @@ app.post('/add-to-cart', async (req, res) => {
             req.flash('error', "Izdelek je že dodan v košarico.")
                 res.redirect(`/product/${product_id}`)
         } else {
-            let product = { product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
+            let product = { product_id: product_id, sku: product_sku, invt_sku: invt_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
             let cart = req.session.cart;
             cart.push(product)
             req.flash('success', 'Successfully added to cart')
@@ -434,7 +428,7 @@ app.post('/add-to-cart', async (req, res) => {
          }
 
     } else {
-        let product = { user_id: user_id , product_id: product_id, sku: product_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
+        let product = { user_id: user_id , product_id: product_id, sku: product_sku, invt_sku: invt_sku,name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
         req.session.cart = [product]
         req.session.userID = user_id;
         let cart = req.session.cart;
@@ -544,13 +538,12 @@ app.get('/order', async (req, res) => {
 })
 
 
-app.get('/payment', checkCart, async (req, res) => { 
+app.get('/payment', checkCart, async (req, res) => {
     const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
     let invoicePrefix = Math.floor(1000 + Math.random() * 9000) + "-" + year;
     let invoice;
     if (ifPayed) {
-        if (ifPayed.status == 'succeeded') { 
-            
+        if (ifPayed.status == 'succeeded') {
             //? Create a new invoice
 
             await conn.query(`SELECT * FROM orders`, async (e, result) => {
@@ -565,9 +558,7 @@ app.get('/payment', checkCart, async (req, res) => {
                         console.log("invoiceNum: ",invoiceNum)
                         invoice =invoicePrefix + "-" + invoiceNum;
                     }
-            
                 }
-    
             })
 
             //! Update payment object, added invoice number
@@ -725,7 +716,7 @@ app.get('/config', (req, res) => {
     res.send({
       publishableKey: process.env.STRIPE_PK, SERVER_URL: server_url, user_id: user_id
     });
-  });
+});
 
 
 app.get("/fetchOrder", async (req, res) => {
@@ -772,7 +763,6 @@ app.get("/fetchOrder", async (req, res) => {
       clientSecret: paymentIntent.client_secret
     });
 });
-  
 
 app.get('/add', (req, res) => {
     res.render('addProducts/add')
@@ -794,10 +784,13 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let secondCheck = req.files[`image${imgNum}`].length;
     let imgTest = Object.keys(req.files);
 
+    console.log(product)
+/*
+
     for (let i = 0; i < firstCheck; i++) {
         images = [];
         if (imgTest.length < 2) {
-            const productImgs = req.files[`image${imgNum}`]; 
+            const productImgs = req.files[`image${imgNum}`];
             for(let productimg of productImgs) {
                 images.push(productimg.path);
             }
@@ -819,20 +812,17 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         let randomNum = parseInt(Math.random(15 * 12489) * 1000)
         let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
     if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Jewerly'){
-        console.log(product.p_subcat !== 'Toys' || product.p_subcat !== 'Jewerly')
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
                 for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {
                     let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
                     await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color) VALUES('${result.rows[0].id}', '${req.body[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`][j]}', '${product.color[i]}')`)
-
                 }
                 sizeCount += 1;
             }
             req.flash('success', "Successfully added new product")
             await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
-            
         }
         else {
             console.log("Here is error jebeni: ", err.message)
@@ -840,7 +830,9 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             res.redirect('/add');
         }
         })
-    }else{
+    }
+
+    else{
         
         console.log("toys")
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku,colors) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
@@ -859,7 +851,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         })
         
     }
-    
+*/
     res.redirect('/add')
     //res.send(req.body)
 

@@ -66,6 +66,7 @@
 
 
                                 <input type="hidden" id="p_id" name="product_id" value="<%= shirts.id %>">
+                                <input type="hidden" id="p_invt_sku" name="invt_sku" value="<%= shirts.inventory_sku %>">
                                 <input type="hidden" id="p_sku" name="product_sku" value="">
                                 <input type="hidden" id="p_name" name="product_name" value="<%= shirts.name %>">
                                 <input type="hidden" id="p_color" name="product_color" value="">
@@ -158,14 +159,11 @@
         let btnInfo = document.getElementById('btn');
         btnInfo.setAttribute('disabled', 'true');
         document.addEventListener('DOMContentLoaded', function () {
-          let toys_sku = <%= invt_sku %>;
         const colorSection = document.getElementById('colorSection');
         const sizeSection = document.getElementById('sizeSection');
         const products = JSON.parse('<%- productsJSON %>');
           if(!products.length){
             btnInfo.removeAttribute('disabled');
-            document.getElementById('p_sku').value = toys_sku;
-            console.log("Yoooo if statement", toys_sku)
           }else{
 
           
