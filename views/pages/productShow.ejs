@@ -9,12 +9,10 @@
                     <div id="carousel" class="carousel-inner text-center">
                         <%shirts.links.forEach((img, i)=>{%>
                             <div class="carousel-item <%= i === 0 ? 'active' : '' %> ">
-                                <img id="card-img" class="img-fluid" id="topImg" alt="" src="<%= img %>">
+                                <img class="img-fluid" id="topImg" alt="" src="<%= img %>">
                             </div>
                             <%}) %>
-                            
                     </div>
-                    
                     <% if(shirts.links.length> 1) {%>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
                             data-bs-slide="prev" data-bs-theme="dark">
@@ -27,13 +25,12 @@
                             <span class="visually-hidden">Next</span>
                         </button>
                         <% } %>
-                        
                 </div>
 
             </div>
 
             <div id="col2" class="justify-content-center">
-                <div class="infoData mt-2 mb-5 ms-5 text-start">
+                <div class="infoData mt-2 mb-5 ms-0 ms-md-5 text-center text-md-start">
                     <h1 id="p_name" class="mb-5">
                         <%= shirts.name %>
                     </h1>
@@ -43,7 +40,7 @@
                     
                     <div class="priceBtn d-inline-flex flex-row mt-5 justify-content-center align-items-center btn btn-outline-success">
                         <h1 id="p_price" class="d-inline-flex">
-                            <%= shirts.neto_price %> € 
+                            <%= shirts.neto_price %> €
                         </h1>
                         <h4 class="d-flex m-0"><strong class="ms-2"> + Brezplačna poštnina</strong></h4>
                     </div>
@@ -72,7 +69,7 @@
                                 <input type="hidden" id="p_color" name="product_color" value="">
                                 <input type="hidden" id="p_size" name="product_size" value="">
                                 <input type="hidden" id="p_price" name="product_price" value="<%= shirts.neto_price %>">
-                                <button type="submit" id="btn" class="btn btn-primary ms-5 mt-5">Dodaj v
+                                <button type="submit" id="btn" class="btn btn-primary m-0 ms-md-5 mt-md-5">Dodaj v
                                     Košarico</button>
                             </div>
                         </form>
@@ -118,9 +115,8 @@
             <div>100% jamstvo zadovoljstva</div>
           </div>
     </div>
-    
+
     <div id="next-row" class="row m-0 p-0">
-      
       <picture id="picture" class="m-0 p-0">
           <% shirts.links.forEach((img)=>{%>
               <img src="<%=img %>" alt="" class="img-fluid">
@@ -131,7 +127,7 @@
     </div>
 
     <div id="other-row" class="row justify-content-center">
-       <h1 class="text-center mb-3"> Druge stranke su izbrale</h1>
+      <h1 class="text-center mb-3"> Druge stranke su izbrale</h1>
       <div id="carouselOut" class="justify-content-evenly">
       <% for(product of randomProducts) {%>
         <a class="showPageA" href="/product/<%= product.id %>">
@@ -147,7 +143,6 @@
             </div>
           </div>
         </a>
-  
         <%} %>
       </div>
       
@@ -155,7 +150,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
-        
         let btnInfo = document.getElementById('btn');
         btnInfo.setAttribute('disabled', 'true');
         document.addEventListener('DOMContentLoaded', function () {
@@ -166,19 +160,18 @@
             btnInfo.removeAttribute('disabled');
           }else{
 
-          
         function handleColors(colors) {
-           colors.forEach((color) => {
+          colors.forEach((color) => {
       const colorDiv = document.createElement('div');
       colorDiv.classList.add('color');
       colorDiv.setAttribute('data-color', color.color);
       colorDiv.textContent = color.color;
-      
+
       colorDiv.addEventListener('click', function () {
         const selectedColor = this.getAttribute('data-color');
         handleColorSelection(selectedColor);
       });
-      
+
       colorSection.appendChild(colorDiv);
     });
 

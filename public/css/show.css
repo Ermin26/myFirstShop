@@ -23,13 +23,12 @@ a{
 }
 
 #topImg{
-    max-width: 100%;
-    max-height: auto;
     position: relative;
     vertical-align: middle;
     height: 400px;
     width: 400px;
     object-fit:cover;
+    object-position: center;
 }
 
 #col2{
@@ -47,13 +46,14 @@ a{
     cursor: pointer;
     border: 1px solid black;
     padding: 5px;
-  }
-  .selected{
+}
+
+.selected{
     background-color: #e0e0e0;
     box-sizing: border-box;
     border-radius: 50%;
-  }
-  .size{
+}
+.size{
     border: 1px solid black;
     cursor: pointer;
     height: 45px;
@@ -89,7 +89,7 @@ a{
 
 
 #next-row{
-    box-sizing: border-box;  
+    box-sizing: border-box;
     background-color: rgb(55, 55, 207);
     height: auto;
     width: 100%;
@@ -112,12 +112,12 @@ a{
 }
 
 #picture > img{
-    height: 250px; 
+    height: 250px;
     width:250px;
     max-width:100%;
     max-height:100%;
-    margin-right: 10px; 
-    object-fit:cover; 
+    margin-right: 10px;
+    object-fit:cover;
     border: 1px solid black;
     object-position: center;
     justify-content: center;
@@ -125,22 +125,25 @@ a{
 }
 
 #other-row{
+    background-color: cyan;
     display:flex;
     width: 100%;
+    max-width: 100%;
     margin-top: 30vh;
     margin-bottom: 10vh;
     flex-direction: row;
     box-sizing: border-box;
+    
 }
 
 #carouselOut{
     display:flex;
     flex-direction: row;
-    width:100%;
     margin: 0px;
-    padding: 0px;
+    padding-left: 48rem;
     box-sizing: border-box;
     object-fit: contain;
+    overflow-y: auto;
 }
 
 #footer{
@@ -148,27 +151,22 @@ a{
 }
 
 #showPageCard{
-    width: 19rem;
-    height: 500px;
-    max-width: 19rem;
-    max-height: 500px;
-    margin: 2px;
-    box-sizing: border-box;
-    background-color: white;
-    margin:0;
+    width: 12rem;
+    height: auto;
+    margin: 1rem;
 }
 
 #showPageHeader{
-    height: 350px;
-    width: 100%;
-    margin: 0px;
+    height: 200px;
+    width: 150px;
+    margin: 2px;
     padding: 0px;
 }
 
 #showPageHeader img{
-    height: 100%;
-    width: 100%; 
-    object-fit: cover;
+    height: 200px;
+    width: 150px;
+    object-fit: fill;
     object-position: center;
 }
 
@@ -178,7 +176,7 @@ a{
 }
 #showPageBody {
     box-sizing: border-box;
-    height: 6rem;
+    height: auto;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
