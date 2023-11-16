@@ -37,12 +37,19 @@ body{
 }
 #cardBody {
     box-sizing: border-box;
-    height: 6rem;
+    height: 5rem;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     border: none;
     background-color: transparent;
+}
+
+#cardHeaderHome{
+    height: 300px;
+    width: auto;
+    background-size: cover;
+    background-position: center;
 }
 
 a{

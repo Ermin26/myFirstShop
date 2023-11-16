@@ -22,20 +22,20 @@ a{
     width: 35%;
 }
 
-#topImg{
-    position: relative;
-    vertical-align: middle;
-    height: 400px;
-    width: 400px;
-    object-fit:cover;
-    object-position: center;
+#carouselExampleControls{
+    display: flex;
+    width: 100%;
+    max-height: 400px;
 }
+
 
 #col2{
     width: 65%;
 }
 
-
+#p_price{
+    display: inline-flex;
+}
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     filter: invert(60%);
@@ -49,7 +49,7 @@ a{
 }
 
 .selected{
-    background-color: #e0e0e0;
+    background-color: #696969;
     box-sizing: border-box;
     border-radius: 50%;
 }
@@ -133,7 +133,6 @@ a{
     margin-bottom: 10vh;
     flex-direction: row;
     box-sizing: border-box;
-    
 }
 
 #carouselOut{
@@ -189,11 +188,11 @@ a{
     list-style: none;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
     .container{
         max-width: 100%;
     }
-   
+
     #picture{
         display: flex;
         flex-direction: row;
@@ -204,7 +203,7 @@ a{
         align-items: center;
         margin: 5px;
     }
-    
+
     #picture > img{
         /*height: 400px; 
         width:400px;*/ 
@@ -225,17 +224,14 @@ a{
     .container{
         max-width: 100%;
     }
-    #main-row{
-        margin-bottom: 10vh;
-        display: flex;
-        flex-direction: column;
-    }
+    
     #col1{
         width: 100%;
     }
     #col2{
         width: 100%;
     }
+    
     #badgeWrapper{
         display: grid;
         grid-template-columns: 50% 50%;
@@ -284,6 +280,7 @@ a{
     #col2{
         width: 100%;
     }
+
     #badgeWrapper{
         display: grid;
         grid-template-columns: 100%;
@@ -299,17 +296,14 @@ a{
         align-items: center;
         margin: 5px;
     }
-    
+
     #picture > img{
-        /*height: 400px; 
-        width:400px;*/ 
-        /*min-height: 400px; */
         width:200px;
         height:200px;
         max-width:100%;
         max-height:100%;
-        margin-right: 10px; 
-        object-fit:cover; 
+        margin-right: 10px;
+        object-fit:cover;
         border: 1px solid black;
         object-position: center;
         justify-content: center;
