@@ -37,7 +37,7 @@
                     <h3 class="mt-5">
                         <%= shirts.description %>
                     </h3>
-                    
+
                     <div class="priceBtn d-inline-flex flex-column flex-md-row mt-5 justify-content-center align-items-center btn btn-outline-success">
                         <h1 id="p_price" class="d-flex">
                             <%= shirts.neto_price %> €
@@ -45,13 +45,13 @@
                         <h4 class="d-flex m-0"><strong class="ms-2"> + Brezplačna poštnina</strong></h4>
                     </div>
 
-                    
+
                     <div class="velikost mt-5">
                         <form action="/add-to-cart" method="post" class=" ms-auto me-auto">
                             <div class="add-to-cart mt-5" style="margin-bottom: 5vh;">
                                     <div class="row text-left mb-5">
                                         <div id="colorSection" class="ms-auto d-inline-flex">
-           
+
                                         </div>
                                     </div>
 
@@ -126,9 +126,9 @@
 
     </div>
 
-    <div id="other-row" class="row justify-content-center">
+    <div id="other-row" class="row justify-content-center g-0">
       <h1 class="text-center mb-3"> Druge stranke su izbrale</h1>
-      <div id="carouselOut" class="justify-content-evenly">
+      <div id="carouselOut" class="slideshow-container">
       <% for(product of randomProducts) {%>
         <a class="showPageA" href="/product/<%= product.id %>">
           <div id="showPageCard" class="card">
@@ -145,11 +145,11 @@
         </a>
         <%} %>
       </div>
-      
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
+
         let btnInfo = document.getElementById('btn');
         btnInfo.setAttribute('disabled', 'true');
         document.addEventListener('DOMContentLoaded', function () {

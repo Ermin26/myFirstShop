@@ -18,26 +18,19 @@ body{
 }
 
 .card{
-    transition: all 0.3s ease-in-out;
-    border: none;
+    border: 1px black solid;
     background-color: white;
     margin:0;
 }
 
-#imgSize{
-    width: 500px;
-    height: 300px;
-    object-fit:contain;
-    object-position: center;
-}
+
 
 .card:hover{
-    transform: scale(1.1);
-    border: 2px solid rgba(0, 255, 255, 0.303);
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 255, 255, 0.303);
 }
 #cardBody {
     box-sizing: border-box;
-    height: 5rem;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -46,17 +39,29 @@ body{
 }
 
 #cardHeaderHome{
+    /*
     height: 300px;
     width: auto;
+    */
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    min-height: 300px;
+    
     background-size: cover;
     background-position: center;
+
 }
 
 a{
     text-decoration: none;
     color: black;
 }
-
+a:hover{
+    text-decoration: none;
+    color: black;
+    box-sizing: border-box;
+}
 #searched{
     width: 25%;
 }
@@ -79,19 +84,58 @@ a{
     #searched{
         width: 100%;
     }
-    
+    .container{
+        display: flex;
+        flex-direction: column;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+    }
+
+    #container{
+        display: flex;
+        max-width: 100% !important;
+    }
+    #rowColumn{
+        display: flex;
+        max-width: 100%;
+        flex-direction: row;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #colRow{
+        display: flex;
+        flex-direction: column;
+        max-width: 50%;
+    }
 }
 
 @media(max-width: 360px){
-    
-    #rowColumn{
+    .container{
         display: flex;
         flex-direction: column;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+    }
+
+    #container{
+        display: flex;
+        max-width: 100% !important;
+    }
+    #rowColumn{
+        display: flex;
+        max-width: 100%;
+        flex-direction: column;
+        margin-left: auto;
+        margin-right: auto;
     }
     #colRow{
-        width: 100%;
+        display: flex;
+        flex-direction: column;
+        max-width: 100%;
     }
-   
+
     #searched{
         width: 100%;
     }

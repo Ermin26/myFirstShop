@@ -125,7 +125,6 @@ a{
 }
 
 #other-row{
-    background-color: cyan;
     display:flex;
     width: 100%;
     max-width: 100%;
@@ -135,15 +134,50 @@ a{
     box-sizing: border-box;
 }
 
-#carouselOut{
-    display:flex;
-    flex-direction: row;
-    margin: 0px;
-    padding-left: 48rem;
-    box-sizing: border-box;
-    object-fit: contain;
-    overflow-y: auto;
-}
+.slideshow-container {
+    display: flex;
+    overflow: hidden;
+  }
+  
+  .showPageA {
+    width: 100%;
+    transition: transform 1s ease-in-out;
+    animation: moveSlides 15s infinite paused;
+  }
+
+  @keyframes moveSlides {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    12.5% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-100%);
+    }
+    37.5% {
+      transform: translateX(-200%);
+    }
+    50% {
+      transform: translateX(-300%);
+    }
+    62.5% {
+      transform: translateX(-400%);
+    }
+    75% {
+      transform: translateX(-500%);
+    }
+    87.5% {
+      transform: translateX(-600%);
+    }
+  }
+
+  .slideshow-container:not(:hover) .showPageA {
+    animation-play-state: running;
+  }
+  .slideshow-container:hover .showPageA {
+    animation-play-state: paused;
+  }
 
 #footer{
     margin-top: 15vh;
@@ -192,6 +226,12 @@ a{
     .container{
         max-width: 100%;
     }
+    #carouselOut {
+        width: 1000px;
+        position: relative;
+        overflow-y: auto;
+        white-space: nowrap;
+    }
 
     #picture{
         display: flex;
@@ -224,7 +264,6 @@ a{
     .container{
         max-width: 100%;
     }
-    
     #col1{
         width: 100%;
     }

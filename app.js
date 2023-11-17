@@ -246,10 +246,9 @@ app.get('/product/:id', async (req, res) => {
         if (!err) {
             let shirts = result.rows[0];
             let invt_sku = shirts.inventory_sku
-            console.log("inventory sku",invt_sku)
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
-                
+
                 // Retrieve sizes for each color
                 let randomProducts;
                 let products = [];
