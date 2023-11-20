@@ -3,17 +3,17 @@
     <link rel="stylesheet" href="/css/allPages.css">
     <link rel="stylesheet" href="/css/cardHeight.css">
     <div id="container" class="d-flex flex-row">
-        <h1 class="bg-danger">Slide show</h1>
+        <h1 class="bg-danger ms-auto me-auto">Slide show</h1>
     </div>
-        <div id="rowColumn" class="row d-flex flex-row flex-wrap justify-content-center">
+        <div id="rowColumn" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 d-flex flex-row flex-wrap justify-content-center">
             <% for(let product of products) {%>
-            <div id="colRow" class="col-xs col-sm-6 col-md-4 col-lg-3 mt-5 p-1 justify-content-center">
+            <div id="colRow" class="col mt-3 p-1 justify-content-center">
                 <a href="/product/<%= product.id %> " class="justify-content-center">
                         <div class="card shadow m-0">
                             <div id="cardHeaderHome" class="card-header text-center" style="background-image: url(<%= product.links[0] %>);">
 
                             </div>
-                            <div id="cardBody" class="card-body p-2">
+                            <div id="cardBodyHome" class="card-body">
                                 <h3 class="d-inline">
                                     <%= product.name %>
                                 </h3>

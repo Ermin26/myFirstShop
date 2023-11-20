@@ -782,7 +782,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let imgTest = Object.keys(req.files);
 
     console.log(product)
-/*
+
 
     for (let i = 0; i < firstCheck; i++) {
         images = [];
@@ -808,7 +808,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;
         let randomNum = parseInt(Math.random(15 * 12489) * 1000)
         let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
-    if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Jewerly'){
+    if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Jewerly' && product.p_subcat !== 'Other'){
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
@@ -830,25 +830,28 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     }
 
     else{
-        
+
         console.log("toys")
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku,colors) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
             if(e){
                 req.flash('error', "Error inserting product into database", e.message)
                 console.log("Error", e.message)
             }else{
-                for (let i = 0; i < product.color.length; i++) {
+                if(Array.isArray(product.color)){
+                    for (let i = 0; i < product.color.length; i++) {
                         let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
-                        await conn.query(`INSERT INTO varijacije(product_id, size, var_sku, img_link, qty,color) VALUES('${result.rows[0].id}', 'odrasli', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`]}', '${product.color[i]}')`)
-    
-                    sizeCount += 1;
+                        await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${product.qty1[i]}', '${product.color[i]}')`)
+                    }
+                }else{
+                    let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
+                    await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl}}'::text[]), '${product.qty1}', '${product.color}')`)
+                    console.log("Single added product toys")
                 }
             }
 
         })
-        
+
     }
-*/
     res.redirect('/add')
     //res.send(req.body)
 
@@ -876,7 +879,7 @@ app.get('/category/mens', async (req, res) => {
     })
 })
 
-app.get('/category/mens/shirts', async (req, res) => {
+app.get('/category/mens/subcategory/shirts', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Shirts'`, async (err, result) => {
         //console.log(result.rows.length)
         let products = result.rows
@@ -892,7 +895,7 @@ app.get('/category/mens/shirts', async (req, res) => {
 
 })
 
-app.get('/category/mens/jackets', async (req, res) => {
+app.get('/category/mens/subcategory/jackets', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Jackets'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -907,7 +910,7 @@ app.get('/category/mens/jackets', async (req, res) => {
 
 })
 
-app.get('/category/mens/pants', async (req, res) => {
+app.get('/category/mens/subcategory/pants', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Pants'`, async (err, result) => {
 
         let products = result.rows
@@ -924,7 +927,7 @@ app.get('/category/mens/pants', async (req, res) => {
     })
 })
 
-app.get('/category/mens/underwear', async (req, res) => {
+app.get('/category/mens/subcategory/underwear', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Underwear'`, async (err, result) => {
 
         let products = result.rows
@@ -959,7 +962,7 @@ app.get('/category/womens', async (req, res) => {
     })
 })
 
-app.get('/category/womens/shirts', async (req, res) => {
+app.get('/category/womens/subcategory/shirts', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Shirts'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -974,7 +977,7 @@ app.get('/category/womens/shirts', async (req, res) => {
 
 })
 
-app.get('/category/womens/jackets', async (req, res) => {
+app.get('/category/womens/subcategory/jackets', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Jackets'`, async (err, result) => {
 
         let products = result.rows
@@ -991,7 +994,7 @@ app.get('/category/womens/jackets', async (req, res) => {
     })
 })
 
-app.get('/category/womens/pants', async (req, res) => {
+app.get('/category/womens/subcategory/pants', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Pants'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -1007,7 +1010,7 @@ app.get('/category/womens/pants', async (req, res) => {
     })
 })
 
-app.get('/category/womens/underwear', async (req, res) => {
+app.get('/category/womens/subcategory/underwear', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Underwear'`, async (err, result) => {
 
         let products = result.rows
@@ -1058,7 +1061,7 @@ app.get('/category/kids', async (req, res) => {
 
 })
 
-app.get('/category/kids/shirts', async (req, res) => {
+app.get('/category/kids/subcategory/shirts', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Shirts'`, async (err, result) => {
 
         let products = result.rows
@@ -1076,7 +1079,7 @@ app.get('/category/kids/shirts', async (req, res) => {
 
 })
 
-app.get('/category/kids/jackets', async (req, res) => {
+app.get('/category/kids/subcategory/jackets', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Jackets'`, async (err, result) => {
 
         let products = result.rows
@@ -1092,7 +1095,7 @@ app.get('/category/kids/jackets', async (req, res) => {
     })
 })
 
-app.get('/category/kids/pants', async (req, res) => {
+app.get('/category/kids/subcategory/pants', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Pants'`, async (err, result) => {
 
         let products = result.rows
@@ -1109,7 +1112,7 @@ app.get('/category/kids/pants', async (req, res) => {
     })
 })
 
-app.get('/category/kids/underwear', async (req, res) => {
+app.get('/category/kids/subcategory/underwear', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Underwear'`, async (err, result) => {
 
         let products = result.rows
