@@ -9,15 +9,52 @@ html{
 body{
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 #navbar{
-    top:0;
-    margin-bottom: 0;
-    z-index:20;
+    position: fixed;
+    background-color: #023e8a;
+    color: white;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 99999999 !important;
+}
+.navbar-brand, .navbar-collapse{
+    color: white;
+}
+
+.custom-toggler,.navbar-toggler{
+    color: white;
+}
+
+#navbar a{
+    color: white !important;
+}
+#homeContainer{
+    margin-top: 30vh;
+    margin-bottom: 30vh;
 }
 #searchBar{
-    top:65px;
-    z-index: 20;
+    display: inline-flex;
+    top: 70px;
+    position: fixed;
+    z-index: 99999998;
+    padding: 1px;
+    background-color: white;
+    width: 100%;
+    margin-bottom: 100vh;
+}
+#footer {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    background-color: #0096c7;
+    color: white;
+}
+#footer a {
+    background-color: #0096c7;
+    color: white;
 }
 a{
     text-decoration: none;
@@ -33,24 +70,46 @@ a:hover{
 
 
 @media(max-width: 3000px){
-
+    #searchBar form{
+        width: 25%;
+        margin-left: auto;
+    }
+    #searched{
+        width: 100%;
+    }
 }
 
 @media(max-width: 1200px){
-    #searched{
+    #searchBar form{
         width: 50%;
+        margin-left: auto;
     }
-  
+    #searched{
+        width: 100%;
+    }
+}
+
+@media(max-width:990px){
+    #searchBar{
+        top: 55px;
+    }
 }
 
 
 @media(max-width: 600px){
+    #searchBar{
+        top: 55px;
+        position: fixed;
+        z-index: 99999999;
+        padding: 1px;
+        width: 100%;
+        margin-bottom: 100vh;
+    }
+    #searchBar form{
+        width: 100%;
+    }
     #searched{
         width: 100%;
     }
-    
 }
 
-@media(max-width: 360px){
-
-}
