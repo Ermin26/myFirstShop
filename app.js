@@ -165,9 +165,8 @@ let subtotal = [];
 
 async function deleteZeroQty() {
     await conn.query(`DELETE FROM varijacije WHERE qty = '0' RETURNING *`, async(err, result) => {
-        if (!err) { 
+        if (!err) {
             const data = result.rows;
-            console.log("DATA:",data)
             if (data.length) {
                 for (let i = 0; i < data.length; i++) {
                     let product = data[i].product_id;
@@ -181,12 +180,10 @@ async function deleteZeroQty() {
                                     console.log("Error deleting from inventory: ", err);
                                 }
                             })
-                            
-                        } 
+                        }
                     })
                 }
             }
-            
         } else {
             console.log(err.message);
         }
@@ -198,7 +195,7 @@ deleteZeroQty();
 app.get('/', async (req, res) => {
     let date = new Date();
     let day = date.getDay()
-    await conn.query(`SELECT * FROM inventory`, async (err, result) => {
+    await conn.query(`SELECT * FROM inventory ORDER BY RANDOM()`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
             req.flash('error', ' Nothing to display.')
