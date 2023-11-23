@@ -763,7 +763,7 @@ app.get('/add', (req, res) => {
 })
 
 
-app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' }]), async (req, res) => {
+app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }]), async (req, res) => {
     const product = req.body;
     let brutoPrice = Math.ceil(product.p_price * 0.18)
     let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;

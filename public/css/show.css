@@ -157,6 +157,12 @@ a{
     animation: moveSlides 15s infinite paused;
   }
 
+  #showPageHeader{
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+  }
+
   @keyframes moveSlides {
     0%, 100% {
       transform: translateX(0);
@@ -203,16 +209,10 @@ a{
 
 #showPageHeader{
     height: 200px;
-    width: 150px;
-    margin: 2px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
     padding: 0px;
-}
-
-#showPageHeader img{
-    height: 200px;
-    width: 150px;
-    object-fit: fill;
-    object-position: center;
 }
 
 #showPageA:hover{

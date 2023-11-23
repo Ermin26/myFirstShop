@@ -1,6 +1,7 @@
 <% layout('layouts/boilerplate') %>
     
     <link rel="stylesheet" href="/css/show.css">
+    <link rel="stylesheet" href="/css/allPages.css">
     <div id="top-row" class="row row-cols-2 d-flex flex-row ms-auto me-auto mt-5">
 
         <%# for(let info of shirts) {%>
@@ -132,8 +133,10 @@
       <% for(product of randomProducts) {%>
         <a class="showPageA" href="/product/<%= product.id %>">
           <div id="showPageCard" class="card">
-            <div id="showPageHeader" class="card-header ms-auto me-auto">
-              <img src="<%= product.links[0] %>" id="randomImg"  alt="Image">
+            <div id="showPageHeader" class="card-header ms-auto me-auto" style="background-image: url(<%=product.links[0]%>);">
+              <!--
+              <img src="<%# product.links[0] %>" id="randomImg"  alt="Image">
+                -->
             </div>
             <div id="showPageBody" class="card-body">
             <h3 class="d-inline"><%= product.name %> </h3> <br>
