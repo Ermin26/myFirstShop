@@ -40,7 +40,7 @@ body{
     position: fixed;
     z-index: 99999998;
     padding: 1px;
-    background-color: white;
+    background-color: #dad7cd;
     width: 100%;
     margin-bottom: 100vh;
 }
@@ -48,12 +48,12 @@ body{
     position: sticky;
     bottom: 0;
     width: 100%;
-    background-color: #0096c7;
-    color: white;
+    background-color: #faedcdb2;
+    color: black;
 }
 #footer a {
-    background-color: #0096c7;
-    color: white;
+    background-color: transparent;
+    color: black;
 }
 a{
     text-decoration: none;

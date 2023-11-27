@@ -359,7 +359,7 @@ app.get("/cart", async (req, res) => {
     let items = [];
     let cartItems = []
     let sizes = [];
-    let allProducts = [];
+    let randomProducts;;
     let count = 0
     let countSizes = 0;
     let cart = req.session.cart;
@@ -367,8 +367,10 @@ app.get("/cart", async (req, res) => {
     if (cart) {
         if (!cart.length) {
             await conn.query(`SELECT * FROM inventory`, async (err, result) => {
-                allProducts.push(result.rows)
-                res.render('orders/cart', { items, allProducts, s_pk })
+                //randomProducts.push(result.rows)
+                let products = result.rows;
+                let randomProducts = products;
+                res.render('orders/cart', { items, randomProducts, s_pk })
             })
         } else {
             for (let i = 0; i < cart.length; i++) {
@@ -379,7 +381,7 @@ app.get("/cart", async (req, res) => {
                         items.push(results.rows)
                         countSizes += 1;
                         if (cart.length === countSizes) {
-                            res.render('orders/cart', { items, cart, allProducts, ordered, s_pk })
+                            res.render('orders/cart', { items, cart, ordered, s_pk })
                         }
                     }
                     else {
@@ -392,8 +394,10 @@ app.get("/cart", async (req, res) => {
         }
     } else {
         await conn.query(`SELECT * FROM inventory`, async (err, result) => {
-            allProducts.push(result.rows)
-            res.render('orders/cart', { items, allProducts, s_pk })
+            //randomProducts.push(result.rows)
+            let products = result.rows;
+            let randomProducts = products;
+            res.render('orders/cart', { items, randomProducts, s_pk })
         })
     }
 
@@ -469,7 +473,6 @@ app.post('/edit_qty', async (req, res) => {
                         res.redirect('/cart');
                     }
                     })
-                
             }
         }
 
@@ -489,7 +492,7 @@ app.post('/edit_qty', async (req, res) => {
     }
 
     calculateTotal(cart, req)
-    
+
 })
 
 app.get('/order', async (req, res) => {
