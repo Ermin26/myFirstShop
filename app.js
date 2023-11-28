@@ -366,12 +366,8 @@ app.get("/cart", async (req, res) => {
     let total = req.session.total;
     if (cart) {
         if (!cart.length) {
-            await conn.query(`SELECT * FROM inventory`, async (err, result) => {
-                //randomProducts.push(result.rows)
-                let products = result.rows;
-                let randomProducts = products;
-                res.render('orders/cart', { items, randomProducts, s_pk })
-            })
+            req.flash('error', "Košarica je prazna.")
+            res.redirect('/')
         } else {
             for (let i = 0; i < cart.length; i++) {
                 await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
@@ -393,12 +389,8 @@ app.get("/cart", async (req, res) => {
             calculateTotal(cart, req)
         }
     } else {
-        await conn.query(`SELECT * FROM inventory`, async (err, result) => {
-            //randomProducts.push(result.rows)
-            let products = result.rows;
-            let randomProducts = products;
-            res.render('orders/cart', { items, randomProducts, s_pk })
-        })
+        req.flash('error', "Košarica je prazna.")
+        res.redirect('/')
     }
 
 })
