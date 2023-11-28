@@ -270,7 +270,7 @@ app.get('/product/:id', async (req, res) => {
                         products.push({ color: colorName, size });
                     }
                 }
-                const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 50`)
+                const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 10`)
                         randomProducts = productsRandom.rows;
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_sku });
             });
@@ -400,7 +400,7 @@ app.post('/add-to-cart', async (req, res) => {
     let exist ;
     let user_id = randomUUID();
     if (req.session.cart) {
-        for (let i = 0; i < req.session.cart.length; i++) { 
+        for (let i = 0; i < req.session.cart.length; i++) {
             if (req.session.cart[i].sku === product_sku) {
                 exist = true;
             }
@@ -414,8 +414,7 @@ app.post('/add-to-cart', async (req, res) => {
             cart.push(product)
             req.flash('success', 'Successfully added to cart')
             res.redirect(`/product/${product_id}`)
-            
-         }
+            }
 
     } else {
         let product = { user_id: user_id , product_id: product_id, sku: product_sku, invt_sku: invt_sku,name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
