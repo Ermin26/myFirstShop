@@ -242,37 +242,52 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows[0];
+            console.log("shirts", shirts)
             let invt_sku = shirts.inventory_sku
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
-
+                console.log("Colors", colors)
                 // Retrieve sizes for each color
                 let randomProducts;
                 let products = [];
                 let sizes = [];
-                for (let i = 0; i < colors.length; i++) {
-                    const colorName = colors[i].color;
-                    if (shirts.category === 'Kids' || shirts.subcategory === 'Shoes') {
+                let varijacijeSku;
+                if(colors.length > 0) {
+                    for (let i = 0; i < colors.length; i++) {
+                        const colorName = colors[i].color;
+                        console.log("colorName", colorName)
+                    if(shirts.subcategory === 'Jewerly' || shirts.subcategory === 'Toys'){
+                        console.log("first")
+                        const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
+                        const size = sizesResult.rows.map((row) => row);
+                        //console.log("Sizes", size)
+                        products.push({ color: colorName});
+                    }
+                    if (shirts.category === 'Kids' && shirts.subcategory === 'Jackets' || shirts.category === 'Kids' && shirts.subcategory === 'Pants' || shirts.category === 'Kids' && shirts.subcategory === 'Shirts' || shirts.category === 'Kids' && shirts.subcategory === 'underwear' || shirts.category === 'Kids' && shirts.subcategory === 'Dress' || shirts.subcategory === 'Shoes') {
+
+                        console.log("second")
                         const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
                         const size = sizesResult.rows.map((row) => row);
                         //console.log("Sizes", size)
                         products.push({ color: colorName, size });
-                        // For numbers
-                        /*
-                        const productsRandom = await conn.query(`SELECT * FROM inventory ORDER BY RANDOM() LIMIT 15`)
-                        randomProducts.push(productsRandom.rows)
-                        console.log(randomProducts)
-                        */
                     }
-                    else {
+                    if(shirts.category === 'Mens' && shirts.subcategory !== 'Shoes' || shirts.category === 'Womens' && shirts.subcategory !== 'Shoes') {
+                        console.log("third")
                         const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
                         const size = sizesResult.rows.map((row) => row);
                         products.push({ color: colorName, size });
                     }
+                    }
+                }else{
+                    await conn.query(`SELECT * FROM varijacije WHERE PRODUCT_id= '${id}'`,async (e, var_sku) => {
+                        let result = var_sku.rows;
+                        varijacijeSku = result;
+                        console.log("Sku?",result)
+                    })
                 }
                 const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 10`)
                         randomProducts = productsRandom.rows;
-                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_sku });
+                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku) });
             });
         } else {
             req.flash('error', err.message);
@@ -364,6 +379,7 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
+    console.log("cart", cart)
     if (cart) {
         if (!cart.length) {
             req.flash('error', "Košarica je prazna.")
@@ -373,7 +389,7 @@ app.get("/cart", async (req, res) => {
                 await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
                     if (!e) {
                         let ordered = results.rows;
-                        console.log(ordered)
+                        console.log("ordered",ordered)
                         items.push(results.rows)
                         countSizes += 1;
                         if (cart.length === countSizes) {
@@ -399,6 +415,7 @@ app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, product_sku, invt_sku } = req.body;
     let exist ;
     let user_id = randomUUID();
+    console.log("body", req.body)
     if (req.session.cart) {
         for (let i = 0; i < req.session.cart.length; i++) {
             if (req.session.cart[i].sku === product_sku) {

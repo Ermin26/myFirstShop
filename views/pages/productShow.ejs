@@ -39,11 +39,11 @@
                         <%= shirts.description %>
                     </h3>
 
-                    <div class="priceBtn d-inline-flex flex-column flex-md-row mt-5 justify-content-center align-items-center btn btn-outline-success">
-                        <h1 id="p_price" class="d-flex">
-                            <%= shirts.neto_price %> €
+                    <div class="priceBtn d-flex flex-column mt-5 justify-content-center align-items-left">
+                      <h4 id="postnina" class="col btn btn-outline-success"><strong>Brezplačna poštnina</strong></h4>
+                      <h1 id="p_price" class="col btn border border-2 mt-2">
+                          <strong><%= shirts.neto_price %> €</strong>
                         </h1>
-                        <h4 class="d-flex m-0"><strong class="ms-2"> + Brezplačna poštnina</strong></h4>
                     </div>
 
 
@@ -70,7 +70,7 @@
                                 <input type="hidden" id="p_color" name="product_color" value="">
                                 <input type="hidden" id="p_size" name="product_size" value="">
                                 <input type="hidden" id="p_price" name="product_price" value="<%= shirts.neto_price %>">
-                                <button type="submit" id="btn" class="btn btn-primary m-0 ms-md-5 mt-md-5">Dodaj v
+                                <button type="submit" id="btn" class="btn btn-primary m-0 ms-md-5">Dodaj v
                                     Košarico</button>
                             </div>
                         </form>
@@ -155,12 +155,17 @@
 
         let btnInfo = document.getElementById('btn');
         btnInfo.setAttribute('disabled', 'true');
+        let invt_sku = JSON.parse('<%- invt_SKU %>');
+        console.log(invt_sku)
         document.addEventListener('DOMContentLoaded', function () {
         const colorSection = document.getElementById('colorSection');
         const sizeSection = document.getElementById('sizeSection');
         const products = JSON.parse('<%- productsJSON %>');
+        document.getElementById('p_invt_sku').value = invt_sku;
           if(!products.length){
             btnInfo.removeAttribute('disabled');
+            document.getElementById('p_sku').value
+            console.log("empty products")
           }else{
 
         function handleColors(colors) {
@@ -220,6 +225,7 @@
             sizeDiv.classList.add('size');
             sizeDiv.textContent = size[0].size;
             sizeDiv.setAttribute('product-sku', size[0].sku);
+            sizeDiv.setAttribute('invt-sku', invt_sku);
             sizeDivs.push(sizeDiv)
             sizeSection.appendChild(sizeDiv);
         // Automatically select the first size if there's only one size available

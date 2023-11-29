@@ -44,10 +44,15 @@ a{
 #col2{
     width: 65%;
 }
-
-#p_price{
-    display: inline-flex;
+#p_price,#postnina{
+    width: 50%;
 }
+#p_price{
+    font-size:2rem;
+    background-color: #ccd5ae;
+    box-shadow: inset 5px 5px 25px #a5b378;
+}
+
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     filter: invert(60%);
@@ -239,6 +244,9 @@ a{
     .container{
         max-width: 100%;
     }
+    #p_price,#postnina{
+        width: 50%;
+    }
     #carouselOut {
         width: 1000px;
         position: relative;
@@ -277,6 +285,12 @@ a{
 @media screen and (max-width: 992px) {
     .container{
         max-width: 100%;
+    }
+    #col1,#col2{
+        width: 50%;
+    }
+    #p_price,#postnina{
+        width: 60%;
     }
     #carouselOut {
         width: 1000px;
