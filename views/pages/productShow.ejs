@@ -156,144 +156,166 @@
         let btnInfo = document.getElementById('btn');
         btnInfo.setAttribute('disabled', 'true');
         let invt_sku = JSON.parse('<%- invt_SKU %>');
-        console.log(invt_sku)
+        let sub_cat = JSON.parse('<%- subCat %>');
         document.addEventListener('DOMContentLoaded', function () {
-        const colorSection = document.getElementById('colorSection');
-        const sizeSection = document.getElementById('sizeSection');
-        const products = JSON.parse('<%- productsJSON %>');
-        document.getElementById('p_invt_sku').value = invt_sku;
-          if(!products.length){
-            btnInfo.removeAttribute('disabled');
-            document.getElementById('p_sku').value
+          const colorSection = document.getElementById('colorSection');
+          const sizeSection = document.getElementById('sizeSection');
+          const products = JSON.parse('<%- productsJSON %>');
+          document.getElementById('p_invt_sku').value = invt_sku;
+          if(sub_cat === 'Toys' || sub_cat === 'Jewerly'){
             console.log("empty products")
-          }else{
+            // Test colors div
 
-        function handleColors(colors) {
-          colors.forEach((color) => {
-      const colorDiv = document.createElement('div');
-      colorDiv.classList.add('color');
-      colorDiv.setAttribute('data-color', color.color);
-      colorDiv.textContent = color.color;
-
-      colorDiv.addEventListener('click', function () {
-        const selectedColor = this.getAttribute('data-color');
-        handleColorSelection(selectedColor);
-      });
-
-      colorSection.appendChild(colorDiv);
-    });
-
-    if (colors.length === 1) {
-      // Automatically select the first color if there's only one color available
-      const firstColorDiv = colorSection.querySelector('.color');
-      const firstColor = firstColorDiv.getAttribute('data-color');
-      handleColorSelection(firstColor);
-    }
-        }
-
-        let selectedColorDiv = null; // Variable to keep track of the selected color div
-
-  function handleColorSelection(color) {
-  if (selectedColorDiv) {
-    // Remove the previous selected class
-    selectedColorDiv.classList.remove('selected');
-  }
-
-  // Add selected class to the clicked color div
-  const colorDiv = colorSection.querySelector(`[data-color="${color}"]`);
-  colorDiv.classList.add('selected');
-  selectedColorDiv = colorDiv;
-  document.getElementById('p_color').value = selectedColorDiv.innerText;
-  // Call the function to render sizes for the selected color
-  renderSizes(color);
-}
-      
-        function renderSizes(color) {
-          const selectedProduct = products.find((product) => product.color === color);
-      
-          if (selectedProduct) {
-            const event = new CustomEvent('sizesUpdated', { detail: selectedProduct.size });
-            window.dispatchEvent(event);
-          }
-        }
-        window.addEventListener('sizesUpdated', function (event) {
-          const size = event.detail;
-          if (size.length < 2) {
-            const sizeDivs = [];
-          sizeSection.innerHTML = '';
-          const sizeDiv = document.createElement('div');
-            sizeDiv.classList.add('size');
-            sizeDiv.textContent = size[0].size;
-            sizeDiv.setAttribute('product-sku', size[0].sku);
-            sizeDiv.setAttribute('invt-sku', invt_sku);
-            sizeDivs.push(sizeDiv)
-            sizeSection.appendChild(sizeDiv);
-        // Automatically select the first size if there's only one size available
-        const firstSizeDiv = sizeSection.querySelector('.size');
-        firstSizeDiv.classList.add('selected');
-        const firstSize = firstSizeDiv.textContent;
-        const firstSku = firstSizeDiv.getAttribute('product-sku');
-        document.getElementById('p_size').value = firstSize;
-        document.getElementById('p_sku').value = firstSku;
-        document.getElementById('btn').removeAttribute('disabled');
-      }else{
-          const sizeDivs = [];
-          sizeSection.innerHTML = ''; // Clear previous sizes
-      
-          size.forEach((sizes) => {
-            const sizeDiv = document.createElement('div');
-            sizeDiv.classList.add('size');
-            sizeDiv.textContent = sizes.size;
-            sizeDiv.setAttribute('product-sku', sizes.sku);
-            document.getElementById('btn').setAttribute('disabled', 'true');
-            sizeDiv.addEventListener('click', function () {
-              const selectedSize = this.textContent;
-              const selectedSku = this.getAttribute('product-sku');
-              
-              sizeDivs.forEach((div) =>{
-                if(div !== this){
-                  div.classList.remove('selected');
-                }
-              })
-              // Toggle the 'selected' class on the clicked size div
-              this.classList.toggle('selected');
-              
-            document.getElementById('p_size').value = selectedSize;
-            document.getElementById('p_sku').value = selectedSku;
-           // console.log(selectedSize);  
-           // console.log(selectedSku);  
-            if(selectedSize && selectedSku){
-              btnInfo.removeAttribute('disabled');
-              console.log('working');
-            }else{
-              btnInfo.setAttribute('disabled', 'true');
-              console.log('else working');
-
+            function handleColors(colors) {
+              colors.forEach((color) => {
+                const colorDiv = document.createElement('div');
+                colorDiv.classList.add('color');
+                colorDiv.setAttribute('data-color', color.color);
+                colorDiv.setAttribute('data-sku', color.size[0].sku);
+                colorDiv.textContent = color.color;
+                colorDiv.addEventListener('click', function () {
+                  const selectedColor = this.getAttribute('data-color');
+                  handleColorSelection(selectedColor);
+                  });
+                colorSection.appendChild(colorDiv);
+                });
+              if (colors.length === 1) {
+                // Automatically select the first color if there's only one color available
+                const firstColorDiv = colorSection.querySelector('.color');
+                const firstColor = firstColorDiv.getAttribute('data-color');
+                handleColorSelection(firstColor);
+              }
             }
-            //addToCart(selectedColor, selectedSize);
-            });
-            sizeDivs.push(sizeDiv)
-            sizeSection.appendChild(sizeDiv);
-          });
-        }
-          
-        });
-      
-        handleColors(JSON.parse('<%- productsJSON %>'));
-      
-        const colorDivs = document.querySelectorAll('.color');
-      
-        colorDivs.forEach((colorDiv) => {
-          colorDiv.addEventListener('click', function () {
-            const selectedColor = this.getAttribute('data-color');
-            renderSizes(selectedColor);
-          });
-        });
-      
-        }
-      });
-    
-      
+            let selectedColorDiv = null; // Variable to keep track of the selected color div
+            function handleColorSelection(color) {
+              if (selectedColorDiv) {
+                // Remove the previous selected class
+                selectedColorDiv.classList.remove('selected');
+              }
+              // Add selected class to the clicked color div
+              const colorDiv = colorSection.querySelector(`[data-color="${color}"]`);
+              colorDiv.classList.add('selected');
+              selectedColorDiv = colorDiv;
+              document.getElementById('p_color').value = selectedColorDiv.innerText;
+              document.getElementById('p_sku').value = selectedColorDiv.getAttribute('data-sku');
+              document.getElementById('btn').removeAttribute('disabled');
+            };
 
 
+              handleColors(JSON.parse('<%- productsJSON %>'));
+            // End Test
+          }
+          else{
+            console.log(products)
+            function handleColors(colors) {
+              colors.forEach((color) => {
+                const colorDiv = document.createElement('div');
+                colorDiv.classList.add('color');
+                colorDiv.setAttribute('data-color', color.color);
+                colorDiv.textContent = color.color;
+                colorDiv.addEventListener('click', function () {
+                  const selectedColor = this.getAttribute('data-color');
+                  handleColorSelection(selectedColor);
+                  });
+                colorSection.appendChild(colorDiv);
+                });
+              if (colors.length === 1) {
+                // Automatically select the first color if there's only one color available
+                const firstColorDiv = colorSection.querySelector('.color');
+                const firstColor = firstColorDiv.getAttribute('data-color');
+                handleColorSelection(firstColor);
+              }
+            }
+              let selectedColorDiv = null; // Variable to keep track of the selected color div
+
+              function handleColorSelection(color) {
+                if (selectedColorDiv) {
+                  // Remove the previous selected class
+                  selectedColorDiv.classList.remove('selected');
+                }
+                // Add selected class to the clicked color div
+                const colorDiv = colorSection.querySelector(`[data-color="${color}"]`);
+                colorDiv.classList.add('selected');
+                selectedColorDiv = colorDiv;
+                document.getElementById('p_color').value = selectedColorDiv.innerText;
+                // Call the function to render sizes for the selected color
+                renderSizes(color);
+              }
+
+              function renderSizes(color) {
+              const selectedProduct = products.find((product) => product.color === color);
+              if (selectedProduct) {
+                const event = new CustomEvent('sizesUpdated', { detail: selectedProduct.size });
+                window.dispatchEvent(event);
+              }
+              }
+                window.addEventListener('sizesUpdated', function (event) {
+                  const size = event.detail;
+                  if (size.length < 2) {
+                    const sizeDivs = [];
+                    sizeSection.innerHTML = '';
+                    const sizeDiv = document.createElement('div');
+                    sizeDiv.classList.add('size');
+                    sizeDiv.textContent = size[0].size;
+                    sizeDiv.setAttribute('product-sku', size[0].sku);
+                    sizeDiv.setAttribute('invt-sku', invt_sku);
+                    sizeDivs.push(sizeDiv)
+                    sizeSection.appendChild(sizeDiv);
+                    // Automatically select the first size if there's only one size available
+                    const firstSizeDiv = sizeSection.querySelector('.size');
+                    firstSizeDiv.classList.add('selected');
+                    const firstSize = firstSizeDiv.textContent;
+                    const firstSku = firstSizeDiv.getAttribute('product-sku');
+                    document.getElementById('p_size').value = firstSize;
+                    document.getElementById('p_sku').value = firstSku;
+                    document.getElementById('btn').removeAttribute('disabled');
+                  }
+                  else{
+                    const sizeDivs = [];
+                    sizeSection.innerHTML = ''; // Clear previous sizes
+                    size.forEach((sizes) => {
+                      const sizeDiv = document.createElement('div');
+                      sizeDiv.classList.add('size');
+                      sizeDiv.textContent = sizes.size;
+                      sizeDiv.setAttribute('product-sku', sizes.sku);
+                      document.getElementById('btn').setAttribute('disabled', 'true');
+                      sizeDiv.addEventListener('click', function () {
+                        const selectedSize = this.textContent;
+                        const selectedSku = this.getAttribute('product-sku');
+                        sizeDivs.forEach((div) =>{
+                          if(div !== this){
+                            div.classList.remove('selected');
+                          }
+                        })
+                        // Toggle the 'selected' class on the clicked size div
+                        this.classList.toggle('selected');
+                        document.getElementById('p_size').value = selectedSize;
+                        document.getElementById('p_sku').value = selectedSku;
+                        // console.log(selectedSize);  
+                        // console.log(selectedSku);  
+                        if(selectedSize && selectedSku){
+                          btnInfo.removeAttribute('disabled');
+                          console.log('working');
+                        }
+                        else{
+                          btnInfo.setAttribute('disabled', 'true');
+                          console.log('else working');
+                        }
+                        //addToCart(selectedColor, selectedSize);
+                        });
+                          sizeDivs.push(sizeDiv)
+                          sizeSection.appendChild(sizeDiv);
+                        });
+                  }
+                });
+                handleColors(JSON.parse('<%- productsJSON %>'));
+                const colorDivs = document.querySelectorAll('.color');
+                colorDivs.forEach((colorDiv) => {
+                    colorDiv.addEventListener('click', function () {
+                      const selectedColor = this.getAttribute('data-color');
+                      renderSizes(selectedColor);
+                    });
+                  });
+              }
+          });
     </script>

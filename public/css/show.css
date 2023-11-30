@@ -357,7 +357,10 @@ a{
     #col2{
         width: 100%;
     }
-    
+    #postnina,#p_price{
+        margin-left: auto;
+        margin-right: auto;
+    }
     #badgeWrapper{
         display: grid;
         grid-template-columns: 50% 50%;
@@ -374,7 +377,6 @@ a{
         margin: 5px;
         background-color: #dad7cdf6;
     }
-    
     #picture > img{
         /*height: 400px; 
         width:400px;*/ 
@@ -412,6 +414,11 @@ a{
     }
     #col2{
         width: 100%;
+    }
+
+    #postnina,#p_price{
+        margin-left: auto;
+        margin-right: auto;
     }
 
     #badgeWrapper{

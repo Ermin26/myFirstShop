@@ -242,52 +242,46 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows[0];
-            console.log("shirts", shirts)
             let invt_sku = shirts.inventory_sku
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
-                console.log("Colors", colors)
                 // Retrieve sizes for each color
                 let randomProducts;
                 let products = [];
                 let sizes = [];
                 let varijacijeSku;
+                let subCat = shirts.subcategory;
                 if(colors.length > 0) {
                     for (let i = 0; i < colors.length; i++) {
                         const colorName = colors[i].color;
-                        console.log("colorName", colorName)
-                    if(shirts.subcategory === 'Jewerly' || shirts.subcategory === 'Toys'){
-                        console.log("first")
-                        const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
-                        const size = sizesResult.rows.map((row) => row);
-                        //console.log("Sizes", size)
-                        products.push({ color: colorName});
+                        if(shirts.subcategory === 'Jewerly' || shirts.subcategory === 'Toys'){
+                            const sizesResult = await conn.query(`SELECT sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
+                            const size = sizesResult.rows.map((row) => row);
+                            //console.log("Sizes", size)
+                            products.push({ color: colorName, size});
+                        }
+                        if (shirts.category === 'Kids' && shirts.subcategory === 'Jackets' || shirts.category === 'Kids' && shirts.subcategory === 'Pants' || shirts.category === 'Kids' && shirts.subcategory === 'Shirts' || shirts.category === 'Kids' && shirts.subcategory === 'underwear' || shirts.category === 'Kids' && shirts.subcategory === 'Dress' || shirts.subcategory === 'Shoes') {
+                            const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
+                            const size = sizesResult.rows.map((row) => row);
+                            //console.log("Sizes", size)
+                            products.push({ color: colorName, size });
+                        }
+                        if(shirts.category === 'Mens' && shirts.subcategory !== 'Shoes' || shirts.category === 'Womens' && shirts.subcategory !== 'Shoes') {
+                            const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
+                            const size = sizesResult.rows.map((row) => row);
+                            products.push({ color: colorName, size });
+                        }
                     }
-                    if (shirts.category === 'Kids' && shirts.subcategory === 'Jackets' || shirts.category === 'Kids' && shirts.subcategory === 'Pants' || shirts.category === 'Kids' && shirts.subcategory === 'Shirts' || shirts.category === 'Kids' && shirts.subcategory === 'underwear' || shirts.category === 'Kids' && shirts.subcategory === 'Dress' || shirts.subcategory === 'Shoes') {
-
-                        console.log("second")
-                        const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
-                        const size = sizesResult.rows.map((row) => row);
-                        //console.log("Sizes", size)
-                        products.push({ color: colorName, size });
-                    }
-                    if(shirts.category === 'Mens' && shirts.subcategory !== 'Shoes' || shirts.category === 'Womens' && shirts.subcategory !== 'Shoes') {
-                        console.log("third")
-                        const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
-                        const size = sizesResult.rows.map((row) => row);
-                        products.push({ color: colorName, size });
-                    }
-                    }
-                }else{
+                }
+                else{
                     await conn.query(`SELECT * FROM varijacije WHERE PRODUCT_id= '${id}'`,async (e, var_sku) => {
                         let result = var_sku.rows;
                         varijacijeSku = result;
-                        console.log("Sku?",result)
                     })
                 }
                 const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 10`)
                         randomProducts = productsRandom.rows;
-                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku) });
+                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat) });
             });
         } else {
             req.flash('error', err.message);
@@ -788,10 +782,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let firstCheck = Object.keys(req.files).length;
     let secondCheck = req.files[`image${imgNum}`].length;
     let imgTest = Object.keys(req.files);
-
-    console.log(product)
-
-
+    console.log("imageTest", imgTest)
     for (let i = 0; i < firstCheck; i++) {
         images = [];
         if (imgTest.length < 2) {
@@ -799,15 +790,16 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
             for(let productimg of productImgs) {
                 images.push(productimg.path);
             }
-        }else{
-        for (let j = 0; j < secondCheck; j++) {
-            let getImg = req.files[`image${imgNum}`];
-            for (let allImg of getImg) {
-                images.push(allImg.path)
-            }
-            imgNum += 1;
-            }
         }
+        else{
+            for (let j = 0; j < secondCheck; j++) {
+                let getImg = req.files[`image${imgNum}`];
+                for (let allImg of getImg) {
+                    images.push(allImg.path)
+                }
+                imgNum += 1;
+                }
+            }
         imgsUrl.push(images);
     }
 
@@ -836,21 +828,20 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }
         })
     }
-
     else{
-
-        console.log("toys")
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
             if(e){
                 req.flash('error', "Error inserting product into database", e.message)
                 console.log("Error", e.message)
-            }else{
+            }
+            else{
                 if(Array.isArray(product.color)){
                     for (let i = 0; i < product.color.length; i++) {
                         let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
                         await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${product.qty1[i]}', '${product.color[i]}')`)
                     }
-                }else{
+                }
+                else{
                     let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
                     await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl}}'::text[]), '${product.qty1}', '${product.color}')`)
                     console.log("Single added product toys")
@@ -861,7 +852,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 
     }
     res.redirect('/add')
-    //res.send(req.body)
 
 })
 async function DeleteZeroQty() {
