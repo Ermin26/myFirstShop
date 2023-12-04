@@ -8,18 +8,14 @@
             <% for(let product of products) {%>
             <div id="colRow" class="col mt-3 p-1 justify-content-center">
                 <a href="/product/<%= product.id %> " class="justify-content-center">
-                        <div class="card shadow m-0">
-                            <div id="cardHeaderHome" class="card-header text-center" style="background-image: url(<%= product.links[0] %>);">
-
+                        <div id="cardHome" class="card shadow m-0">
+                            <div id="cardHeaderHome" class="card-header text-center">
+                                <img src="<%= product.links[0] %>" alt="img">
                             </div>
                             <div id="cardBodyHome" class="card-body">
-                                <h4 class="d-inline">
-                                    <%= product.name %>
+                                <h4>
+                                    <%= product.name %> - <%= product.info %>
                                 </h4>
-                                <br>
-                                <h6 id="pDesc" class="d-inline-flex">
-                                    - <%= product.info %>
-                                </h6>
                                 <h3>
                                     <%= product.neto_price %> €
                                 </h3>

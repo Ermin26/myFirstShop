@@ -236,7 +236,6 @@ app.post('/search', async (req, res) => {
     })
 })
 
-
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {

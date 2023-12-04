@@ -23,13 +23,13 @@ a{
 
 #carouselExampleControls{
     display: flex;
-    max-width: 400px;
-    height: 400px;
+    max-width: 450px;
+    height: 450px;
 }
 
 #carousel,#item{
-    max-width: 400px;
-    height: 400px;
+    max-width: 450px;
+    height: 450px;
 }
 
 
@@ -43,6 +43,7 @@ a{
 
 #col2{
     width: 65%;
+    padding: 0;
 }
 #p_price,#postnina{
     width: 50%;
@@ -58,22 +59,29 @@ a{
     filter: invert(60%);
 }
 .color {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
     margin-right: 10px;
     cursor: pointer;
     border: 1px solid black;
+    border-radius: 5px;
     padding: 5px;
 }
 
 .selected{
-    background-color: #fefae0;
+    background-color: #023e8a;
     box-sizing: border-box;
+    color: white;
     border-radius: 50%;
 }
 .size{
     border: 1px solid black;
     cursor: pointer;
     height: 45px;
+    border-radius: 5px;
     text-align: center;
     display: grid;
     place-items: center;
@@ -86,9 +94,8 @@ a{
     gap: 10px;
 }
 
-.size:hover,
-.barva li:hover {
-    background-color: rgb(190, 194, 187);
+.size:hover,.color:hover {
+    background-color: #00b4d8;
 }
 
 .size:focus {
@@ -103,6 +110,10 @@ a{
     flex-wrap: wrap;
 }
 
+#badgeWrapper .col{
+    background-color: #023e8a;
+    color: white;
+}
 
 
 #next-row{
@@ -155,21 +166,21 @@ a{
 .slideshow-container {
     display: flex;
     overflow: hidden;
-  }
-  
-  .showPageA {
+}
+
+.showPageA {
     width: 100%;
     transition: transform 1s ease-in-out;
     animation: moveSlides 15s infinite paused;
-  }
+}
 
-  #showPageHeader{
+#showPageHeader{
     width: 100%;
     background-size: cover;
     background-position: center;
-  }
+}
 
-  @keyframes moveSlides {
+@keyframes moveSlides {
     0%, 100% {
       transform: translateX(0);
     }
@@ -194,14 +205,14 @@ a{
     87.5% {
       transform: translateX(-600%);
     }
-  }
+}
 
-  .slideshow-container:not(:hover) .showPageA {
+.slideshow-container:not(:hover) .showPageA {
     animation-play-state: running;
-  }
-  .slideshow-container:hover .showPageA {
+}
+.slideshow-container:hover .showPageA {
     animation-play-state: paused;
-  }
+}
 
 #footer{
     margin-top: 15vh;
@@ -244,6 +255,28 @@ a{
     .container{
         max-width: 100%;
     }
+    #col1{
+        width: 45%;
+    }
+    #col2{
+        width: 55%;
+    }
+    #carouselExampleControls{
+        display: flex;
+        max-width: 450px;
+        height: 450px;
+    }
+    #carousel,#item{
+        max-width: 450px;
+        height: 450px;
+    }
+    #item > img{
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        object-position: center;
+    }
+
     #p_price,#postnina{
         width: 50%;
     }
@@ -291,6 +324,8 @@ a{
     }
     #p_price,#postnina{
         width: 60%;
+        margin-left: auto;
+        margin-right: auto;
     }
     #carouselOut {
         width: 1000px;
@@ -327,7 +362,7 @@ a{
         margin: 15px;
     }
 }
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 768px) {
     .container{
         width: 100%;
     }
@@ -336,18 +371,18 @@ a{
         width: 100%;
         justify-content: center;
     }
+    #col2{
+        text-align: center;
+    }
     #carouselExampleControls{
         display: flex;
         width: 400px;
         height: 400px;
     }
-    
     #carousel,#item{
         width: 400px;
         height: 400px;
     }
-    
-    
     #item > img{
         width: 100%;
         height: 100%;
@@ -356,6 +391,9 @@ a{
     }
     #col2{
         width: 100%;
+    }
+    .infoData{
+        text-align: center;
     }
     #postnina,#p_price{
         margin-left: auto;
@@ -415,7 +453,6 @@ a{
     #col2{
         width: 100%;
     }
-
     #postnina,#p_price{
         margin-left: auto;
         margin-right: auto;

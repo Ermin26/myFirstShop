@@ -9,6 +9,7 @@ html{
 body{
     margin: 0;
     padding: 0;
+    background-color: white;
     overflow-x: hidden;
 }
 #navbar{
@@ -41,7 +42,7 @@ body{
     position: fixed;
     z-index: 99999998;
     padding: 1px;
-    background-color: #dad7cd;
+    background-color: #e5e5e5;
     width: 100%;
     margin-bottom: 100vh;
 }
@@ -49,12 +50,12 @@ body{
     position: sticky;
     bottom: 0;
     width: 100%;
-    background-color: #faedcdb2;
-    color: black;
+    background-color: #023e8a;
+    color: white;
 }
 #footer a {
     background-color: transparent;
-    color: black;
+    color: white;
 }
 a{
     text-decoration: none;
@@ -62,6 +63,7 @@ a{
 }
 a:hover{
     text-decoration: none;
+    color:none;
 }
 #searched{
     width: 25%;
