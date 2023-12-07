@@ -46,7 +46,7 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
 
 1. inventory - V bazo podatkov se shranjujejo vsi produkti..
    - Podatki ki se shranjujejo v bazo so:
-   - - id
+     - id
      - Ime produkta,
      - neto cena,
      - Kratek info;
@@ -58,7 +58,7 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
 
 2. Varijacije - Shranjevanje podatkov glede na varijacije.
    - Podatki ki se shranjujejo so:
-   - - product id == inventory id
+     - product id == inventory id
      - velikost,
      - barva
      - img link ( povezava do slike glede na barvo)
