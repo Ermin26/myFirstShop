@@ -40,9 +40,9 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
     
 
 ## Baza podatkov
-
-    Za bazo podatkov sem uporabljal PostgreSql. Število baz ki jih trenutno uporabljam je 7.
-    Baze podatkov ki jih uporabljam:
+   Za bazo podatkov sem uporabljal PostgreSql. Število baz ki jih trenutno uporabljam je 6.
+    
+   Baze podatkov ki jih uporabljam:
 
 1. inventory - V bazo podatkov se shranjujejo vsi produkti..
    - Podatki ki se shranjujejo v bazo so:
@@ -92,7 +92,7 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
      - Datum izdaje računa;
 
 5. Deleted - V to bazo so shranjeni produkti ki so rasprodani. Takoj ko se zadnji produkt proda funkcija
-                 za preverjanje zaloge izbriše product iz "invetory" in "varijacije" ter podatke shrani v to bazo.
+              za preverjanje zaloge izbriše product iz "invetory" in "varijacije" ter podatke shrani v to bazo.
    
    - Podatki ki se shranjujejo so:
      - sku,
@@ -105,7 +105,7 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
      - imgs ( povezave )
                         
 
-## Session - session podatki kadar se korisnik prijavi na spletno stran.
+6. Session - session podatki kadar se korisnik prijavi na spletno stran.
 
 
 ## Avtor
