@@ -1,4 +1,4 @@
-# Slestershop
+# Salestershop
 
 ### https://salestershop.onrender.com/
 
