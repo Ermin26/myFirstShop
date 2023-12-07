@@ -9,12 +9,12 @@ Welcome to our Salestershop website, where you can experience a unique shopping 
 Our goal is customer satisfaction, so we provide fast and reliable service.
 
 ## Functionalities
-- Overview of a diverse range of products.
-- Easy addition of products to the shopping cart.
-- Safe and efficient execution of purchases.
-- Efficient search for products based on your preferences.
+   - Overview of a diverse range of products.
+   - Easy addition of products to the shopping cart.
+   - Safe and efficient execution of purchases.
+   - Efficient search for products based on your preferences.
 
-~~ Overview of past purchases and transaction history.
+   ~~ Overview of past purchases and transaction history. ~~
 
 ## Technologies
 - HTML
