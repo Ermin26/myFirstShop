@@ -737,11 +737,8 @@ app.get("/fetchOrder", async (req, res) => {
         discount = total;
     }
 
-    
-
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-        
       amount: Math.round(discount * 100), // Amount in cents
       currency: "eur",
       description: 'Salester, plačilo nakupa.',
@@ -751,9 +748,9 @@ app.get("/fetchOrder", async (req, res) => {
         metadata: {
         trackOrder_id: req.session.trackingNumber,
         //invoice: invoice must update after user confirmed payment,
-        user_id: `${user_id}`,  
+        user_id: `${user_id}`,
         },
-        
+
         });
        // console.log("Payment intent on fetchOrder",paymentIntent)
         req.session.payment = paymentIntent.id;

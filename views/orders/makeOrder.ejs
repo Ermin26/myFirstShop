@@ -140,7 +140,6 @@
                 theme: 'minimal',
                 labels: 'floating',
                };
-                   
                 const options = {
                 mode :'shipping',
                 allowedCountries:['SI','AT','BG','HR', 'HU', 'RO','SK'],
@@ -156,7 +155,7 @@
                 const addressElement = elements.create("address", options);
                 addressElement.mount("#address-element");
                 const paymentElement = elements.create('payment',{
-                    paymentMethodOrder:['card', 'paypal', 'apple_pay', 'google_pay'],
+                    paymentMethodOrder:['card', 'paypal'],
                     
                 });
                 paymentElement.mount('#payment-element');
