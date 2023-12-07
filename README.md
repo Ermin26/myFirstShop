@@ -91,8 +91,8 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
      - znesek računa,
      - Datum izdaje računa;
 
-5. Deleted - V to bazo so shranjeni produkti ki so rasprodani. Takoj ko se zadnji produkt proda funkcija za preverjanje zaloge
-                izbriše product iz "invetory" in "varijacije" ter podatke shrani v to bazo.
+5. Deleted - V to bazo so shranjeni produkti ki so rasprodani. Takoj ko se zadnji produkt proda funkcija
+                 za preverjanje zaloge izbriše product iz "invetory" in "varijacije" ter podatke shrani v to bazo.
    
              - Podatki ki se shranjujejo so:
                - sku,
