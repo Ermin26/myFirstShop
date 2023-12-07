@@ -94,15 +94,15 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
 5. Deleted - V to bazo so shranjeni produkti ki so rasprodani. Takoj ko se zadnji produkt proda funkcija
                  za preverjanje zaloge izbriše product iz "invetory" in "varijacije" ter podatke shrani v to bazo.
    
-             - Podatki ki se shranjujejo so:
-               - sku,
-               - ime produkta,
-               - neto cena,
-               - info,
-               - celotni info,
-               - Kategorija,
-               - Podkategorija
-               - imgs ( povezave )
+   - Podatki ki se shranjujejo so:
+     - sku,
+     - ime produkta,
+     - neto cena,
+     - info,
+     - celotni info,
+     - Kategorija,
+     - Podkategorija
+     - imgs ( povezave )
                         
 
 ## Session - session podatki kadar se korisnik prijavi na spletno stran.
