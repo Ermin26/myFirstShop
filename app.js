@@ -256,7 +256,7 @@ app.get('/product/:id', async (req, res) => {
                         if(shirts.subcategory === 'Jewerly' || shirts.subcategory === 'Toys'){
                             const sizesResult = await conn.query(`SELECT sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
                             const size = sizesResult.rows.map((row) => row);
-                            //console.log("Sizes", size)
+                            //console.log("Sizes meeeeee")
                             products.push({ color: colorName, size});
                         }
                         if (shirts.category === 'Kids' && shirts.subcategory === 'Jackets' || shirts.category === 'Kids' && shirts.subcategory === 'Pants' || shirts.category === 'Kids' && shirts.subcategory === 'Shirts' || shirts.category === 'Kids' && shirts.subcategory === 'underwear' || shirts.category === 'Kids' && shirts.subcategory === 'Dress' || shirts.subcategory === 'Shoes') {
@@ -269,6 +269,7 @@ app.get('/product/:id', async (req, res) => {
                             const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
                             const size = sizesResult.rows.map((row) => row);
                             products.push({ color: colorName, size });
+                            console.log("meeeeeee")
                         }
                     }
                 }
