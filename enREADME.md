@@ -14,7 +14,7 @@ Our goal is customer satisfaction, so we provide fast and reliable service.
    - Safe and efficient execution of purchases.
    - Efficient search for products based on your preferences.
 
-    ~~ Overview of past purchases and transaction history.
+    ~~ Overview of past purchases and transaction history. 
 
 ## Technologies
 - HTML
