@@ -38,7 +38,8 @@ Our goal is customer satisfaction, so we provide fast and reliable service.
 I used PostgreSQL for the database, currently utilizing 7 databases.
 
 ### 1. inventory
-   - Stores all product data.
+   Stores all product data.
+   
    - Data stored include:
      - id
      - Product name
@@ -52,7 +53,9 @@ I used PostgreSQL for the database, currently utilizing 7 databases.
      - Inventory SKU
 
 ### 2. Variations
-   - Stores data related to variations.
+
+   Stores data related to variations.
+   
    - Data stored include:
      - Product id (inventory id)
      - Size
@@ -62,7 +65,8 @@ I used PostgreSQL for the database, currently utilizing 7 databases.
      - Quantity
 
 ### 3. Orders
-   - Stores data of individuals and products after placing an order.
+   Stores data of individuals and products after placing an order.
+   
    - Data stored include:
      - Order number
      - Invoice number
@@ -80,7 +84,8 @@ I used PostgreSQL for the database, currently utilizing 7 databases.
      - Shipped (boolean, default - false)
 
 ### 4. Invoices
-   - Stores all data when adding a new invoice.
+   Stores all data when adding a new invoice.
+   
    - Data stored include:
      - Invoice number
      - Order number
@@ -89,7 +94,8 @@ I used PostgreSQL for the database, currently utilizing 7 databases.
      - Date of invoice issuance
 
 ### 5. Deleted
-   - Stores products that are sold out. Once the last product is sold, the inventory and variation data are deleted, and the information is saved in this database.
+   Stores products that are sold out. Once the last product is sold, the inventory and variation data are deleted, and the information is saved in this database.
+   
    - Data stored include:
      - SKU
      - Product name
