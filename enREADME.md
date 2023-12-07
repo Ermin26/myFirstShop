@@ -35,7 +35,7 @@ Our goal is customer satisfaction, so we provide fast and reliable service.
 - PostgreSQL
 
 ## Database
-I used PostgreSQL for the database, currently utilizing 7 databases.
+I used PostgreSQL for the database, currently utilizing 6 databases.
 
 ### 1. inventory
    Stores all product data.
