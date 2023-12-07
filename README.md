@@ -54,7 +54,8 @@ Naš cilj je zadovoljstvo strank, zato vam nudimo hitro in zanesljivo storitev.
      - Kategorija,
      - Podkategorija,
      - povezave ( imgs ),
-     - datum dodava;
+     - datum dodavanja;
+     - inventori sku
 
 2. Varijacije - Shranjevanje podatkov glede na varijacije.
    - Podatki ki se shranjujejo so:
