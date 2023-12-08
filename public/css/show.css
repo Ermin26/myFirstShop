@@ -59,11 +59,12 @@ a{
     filter: invert(60%);
 }
 .color {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    text-align: center;
     height: 50px;
-    width: 50px;
+    min-width: 80px;
     margin-right: 10px;
     cursor: pointer;
     border: 1px solid black;
@@ -75,7 +76,11 @@ a{
     background-color: #023e8a;
     box-sizing: border-box;
     color: white;
-    border-radius: 50%;
+    border-radius: 25% 5% 25% 5%;
+    -webkit-border-radius: 25% 5% 25% 5%;
+    -moz-border-radius: 25% 5% 25% 5%;
+    -ms-border-radius: 25% 5% 25% 5%;
+    -o-border-radius: 25% 5% 25% 5%;
 }
 .size{
     border: 1px solid black;
@@ -88,7 +93,7 @@ a{
     align-content: center;
 }
 
-#sizeSection {
+#sizeSection, #coloSection {
     display: grid;
     grid-template-columns: 70px 70px 70px 70px 70px;
     gap: 10px;

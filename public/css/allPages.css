@@ -21,6 +21,25 @@ body{
     left: 0;
     z-index: 99999999 !important;
 }
+#navbar ul{
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+#navbar ul > li {
+    background-color: #023e8a;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+#navbar ul > li > ul > li a:hover {
+    background-color: #1a9ce7;
+    border-radius: 25% 2% 25% 2%;
+    -webkit-border-radius: 25% 2% 25% 2%;
+    -moz-border-radius: 25% 2% 25% 2%;
+    -ms-border-radius: 25% 2% 25% 2%;
+    -o-border-radius: 25% 2% 25% 2%;
+}
 .navbar-brand, .navbar-collapse{
     color: white;
 }
@@ -31,6 +50,7 @@ body{
 
 #navbar a{
     color: white !important;
+    background-color: #023e8a;
 }
 #homeContainer{
     margin-top: 15vh;
