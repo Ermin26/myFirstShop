@@ -238,6 +238,8 @@ app.post('/search', async (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
+    const excludedSubcategories = ['Shoes', 'Jewelry', 'Toys'];
+    const kidsSubcategories = ['Jackets', 'Shirts', 'Pants', 'Underwear', 'Dress', 'Shoes'];
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows[0];
@@ -259,17 +261,16 @@ app.get('/product/:id', async (req, res) => {
                             //console.log("Sizes meeeeee")
                             products.push({ color: colorName, size});
                         }
-                        if (shirts.category === 'Kids' && shirts.subcategory === 'Jackets' || shirts.category === 'Kids' && shirts.subcategory === 'Pants' || shirts.category === 'Kids' && shirts.subcategory === 'Shirts' || shirts.category === 'Kids' && shirts.subcategory === 'underwear' || shirts.category === 'Kids' && shirts.subcategory === 'Dress' || shirts.subcategory === 'Shoes') {
+                        if (shirts.category === 'Kids' && kidsSubcategories.includes(shirts.subcategory)){
                             const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
                             const size = sizesResult.rows.map((row) => row);
                             //console.log("Sizes", size)
                             products.push({ color: colorName, size });
                         }
-                        if(shirts.category === 'Mens' && shirts.subcategory !== 'Shoes' || shirts.category === 'Womens' && shirts.subcategory !== 'Shoes') {
+                        if((shirts.category === 'Mens' || shirts.category === 'Womens') && !excludedSubcategories.includes(shirts.subcategory)) {
                             const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
                             const size = sizesResult.rows.map((row) => row);
                             products.push({ color: colorName, size });
-                            console.log("meeeeeee")
                         }
                     }
                 }
@@ -759,10 +760,9 @@ app.get("/fetchOrder", async (req, res) => {
       clientSecret: paymentIntent.client_secret
     });
 });
-
-app.get('/add', (req, res) => {
+app.get('/add', async (req, res) => {
     res.render('addProducts/add')
-})
+});
 
 
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }]), async (req, res) => {
@@ -777,28 +777,34 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     let productQty = 0;
 
     let firstCheck = Object.keys(req.files).length;
-    let secondCheck = req.files[`image${imgNum}`].length;
     let imgTest = Object.keys(req.files);
-    console.log("imageTest", imgTest)
-    for (let i = 0; i < firstCheck; i++) {
-        images = [];
-        if (imgTest.length < 2) {
-            const productImgs = req.files[`image${imgNum}`];
-            for(let productimg of productImgs) {
-                images.push(productimg.path);
-            }
+    images = [];
+    if (imgTest.length < 2) {
+        const productImgs = req.files[`image${imgNum}`];
+        for(let productimg of productImgs) {
+            images.push(productimg.path);
         }
-        else{
-            for (let j = 0; j < secondCheck; j++) {
-                let getImg = req.files[`image${imgNum}`];
-                for (let allImg of getImg) {
-                    images.push(allImg.path)
-                }
-                imgNum += 1;
-                }
-            }
-        imgsUrl.push(images);
+        imgsUrl.push(images)
     }
+    else{
+        for (let i = 0; i < firstCheck; i++) {
+            //images = [];
+            console.log("this is imageNum", `image${imgNum}`);
+            let secondCheck = req.files[`image${imgNum}`].length;
+                let getImg = req.files[`image${imgNum}`];
+                for (let img = 0; img < getImg.length; img++) {
+                    images.push(getImg[img].path)
+                }
+            imgNum += 1;
+            imgsUrl.push(images);
+        }
+    }
+
+
+
+
+
+
 
         let month = todayDate.getMonth() + 1;
         let day = todayDate.getDate();

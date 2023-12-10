@@ -3,8 +3,10 @@
         "artikli",
         "Bigserial",
         "bruto",
+        "geslo",
         "Jewerly",
         "loged",
+        "productimg",
         "redirecturl",
         "Salester",
         "subcat",
@@ -16,8 +18,8 @@
         {
             "pgOptions": {
                 "ssl": {
-                    "cert": "C:\\Users\\MBwarehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt",
-                    "ca": "C:\\Users\\MBwarehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt"
+                    "cert": "C:\\Users\\Uporabnik\\Desktop\\Apps\\myFirstShop\\root.crt",
+                    "ca": "C:\\Users\\Uporabnik\\Desktop\\Apps\\myFirstShop\\root.crt"
                 }
             },
             "previewLimit": 50,

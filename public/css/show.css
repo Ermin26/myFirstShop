@@ -58,30 +58,46 @@ a{
 .carousel-control-next-icon {
     filter: invert(60%);
 }
+
+.add-to-cart{
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#colorRow{
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#sizeRow{
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+#sizeSection, #colorSection {
+    display: grid;
+    max-width: 100%;
+    grid-template-columns: 80px 80px 80px 80px 80px;
+    gap: 10px;
+    padding: 0;
+}
+
 .color {
+    border: 1px solid black;
+    cursor: pointer;
+    height: 45px;
+    min-width: 70px;
+    border-radius: 5px;
+    text-align: center;
     display: grid;
     place-items: center;
     align-content: center;
-    text-align: center;
-    height: 50px;
-    min-width: 80px;
-    margin-right: 10px;
-    cursor: pointer;
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 5px;
 }
 
-.selected{
-    background-color: #023e8a;
-    box-sizing: border-box;
-    color: white;
-    border-radius: 25% 5% 25% 5%;
-    -webkit-border-radius: 25% 5% 25% 5%;
-    -moz-border-radius: 25% 5% 25% 5%;
-    -ms-border-radius: 25% 5% 25% 5%;
-    -o-border-radius: 25% 5% 25% 5%;
-}
+
+
 .size{
     border: 1px solid black;
     cursor: pointer;
@@ -93,11 +109,7 @@ a{
     align-content: center;
 }
 
-#sizeSection, #coloSection {
-    display: grid;
-    grid-template-columns: 70px 70px 70px 70px 70px;
-    gap: 10px;
-}
+
 
 .size:hover,.color:hover {
     background-color: #00b4d8;
@@ -106,7 +118,12 @@ a{
 .size:focus {
     background-color: green;
 }
-
+.selected{
+    background-color: #023e8a;
+    box-sizing: border-box;
+    color: white;
+    border-radius: 45% 5% 45% 0%;
+}
 #badgeWrapper{
     display: flex;
     height:auto;
@@ -332,6 +349,11 @@ a{
         margin-left: auto;
         margin-right: auto;
     }
+    #sizeSection, #colorSection {
+        display: grid;
+        grid-template-columns: 80px 80px 80px 80px;
+        gap: 10px;
+    }
     #carouselOut {
         width: 1000px;
         position: relative;
@@ -404,6 +426,9 @@ a{
         margin-left: auto;
         margin-right: auto;
     }
+    #sizeSection, #colorSection{
+        justify-content: center;
+    }
     #badgeWrapper{
         display: grid;
         grid-template-columns: 50% 50%;
@@ -421,15 +446,12 @@ a{
         background-color: #dad7cdf6;
     }
     #picture > img{
-        /*height: 400px; 
-        width:400px;*/ 
-        /*min-height: 400px; */
         width:200px;
         height:200px;
         max-width:100%;
         max-height:100%;
-        margin-right: 10px; 
-        object-fit:cover; 
+        margin-right: 10px;
+        object-fit:cover;
         border: 1px solid black;
         object-position: center;
         justify-content: center;
@@ -449,10 +471,10 @@ a{
     #col1{
         width: 100%;
     }
-    #sizeSection {
+    #sizeSection, #colorSection {
         display: inline-grid;
         width: 100%;
-        grid-template-columns: 70px 70px 70px 70px;
+        grid-template-columns: 80px 80px 80px 80px;
         gap: 10px;
     }
     #col2{
