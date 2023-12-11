@@ -781,6 +781,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     images = [];
     if (imgTest.length < 2) {
         const productImgs = req.files[`image${imgNum}`];
+        console.log("me to")
         for(let productimg of productImgs) {
             images.push(productimg.path);
         }
@@ -789,28 +790,24 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     else{
         for (let i = 0; i < firstCheck; i++) {
             //images = [];
-            console.log("this is imageNum", `image${imgNum}`);
+            //console.log("this is imageNum", `image${imgNum}`);
             let secondCheck = req.files[`image${imgNum}`].length;
                 let getImg = req.files[`image${imgNum}`];
                 for (let img = 0; img < getImg.length; img++) {
                     images.push(getImg[img].path)
                 }
             imgNum += 1;
+            console.log("IMages inside loop",images)
             imgsUrl.push(images);
+            images = [];
         }
     }
-
-
-
-
-
-
-
         let month = todayDate.getMonth() + 1;
         let day = todayDate.getDate();
         let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;
         let randomNum = parseInt(Math.random(15 * 12489) * 1000)
         let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
+
     if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Jewerly' && product.p_subcat !== 'Other'){
         await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
         if (!err) {
