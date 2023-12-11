@@ -797,7 +797,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
                     images.push(getImg[img].path)
                 }
             imgNum += 1;
-            console.log("IMages inside loop",images)
             imgsUrl.push(images);
             images = [];
         }
