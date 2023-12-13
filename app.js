@@ -243,6 +243,7 @@ app.get('/product/:id', async (req, res) => {
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
             let shirts = result.rows[0];
+            //console.log("this is shirts", shirts)
             let invt_sku = shirts.inventory_sku
             await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id='${id}'`, async (er, color) => {
                 let colors = color.rows;
@@ -374,7 +375,7 @@ app.get("/cart", async (req, res) => {
     let countSizes = 0;
     let cart = req.session.cart;
     let total = req.session.total;
-    console.log("cart", cart)
+    //console.log("cart", cart)
     if (cart) {
         if (!cart.length) {
             req.flash('error', "Košarica je prazna.")
@@ -384,10 +385,11 @@ app.get("/cart", async (req, res) => {
                 await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
                     if (!e) {
                         let ordered = results.rows;
-                        console.log("ordered",ordered)
+                        //console.log("ordered",ordered)
                         items.push(results.rows)
                         countSizes += 1;
                         if (cart.length === countSizes) {
+                            //console.log(items)
                             res.render('orders/cart', { items, cart, ordered, s_pk })
                         }
                     }

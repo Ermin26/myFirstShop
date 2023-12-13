@@ -3,15 +3,16 @@
     <link rel="stylesheet" href="/css/allPages.css">
     <link rel="stylesheet" href="/css/cart.css">
     <script> let stripePK = ` <%= s_pk %> ` </script>
-    <div id="myCart" class="myCart mt-5 p-2 justify-content-center text-center">
+    <div id="myCart" class="myCart mt-5 justify-content-center text-center">
         <% if(items.length) {%>
 
-            <table class="table p-2">
+            <table class="table">
                 <thead>
                     <tr class="text-center">
-                        <th class="col border-2 border-bottom">Product</td>
-                        <th class="col border-2 border-bottom">Quantity</td>
-                        <th class="col border-2 border-bottom">Subtotal</td>
+                        <th class="col border-2 border-bottom">Izdelek</td>
+                        <th class="col border-2 border-bottom">Količina</td>
+                        <th class="col border-2 border-bottom">Cena</td>
+                        <th class="col border-2 border-bottom"></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,8 +28,8 @@
                                                 <div class="carousel-inner">
                                                     <% products.img_link.forEach((img, i)=>{%>
                                                         <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
-                                                            <img class="img-fluid rounded" alt="" src="<%= img %>"
-                                                                style="height: 100px; width: 100px; min-height: 100px; min-width: 100px">
+                                                            <a href="/product/<%= products.product_id %>">  <img class="img-fluid rounded" alt="" src="<%= img %>"
+                                                                style="height: 100px; width: 100px; min-height: 100px; min-width: 100px"></a>
                                                         </div>
                                                         <% }) %>
                                                 </div>
@@ -53,10 +54,11 @@
                                         <div class="card-body p-0">
                                             <h5 class="d-inline-block">
                                                 <%= products.name %>
-                                                    <%= products.color %>
                                             </h5>
-                                            <h6>#<%= products.size %>
-                                            </h6>
+                                            <h6># <%= products.color %></h6>
+                                            <% if(products.size){ %>
+                                            <h6># <%= products.size %></h6>
+                                            <% } %>
                                         </div>
                                     </div>
                                 </td>
@@ -76,8 +78,6 @@
                                         <% } %>
                                 </td>
                                 <td class="col-4 text-center align-middle">
-                                    <div class="row row-cols-2 d-inline-flex flex-column flex-md-row g-3">
-                                        <div class="col col-md-6">
                                             <h3 class="card-text">
                                                 <% for(qty of cart) {%>
                                                     <% if(qty.sku==products.sku) {%>
@@ -85,13 +85,9 @@
                                                             <% } %>
                                                                 <% } %>
                                             </h3>
-                                        </div>
-
-                                        <div class="col col-md-6">
-                                            <a class="btn btn-primary btn-sm"
-                                                href="/remove/<%=products.sku %> ">Remove</a>
-                                        </div>
-                                    </div>
+                                </td>
+                                <td class="col text-center align-middle">
+                                    <a class="remove btn btn-sm" href="/remove/<%=products.sku %> ">x</a>
                                 </td>
                             </tr>
                             <% } %>
@@ -101,10 +97,11 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td class="align-bottom">
-                                            <h1>Total</h1>
+                                            <h1>Skupaj</h1>
                                         </td>
                                         <td></td>
                                         <td class="align-bottom">
@@ -112,6 +109,7 @@
                                                 <%= total.toFixed(2) %> €
                                             </h2>
                                         </td>
+                                        <td></td>
                                     </tr>
                 </tbody>
             </table>
@@ -120,7 +118,7 @@
 
                 <form action="/order" method="get">
 
-                    <button class="btn" style="background-color: #e9edc9;">Checkout</button>
+                    <button class="btn" style="background-color: #b9b9b4;">Plačilo</button>
 
                 </form>
 

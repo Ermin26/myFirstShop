@@ -1,5 +1,6 @@
 *, *::after, *::before{
     box-sizing: border-box;
+    font-family: 'Karla', sans-serif;
 }
 html{
     margin: 0;
@@ -83,7 +84,7 @@ a{
 }
 a:hover{
     text-decoration: none;
-    color:none;
+    color:inherit;
 }
 #searched{
     width: 25%;

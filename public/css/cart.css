@@ -1,3 +1,6 @@
+#homeContainer{
+  padding: 0;
+}
 #cart{
     box-sizing: border-box;
 }
@@ -16,9 +19,18 @@
     margin-bottom: 15vh;
 }
 #cartCard{
-  background-color: #eae0d5;
+  background-color: #ebe9e8;
 }
 
+.card-body{
+  align-self: center;
+
+}
+
+.remove{
+  background-color: #ebe9e8;
+  color: red;
+}
 #wrapper {
     margin-top: 30vh;
     margin-bottom: 30vh;
@@ -78,6 +90,16 @@
     height: 200px;
   }
   
+
+  @media(max-width: 992px){
+    #cartCard{
+      max-width: 100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+}
+
 
   @media(max-width: 560px){
     .item, #cartLink {
