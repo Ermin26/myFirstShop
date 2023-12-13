@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="SI">
 
 <head>
     <meta charset="UTF-8">
@@ -13,8 +13,6 @@
 
 <body>
     <%- include('../partials/nav.ejs') %>
-
-    
 
     <div class="container text-center justify-content-center" style="margin-bottom: 15vh; margin-top: 20vh;">
         <%- include('../../flash') %>
@@ -48,10 +46,10 @@
                                                     <% } %>
                                                   <p class="d-flex align-items-center m-0 ms-2"><%= product.name%> - <%= product.color%>-#<%= product.size %></p>
                                                 </td>
-                                                <td>
+                                                <td class="align-middle">
                                                     <%= product.qty %>
                                                 </td>
-                                                <td>
+                                                <td class="align-middle">
                                                     <%= product.price %> €
                                                 </td>
                                             </tr>
@@ -63,9 +61,12 @@
                             <div class="card-footer d-flex justify-content-between">
                                 <div class="col-8 text-start">
                                     <ul>
-                                        <li>Subtotal:</li>
+                                        <li>Skupaj</li>
                                         <li>Dostava</li>
                                         <li>Popust</li>
+                                        <% if(total < 50) {%>
+                                            <li class="text-warning"> Znesek do 10% popusta</li>
+                                            <% } %>
                                         <li><strong>Za plačilo</strong></li>
                                     </ul>
                                 </div>
@@ -73,13 +74,13 @@
                                     <strong><%= total %> €</strong>
                                     <strong>0.00 €</strong>
                                     <% if(total > 50) {%>
-                                        <strong>10%</strong>
+                                        <strong >10%</strong>
                                     <% }else{ %>
                                     <strong>0.00 €</strong>
+                                    <strong class="text-warning"><%= 50 - total %></strong>
                                     <% } %>
                                     <% if(total > 50) {%>
                                     <strong>
-                                        <%#  total - (total * 0.10).toFixed(2) %> €
                                         <%=  totalPrice %> €
                                     </strong>
                                     <% }else{%>
@@ -127,51 +128,48 @@
             const {publishableKey, SERVER_URL, user_id} = await fetch('/config').then((r) => r.json());
             const stripe = Stripe(publishableKey);
             const apiKey = publishableKey;
-             
-             const {
-             error: backendError,
-             clientSecret
-            } = await fetch('/fetchOrder').then(r => r.json());
+
+            const {error: backendError,clientSecret} = await fetch('/fetchOrder').then(r => r.json());
             if (backendError) {
-                console.log("this is fucking error",backendError);
+                console.log("Error: ",backendError);
             }
-        
+
             const appearance = {
-                theme: 'minimal',
+                theme: 'flat',
                 labels: 'floating',
-               };
+            };
                 const options = {
                 mode :'shipping',
                 allowedCountries:['SI','AT','BG','HR', 'HU', 'RO','SK'],
                 fields:{
                     phone: 'always',
                 },
-            }    
+            }
 
              // Pass the appearance object to the Elements instance
-             const elements = stripe.elements({clientSecret, appearance});
+                const elements = stripe.elements({clientSecret, appearance});
 
             // Create a card element and mount it to the card element container
                 const addressElement = elements.create("address", options);
                 addressElement.mount("#address-element");
                 const paymentElement = elements.create('payment',{
                     paymentMethodOrder:['card', 'paypal'],
-                    
+
                 });
                 paymentElement.mount('#payment-element');
                 const linkAuthenticationElement = elements.create("linkAuthentication");
                 linkAuthenticationElement.mount("#link-authentication-element");
-               
+
                 let paymentMethod =[];
 
                 paymentElement.on('change', function(event){
                     paymentMethod.pop();
                     paymentMethod.push(event.value.type);
-                    
+
                 })
 
                 let addressData = {};
-                    
+
                 addressElement.on('change', function(event) {
                     if (event.complete) {
                             // extract potentially complete address
@@ -186,8 +184,6 @@
                             emailData.push(event.value.email);
                         }
                     })
-                    
-                    
                     const form = document.getElementById('payment-form');
                         form.addEventListener('submit', async (event) => {
                             event.preventDefault();

@@ -75,8 +75,6 @@ const s_sk = process.env.STRIPE_SK;
 const s_pk = process.env.STRIPE_PK;
 const server_url = process.env.SERVER_URL;
 
-
-
 app.use(session({
     store: new PostgreSQLStore({
         pool: client,             // Connection pool
