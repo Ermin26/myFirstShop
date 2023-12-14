@@ -45,13 +45,20 @@ a{
     width: 65%;
     padding: 0;
 }
+h1{
+    font-weight: 600;
+}
+h3{
+    font-weight: 500;
+}
 #p_price,#postnina{
     width: 50%;
 }
 #p_price{
     font-size:2rem;
-    background-color: #ccd5ae;
-    box-shadow: inset 5px 5px 25px #a5b378;
+    background-color: #ffffff;
+    border: 1px solid black;
+    box-shadow: 5px 5px 10px #bfc0c2;
 }
 
 .carousel-control-prev-icon,
@@ -164,7 +171,6 @@ a{
     justify-content: center;
     align-items: center;
     margin: 5px;
-    background-color: #dad7cdf6;
 }
 
 #picture > img{
@@ -308,7 +314,6 @@ a{
         max-width:100%;
         justify-content: center;
         align-items: center;
-        background-color: #dad7cdf6;
     }
 
     #picture > img{
@@ -329,6 +334,9 @@ a{
     }
     #col1,#col2{
         width: 50%;
+    }
+    .infoData{
+        text-align: start;
     }
     #p_price,#postnina{
         width: 60%;
@@ -353,7 +361,6 @@ a{
         max-width:100%;
         justify-content: center;
         align-items: center;
-        background-color: #dad7cdf6;
     }
 
     #picture > img{
@@ -396,6 +403,10 @@ a{
         object-fit: fill;
         object-position: center;
     }
+
+    .infoData{
+        text-align: center;
+    }
     #col2{
         width: 100%;
     }
@@ -437,7 +448,7 @@ a{
     }
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 500px) {
     .container{
         max-width: 100%;
     }
@@ -469,10 +480,9 @@ a{
         column-gap: 10px;
     }
     #next-row{
-        width: 100%;
+        max-width: 100%;
         margin: 0;
         padding: 0;
-        background-color: red;
     }
     #picture{
         display: grid;
@@ -483,6 +493,7 @@ a{
         justify-content: center;
         align-items: center;
         margin: 5px;
+        background-color: transparent;
     }
 
     #picture > img{
