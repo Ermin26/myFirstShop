@@ -3,7 +3,7 @@
 }
 
 #colRow{
-    width: 260px;
+    max-width: 260px;
 }
 #colRow > a{
     text-decoration: none;
