@@ -1,45 +1,41 @@
-
-
-✘ TOP PRIORITY @cancelled(23-11-07 21:58)
-
- ✔  fIX ADD PRODUCTS FOR TOYS AND JEWERLY VARIATIONS!!!! @done(23-11-14 22:45)
- ☐  Now test add every category and sub category 
- query db by last number 
+query db by last number
 SELECT * FROM orders ORDER BY CAST(substring(invoice FROM '[0-9]+$') AS INTEGER) asc LIMIT 100
 
 
 ////////
 
+
+✘ TOP PRIORITY @cancelled(23-11-07 21:58)
+    ☐ fix adding products. Jewerly is now category not sub category, fix code for add Jewerly.
+    ☐ Add img field to add product page where will be inserted image which will be displayed on home page laike card background.
+
+
 ✘ @cancelled(23-09-26 14:10)
 
-    daj končaj že enkrat, tolko da se lahko naročuje in plača! Fix redirects, save payment_id to the session and then retrieve data if needed
-    create order number with every created payment intent... order number must be 4-4-year number and save number to the payment intent and create "TRAKING NUMBER" for user to check status of his order!
-
 ✘ REKLAME BOJO NA VRHU KOT SLIDESHOW @cancelled(23-09-26 14:10)
-✘ dodan slide show on productshowpage --> dokončaj @cancelled(23-10-26 14:39)
 
 NEXT ----
-    ✘  Make code for email stripe send and invoice (not send invoice on mail onla a bill and code for check order status) @cancelled(23-09-08 14:07)
-    ✘  Make app only for adding images!!!!!! @cancelled(23-03-29 14:38)
-    ☐  Must add checkbox for pyment after product received?
-    ☐  Make table for addOns
-    ☐  Make fuction to work on stock after user return product
-    ☐  Work with new tables...
-    ☐  Edit backend to use that tables,
-    ☐  Add slide show on productShow page (Random)
-    ☐  Fix media for all devices
-    
-    
+✘  Make code for email stripe send and invoice (not send invoice on mail onla a bill and code for check order status) @cancelled(23-09-08 14:07)
+✘  Make app only for adding images!!!!!! @cancelled(23-03-29 14:38)
+☐  Must add checkbox for pyment after product received?
+☐  Make table for addOns
+☐  Make fuction to work on stock after user return product
+☐  Work with new tables...
+☐  Edit backend to use that tables,
+☐  Fix media for all devices
+☐  Send order on mail (Company/User) @started(23-07-21 13:57)
+
+
 ☐ DOING ------- @started(23-03-28 14:55)
-    ☐  Send order on mail (Company/User) @started(23-07-21 13:57)
-    ✘ Fix redirect to some page after user payed and make page for get info about order @cancelled(23-06-11 20:04)
-    ✘ set up redirect after paypal payment, save data to all dbs but redirect to payed pag don't work! @cancelled(23-09-19 21:37)
-    ☐ IMPORTANT!!!
-    
-    ✘ Set stripe manualy add card svg  on the left side on the right input fields @cancelled(23-08-04 14:38)
-    for entering data for card
-    
+
+    ☐ fix adding products. Jewerly is now category not sub category, fix code for add Jewerly.
+    ☐ Add img field to add product page where will be inserted image which will be displayed on home page laike card background.
+
+
 ✔ DONE ----- @done(23-03-28 14:54) 
+    ✔  Add slide show on productShow page (Random) @done(23-12-15 14:00)
+    ✔ set up redirect after paypal payment, save data to all dbs but redirect to payed pag don't work! @done(23-12-15 13:59)
+    ✔  fIX ADD PRODUCTS FOR TOYS AND JEWERLY VARIATIONS!!!! @done(23-11-14 22:45)
     ✔ Added delete db for saving deleted products with zero qty @done(23-10-15 21:22)
     ✔ Added function to delete zero qty products from "varijacije" and "inventory" @done(23-10-03 14:49)
     ✔ payment works. Next work on redirects after payment, one redirect for paypal other for card method. @done(23-10-03 14:49)

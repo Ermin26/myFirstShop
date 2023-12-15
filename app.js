@@ -255,9 +255,10 @@ app.get('/product/:id', async (req, res) => {
                     for (let i = 0; i < colors.length; i++) {
                         const colorName = colors[i].color;
                         if(shirts.subcategory === 'Jewerly' || shirts.subcategory === 'Toys'){
-                            const sizesResult = await conn.query(`SELECT sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
+                            const sizesResult = await conn.query(`SELECT sku,img_link FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
                             const size = sizesResult.rows.map((row) => row);
-                            //console.log("Sizes meeeeee")
+                            //console.log("Sizes meeeeee--------//-----//----")
+                            //console.log("Sizes meeeeee", size[0])
                             products.push({ color: colorName, size});
                         }
                         if (shirts.category === 'Kids' && kidsSubcategories.includes(shirts.subcategory)){
@@ -279,6 +280,8 @@ app.get('/product/:id', async (req, res) => {
                         varijacijeSku = result;
                     })
                 }
+                console.log("-----/------/-----/----")
+                //console.log("This is products",products[0])
                 const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 10`)
                         randomProducts = productsRandom.rows;
                 res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat) });
@@ -291,11 +294,19 @@ app.get('/product/:id', async (req, res) => {
 })
 
 app.get('/register', async (req, res) => {
+    /*
     res.render('users/register')
+    */
+    req.flash("success", "Get req working. Page not ready yet.")
+    res.redirect('/')
 })
 
 app.get("/login", (req, res) => {
+    /*
     res.render('users/login')
+    */
+    req.flash("success", "Get req working. Page not ready yet.")
+    res.redirect('/')
 })
 
 //? WORKING ALL!!
@@ -313,7 +324,7 @@ app.post('/register', async (req, res, next) => {
 
     await conn.query(`SELECT * FROM users WHERE users.email='${users.email}'`, async (notExists, exists) => {
         if (exists.rows.length) {
-            req.flash('error', "User with that email already exists, please enter other email or log in!")
+            req.flash('error', `${users.email} že obstaja. Registrirajte se s drugim računom ali se logirajte.`)
             res.redirect('/register')
         } else {
             const userPassword = await bcrypt.hash(users.password, 10)
@@ -335,6 +346,7 @@ app.post('/register', async (req, res, next) => {
 })
 
 app.get('/logout', (req, res, next) => {
+    /*
     req.logout(function (err) {
         if (err) {
             return next(err);
@@ -343,6 +355,9 @@ app.get('/logout', (req, res, next) => {
             res.redirect('/');
         }
     });
+    */
+   req.flash("success", "Get req working. Page not ready yet.")
+   res.redirect("/")
 });
 
 
