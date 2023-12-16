@@ -31,7 +31,7 @@
                                 <option value="Mens">Moški</option>
                                 <option value="Womens">Ženske</option>
                                 <option value="Kids">Otroci</option>
-                                <option value="Kids">Nakit</option>
+                                <option value="Jewerly">Nakit</option>
                                 <option value="Other">Ostalo</option>
                                 <option class="btn btn-sm btn-primary" id="newCat" value="NewCat">New Category</option>
                             </select>
@@ -42,22 +42,25 @@
                         </div>
                     </div>
                 </div>
-    
+                <!-- SUB SELECTION-->
                 <div class="col mt-2">
                     <div class="input-group">
                         <div class="form-floating">
                             <select class="form-select" id="p_subcat" name="p_subcat"
                                 aria-label="Floating label select example" onchange="subSelected()">
                                 <option selected>Select Subcategory</option>
-                                <option value="Jackets">Jakne</option>
-                                <option value="Shirts">Majce</option>
-                                <option value="Dress">Obleka</option>
-                                <option value="Pants">Hlače</option>
-                                <option value="Underwear">Spodnje perilo</option>
-                                <option value="Body">Bodi</option>
-                                <option value="Pajamas">Pižame</option>
-                                <option value="Shoes">Obutev</option>
-                                <option value="Toys">Igrače</option>
+                                <option value="Jackets" style="display: none;">Jakne</option>
+                                <option value="Shirts" style="display: none;">Majce</option>
+                                <option value="Dress" style="display: none;">Obleka</option>
+                                <option value="Pants" style="display: none;">Hlače</option>
+                                <option value="Underwear" style="display: none;">Spodnje perilo</option>
+                                <option value="Shoes" style="display: none;">Obutev</option>
+                                <option value="Body" style="display: none;">Bodi</option>
+                                <option value="Pajamas" style="display: none;">Pižame</option>
+                                <option value="Chain" style="display: none;">Verižica</option>
+                                <option value="Bracelet" style="display: none;">Zapestnica</option>
+                                <option value="Clock" style="display: none;">Ura</option>
+                                <option value="Toys" style="display: none;">Igrače</option>
                                 <option class="btn btn-sm btn-primary" id="new" value="New">New</option>
                             </select>
                             <label for="p_subcat"></label>
@@ -70,10 +73,6 @@
                 </div>
             </div>
         </div>
-        
-        
-        
-
         <div class="row d-flex flex-column flex-md-row m-0 mb-2 p-2 shadow">
             <div class="col mt-2">
                 <div class="form-floating">
@@ -99,6 +98,18 @@
                 <div class="form-floating">
                     <input type="text" class="form-control" id="p_price" name="p_price" placeholder="29,99 €" required>
                     <label for="p_price">Neto cena</label>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+            <div class="col mt-2 align-self-end">
+                <div class="input-group-sm d-flex align-self-center">
+                    <label for="bgImage" class="form-label custom-file-label"></label>
+                    <input class="form-control text-primary" type="file" id="bgImage" name="bgImage" required>
+                    <div class="invalid-feedback">
+                        Not good!
+                    </div>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -245,8 +256,7 @@
             </div>
             -->
         </div>
-        
-<!--/////////////////////////////////////////////////////////////////////////////////////////////-->
+
         <div id="kidsShoes" class="">
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_18">18</label>
@@ -530,7 +540,6 @@
             </div>
         </div>
 
-        
         <div id="toys" class="row row-cols-1 row-cols-md-2 p-2 w-100 ms-auto me-auto shadow">
             
             <div id="colorForToys" class="col d-flex flex-column mt-2">
@@ -563,9 +572,6 @@
 
 
     <script>
-
-        
-
         document.getElementById("kidsClothes").style.display = "none";
         document.getElementById("kidsShoes").style.display = "none";
         document.getElementById("adultClothes").style.display = "none";
@@ -585,9 +591,14 @@
         subCategory = "";
         imageNum = 2;
 
+        let checkSub = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas','Body']
+        let checkJewerlySub = ['Chain', 'Bracelet', 'Clock'];
         function subSelected() {
             category = document.getElementById("p_cat").value;
             subCategory = document.getElementById("p_subcat").value;
+            let allSubs = document.getElementById("p_subcat")
+            console.log(allSubs)
+            
             if (category == 'Mens' || category == 'Womens') {
                 document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsClothes").style.display = "none";
@@ -597,13 +608,21 @@
                 document.getElementById('newCat').text = "NewCat";
                 document.getElementById('new').value = "New";
                 document.getElementById('new').text = "New";
+                for(let i = 1; i < allSubs.length; i++){
+                    if(checkSub.includes(allSubs[i].value)){
+                        allSubs[i].style.display = 'flex';
+                    }
+                    else{
+                        allSubs[i].style.display = 'none';
+                    }
+                }
                 imageNum = 2;
                 const btnDisable = document.getElementById('showAddBtn');
                 btnDisable.classList.add('btn-info');
                 btnDisable.classList.remove('btn-danger');
                 toysField.style.display = "none";
                 toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
-                if(infoKidsClothes.length) {
+                if (infoKidsClothes.length) {
                     for(let i = 0; i < infoKidsClothes.length; i++){
                         infoKidsClothes[i].setAttribute('disabled', true);
                     }
@@ -622,7 +641,7 @@
                     document.getElementById('addRow').innerHTML="";
                 }
 
-                if (subCategory !== 'Select Subcategory' && subCategory !== 'Shoes' && subCategory !== 'Toys' && subCategory !== 'Jewerly') {
+                if (subCategory !== 'Select Subcategory' && checkSub.includes(subCategory)) {
                     imageNum = 2;
                 const btnDisable = document.getElementById('showAddBtn');
                 btnDisable.classList.add('btn-info');
@@ -661,9 +680,9 @@
                 }
                 if (subCategory == 'Shoes') {
                     imageNum = 2;
-                const btnDisable = document.getElementById('showAddBtn');
-                btnDisable.classList.add('btn-info');
-                btnDisable.classList.remove('btn-danger');
+                    const btnDisable = document.getElementById('showAddBtn');
+                    btnDisable.classList.add('btn-info');
+                    btnDisable.classList.remove('btn-danger');
                     document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("adultClothes").style.display = "none";
                     document.getElementById("adultShoes").classList.add('row', 'row-cols-3','row-cols-md-5','d-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
@@ -690,7 +709,7 @@
                         document.getElementById('addRow').innerHTML="";
                     }
                 }
-                if (subCategory == 'Jewerly' || subCategory == 'Toys'){
+                if (subCategory == 'Toys'){
                     imageNum = 2;
                 const btnDisable = document.getElementById('showAddBtn');
                 btnDisable.classList.add('btn-info');
@@ -742,8 +761,16 @@
                     }
                 }
             }
-
             if (category == 'Kids') {
+                console.log(category);
+                for(let i = 1; i < allSubs.length; i++){
+                    if(checkSub.includes(allSubs[i].value) || allSubs[i].value == 'Toys'){
+                        allSubs[i].style.display = 'flex';
+                    }
+                    else{
+                        allSubs[i].style.display = 'none';
+                    }
+                }
                 imageNum = 2;
                 const btnDisable = document.getElementById('showAddBtn');
                 btnDisable.classList.add('btn-info');
@@ -770,13 +797,11 @@
                         }
                     document.getElementById('addRow').innerHTML="";
                 }
-
-
-                if (subCategory == 'Jackets' || subCategory == 'Shirts' || subCategory == 'Pants' || subCategory == 'Underwear' || subCategory == 'Dress') {
+                if(subCategory !== 'Select Subcategory' && checkSub.includes(subCategory)) {
                     imageNum = 2;
-                const btnDisable = document.getElementById('showAddBtn');
-                btnDisable.classList.add('btn-info');
-                btnDisable.classList.remove('btn-danger');
+                    const btnDisable = document.getElementById('showAddBtn');
+                    btnDisable.classList.add('btn-info');
+                    btnDisable.classList.remove('btn-danger');
                     document.getElementById("kidsClothes").classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'mb-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                     document.getElementById("kidsClothes").style.display = "flex";
                     document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
@@ -804,7 +829,7 @@
                     }
                 }
 
-                if (subCategory == 'Shoes') {
+                if(subCategory == 'Shoes') {
                     imageNum = 2;
                 const btnDisable = document.getElementById('showAddBtn');
                 btnDisable.classList.add('btn-info');
@@ -835,11 +860,11 @@
                         document.getElementById('addRow').innerHTML="";
                     }
                 }
-                if(subCategory == 'Toys' || subCategory == 'Jewerly'){
+                if(subCategory == 'Toys'){
                     imageNum = 2;
-                const btnDisable = document.getElementById('showAddBtn');
-                btnDisable.classList.add('btn-info');
-                btnDisable.classList.remove('btn-danger');
+                    const btnDisable = document.getElementById('showAddBtn');
+                    btnDisable.classList.add('btn-info');
+                    btnDisable.classList.remove('btn-danger');
                     toysField.style.display = "flex";
                     toysField.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
                     document.getElementById('showAddBtn').style.display = "flex";
@@ -875,7 +900,81 @@
                     }
                 }
             }
-            if(category == 'NewCat' || category == 'null'){
+            if (category == 'Jewerly'){
+                for(let i = 1; i < allSubs.length; i++){
+                    if(checkJewerlySub.includes(allSubs[i].value)){
+                        allSubs[i].style.display = 'flex';
+                    }
+                    else{
+                        allSubs[i].style.display = 'none';
+                    }
+                }
+                imageNum = 2;
+                const btnDisable = document.getElementById('showAddBtn');
+                btnDisable.classList.add('btn-info');
+                btnDisable.classList.remove('btn-danger');
+                document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultClothes").style.display = "none";
+                document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+                document.getElementById("adultShoes").style.display = "none";
+                document.getElementById('newCat').value = "NewCat";
+                document.getElementById('newCat').text = "NewCat";
+                document.getElementById('new').value = "New";
+                document.getElementById('new').text = "New";
+                if(subCategory !== 'Select Subcategory' && checkJewerlySub.includes(subCategory)){
+                    console.log("Selected Subcategory: " ,subCategory)
+                    imageNum = 2;
+                    const btnDisable = document.getElementById('showAddBtn');
+                    btnDisable.classList.add('btn-info');
+                    btnDisable.classList.remove('btn-danger');
+                    toysField.style.display = "flex";
+                    toysField.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+                    document.getElementById('showAddBtn').style.display = "flex";
+                    document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultClothes").style.display = "none";
+                    document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("adultShoes").style.display = "none";
+                    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsClothes").style.display = "none";
+                    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border', 'w-100', 'ms-auto', 'me-auto');
+                    document.getElementById("kidsShoes").style.display = "none";
+                    document.getElementById('newCat').value = "NewCat";
+                    document.getElementById('newCat').text = "NewCat";
+                    document.getElementById('new').value = "New";
+                    document.getElementById('new').text = "New";
+                    if(infoKidsClothes.length) {
+                        for(let i = 0; i < infoKidsClothes.length; i++){
+                            infoKidsClothes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoKidsShoes.length) {
+                        for(let i = 0; i < infoKidsShoes.length; i++){
+                            infoKidsShoes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if(infoAdultClothes.length) {
+                        for(let i = 0; i < infoAdultClothes.length; i++){
+                        infoAdultClothes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if( infoAdultShoes.length) {
+                        for(let i = 0; i < infoAdultShoes.length; i++){
+                        infoAdultShoes[i].setAttribute('disabled', true);
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                    if (infoToys.length) {
+                        for(let i = 0; i < infoToys.length; i++){
+                            infoToys[i].removeAttribute('disabled');
+                        }
+                        document.getElementById('addRow').innerHTML="";
+                    }
+                }
+            }
+            if (category == 'NewCat' || category == 'null'){
                 imageNum = 2;
                 const btnDisable = document.getElementById('showAddBtn');
                 btnDisable.classList.add('btn-info');
@@ -898,7 +997,7 @@
                 document.getElementById('newCat').value = userEnter;
                 document.getElementById('newCat').text = userEnter;
             }
-            if(subCategory == 'New'){
+            if (subCategory == 'New'){
                 imageNum = 2;
                 const btnDisable = document.getElementById('showAddBtn');
                 btnDisable.classList.add('btn-info');
@@ -923,8 +1022,6 @@
             }
         }
 
-
-        
         function addRow() {
             cate = document.getElementById("p_cat").value;
             subCat = document.getElementById("p_subcat").value;
@@ -942,12 +1039,11 @@
             }
             else{
                 if(cate == 'Kids'){
-                    if (subCat !== 'Shoes' && subCat !== 'Toys' && subCat !== 'Jewerly') {
-                    	console.log(`yooo ${imageNum}`)
-                    	const boxWrapper = document.getElementById("addRow");
-                    	const box = document.createElement("div");
-                    	box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
-                    	box.innerHTML = `<div class="mb-3 group-item d-flex flex-column">
+                    if (checkSub.includes(subCat)) {
+                        const boxWrapper = document.getElementById("addRow");
+                        const box = document.createElement("div");
+                        box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
+                        box.innerHTML = `<div class="mb-3 group-item d-flex flex-column">
                 <label for="num_56">56</label>
                 <input type="number" id="num_56" name="size${imageNum}" placeholder="velikost" value="56" readonly style="display: none;">
                 <label for="#56"></label>
@@ -1077,8 +1173,8 @@
                         </div>
                     </div>
                 </div>`;
-                    	boxWrapper.appendChild(box);
-                    	imageNum += 1;
+                        boxWrapper.appendChild(box);
+                        imageNum += 1;
                     }
                     else if(subCategory == 'Shoes'){
                         const boxWrapper = document.getElementById("addRow");
@@ -1221,7 +1317,7 @@
                 </div>
             </div>`
                         boxWrapper.appendChild(box);
-                        imageNum += 1;     
+                        imageNum += 1;
                     }
                     else{
                         const boxWrapper = document.getElementById("addRow");
@@ -1244,11 +1340,11 @@
                 </div>
             </div>`;
                         boxWrapper.appendChild(box);
-                        imageNum += 1;       
+                        imageNum += 1;
                     }
                 }
                 else if(cate = 'Mens' || cate== 'Womens'){
-                    if(subCat !== 'Shoes' && subCat !== 'Toys' && subCat !== 'Jewerly'){
+                    if(checkSub.includes(subCat)){
                         const boxWrapper = document.getElementById("addRow");
                         const box = document.createElement("div");
                         box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4','mb-2', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
@@ -1404,6 +1500,32 @@
                         const boxWrapper = document.getElementById("addRow");
                         const box = document.createElement("div");
                         box.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'p-2', 'w-100', 'ms-auto', 'me-auto' , 'shadow',)
+                        box.innerHTML = `
+            <div id="colorForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="color" name="color[]" placeholder="Barva" value="" required>
+            </div>
+            <div id="qtyForToys" class="col d-flex flex-column mt-2">
+                <input type="text" class="form-control p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
+            </div>
+            <div class="col mt-2" id="imgForToys">
+                <div class="input-group-sm d-flex align-self-center w-100">
+                    <label for="formFileMultiple" class="form-label custom-file-label"></label>
+                    <input class="form-control text-primary" type="file" id="formFileMultiple" name="image${imageNum}" multiple required>
+                    <div class="invalid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>`;
+                        boxWrapper.appendChild(box);
+                        imageNum += 1;
+                    }
+                }
+                else if(cate = 'Jewerly'){
+                    if(checkJewerlySub.includes(subCat)){
+                        console.log(subCat);
+                        const boxWrapper = document.getElementById("addRow");
+                        const box = document.createElement("div");
+                        box.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'p-2', 'w-100', 'ms-auto', 'me-auto' ,'shadow',)
                         box.innerHTML = `
             <div id="colorForToys" class="col d-flex flex-column mt-2">
                 <input type="text" class="form-control p-3" id="color" name="color[]" placeholder="Barva" value="" required>

@@ -195,6 +195,7 @@ app.get('/', async (req, res) => {
     let day = date.getDay()
     await conn.query(`SELECT * FROM inventory ORDER BY RANDOM()`, async (err, result) => {
         let products = result.rows
+        //console.log(products);
         if (!products.length) {
             req.flash('error', ' Nothing to display.')
             res.redirect('add')
@@ -236,7 +237,7 @@ app.post('/search', async (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
-    const excludedSubcategories = ['Shoes', 'Jewelry', 'Toys'];
+    const excludedSubcategories = ['Shoes', 'Toys'];
     const kidsSubcategories = ['Jackets', 'Shirts', 'Pants', 'Underwear', 'Dress', 'Shoes'];
     await conn.query(`SELECT * FROM inventory WHERE ID = '${id}'`, async (err, result) => {
         if (!err) {
@@ -254,11 +255,9 @@ app.get('/product/:id', async (req, res) => {
                 if(colors.length > 0) {
                     for (let i = 0; i < colors.length; i++) {
                         const colorName = colors[i].color;
-                        if(shirts.subcategory === 'Jewerly' || shirts.subcategory === 'Toys'){
+                        if(shirts.category === 'Jewerly' || shirts.subcategory === 'Toys'){
                             const sizesResult = await conn.query(`SELECT sku,img_link FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
                             const size = sizesResult.rows.map((row) => row);
-                            //console.log("Sizes meeeeee--------//-----//----")
-                            //console.log("Sizes meeeeee", size[0])
                             products.push({ color: colorName, size});
                         }
                         if (shirts.category === 'Kids' && kidsSubcategories.includes(shirts.subcategory)){
@@ -280,11 +279,9 @@ app.get('/product/:id', async (req, res) => {
                         varijacijeSku = result;
                     })
                 }
-                console.log("-----/------/-----/----")
-                //console.log("This is products",products[0])
                 const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 10`)
                         randomProducts = productsRandom.rows;
-                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat) });
+                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category) });
             });
         } else {
             req.flash('error', err.message);
@@ -780,21 +777,22 @@ app.get('/add', async (req, res) => {
 });
 
 
-app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }]), async (req, res) => {
+app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     const product = req.body;
+    console.log("-----///--------///-----");
+    let bgImage = req.files['bgImage'][0].path;
     let brutoPrice = Math.ceil(product.p_price * 0.18)
     let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
     let total = parseFloat(netoPrice);
-
     let imgsUrl = [];
     let imgNum = 1;
     let sizeCount = 1;
     let productQty = 0;
 
-    let firstCheck = Object.keys(req.files).length;
+    let firstCheck = Object.keys(req.files).length - 1;
     let imgTest = Object.keys(req.files);
     images = [];
-    if (imgTest.length < 2) {
+    if (imgTest.length <= 2) {
         const productImgs = req.files[`image${imgNum}`];
         console.log("me to")
         for(let productimg of productImgs) {
@@ -805,9 +803,8 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     else{
         for (let i = 0; i < firstCheck; i++) {
             //images = [];
-            //console.log("this is imageNum", `image${imgNum}`);
-            let secondCheck = req.files[`image${imgNum}`].length;
-                let getImg = req.files[`image${imgNum}`];
+            //let secondCheck = req.files[`image${imgNum}`].length;
+            let getImg = req.files[`image${imgNum}`];
                 for (let img = 0; img < getImg.length; img++) {
                     images.push(getImg[img].path)
                 }
@@ -822,8 +819,8 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         let randomNum = parseInt(Math.random(15 * 12489) * 1000)
         let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
 
-    if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Jewerly' && product.p_subcat !== 'Other'){
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
+    if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Other'){
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
                 for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {
@@ -843,7 +840,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         })
     }
     else{
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory,bgImage, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
             if(e){
                 req.flash('error', "Error inserting product into database", e.message)
                 console.log("Error", e.message)
@@ -861,12 +858,10 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
                     console.log("Single added product toys")
                 }
             }
-
         })
-
     }
-    res.redirect('/add')
 
+    res.redirect('/add')
 })
 async function DeleteZeroQty() {
     await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);

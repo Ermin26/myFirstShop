@@ -122,14 +122,13 @@
     <div id="next-row" class="row m-0 p-0 w-100">
       <picture id="picture" class="col m-0 p-0">
           <% shirts.links.forEach((img)=>{%>
-              <img src="<%=img %>" alt="" class="img-fluid">
+              <img src="<%= img %>" alt="" class="img-fluid">
             <% }) %>
-         
       </picture>
-
     </div>
 
     <div id="other-row" class="row justify-content-center g-0">
+      <% if(randomProducts.length) {%>
       <h1 class="text-center mb-3"> Druge stranke su izbrale</h1>
       <div id="carouselOut" class="slideshow-container">
       <% for(product of randomProducts) {%>
@@ -150,6 +149,7 @@
         </a>
         <%} %>
       </div>
+      <%} %>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -163,8 +163,9 @@
           const colorSection = document.getElementById('colorSection');
           const sizeSection = document.getElementById('sizeSection');
           const products = JSON.parse('<%- productsJSON %>');
+          const productsCat = JSON.parse('<%- checkCat %>');
           document.getElementById('p_invt_sku').value = invt_sku;
-          if(sub_cat === 'Toys' || sub_cat === 'Jewerly'){
+          if(sub_cat === 'Toys' || productsCat === 'Jewerly'){
             console.log("empty products")
             // Test colors div
 
@@ -201,7 +202,6 @@
               let checkSku = selectedColorDiv.getAttribute('data-sku');
               let imgItems = document.getElementById('carousel')
               for(let j = 0; j < products.length; j++){
-                
                 if(products[j].size[0].sku === checkSku){
                   let removeClass = imgItems.getElementsByClassName('active');
                   removeClass[0].classList.remove('active');
