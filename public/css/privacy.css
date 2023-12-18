@@ -1,0 +1,9 @@
+ul >li{
+    max-width: 95%;
+    margin-left: 5%;
+}
+
+a{
+    color:blue;
+    cursor: pointer;
+}

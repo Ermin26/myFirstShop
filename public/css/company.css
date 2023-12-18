@@ -1,0 +1,16 @@
+#companyImg{
+    max-width: 200px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center;
+}
+
+
+@media screen and (max-width: 769px){
+    #companyImg{
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
