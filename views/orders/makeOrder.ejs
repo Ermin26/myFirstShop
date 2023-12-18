@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="SI">
+<html lang="si-SI">
 
 <head>
     <meta charset="UTF-8">
@@ -44,7 +44,7 @@
                                                     <% } %>
                                                     <% } %>
                                                     <% } %>
-                                                  <p class="d-flex align-items-center m-0 ms-2"><%= product.name%> - <%= product.color%>-#<%= product.size %></p>
+                                                  <p class="d-flex align-items-center m-0 ms-2"><%= product.name%> <% if(product.color){%> #<% } %> <%= product.color%><% if(product.size){%>#<% } %><%= product.size %></p>
                                                 </td>
                                                 <td class="align-middle">
                                                     <%= product.qty %>
@@ -64,9 +64,6 @@
                                         <li>Skupaj</li>
                                         <li>Dostava</li>
                                         <li>Popust</li>
-                                        <% if(total < 50) {%>
-                                            <li class="text-warning"> Znesek do 10% popusta</li>
-                                            <% } %>
                                         <li><strong>Za plačilo</strong></li>
                                     </ul>
                                 </div>
@@ -77,7 +74,6 @@
                                         <strong >10%</strong>
                                     <% }else{ %>
                                     <strong>0.00 €</strong>
-                                    <strong class="text-warning"><%= 50 - total %></strong>
                                     <% } %>
                                     <% if(total > 50) {%>
                                     <strong>
@@ -92,7 +88,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-12 col-lg-5 ms-auto me-auto">
                     <form id="payment-form" action="/placeOrder" method="POST">
                         <div id="payment-element">
@@ -105,7 +101,7 @@
                             <div id="link-authentication-element">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-outline-primary mt-4 mb-5" id="submit-button">Pay Now</button>
+                        <button type="submit" class="col btn btn-outline-primary mt-4 mb-5" id="submit-button">Plačaj</button>
                     </form>
                     </div>
                 </div>
