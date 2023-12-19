@@ -2,9 +2,6 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
-
-//const conn = require('./siteJS/connection.js');
-//const connectDB = require('./siteJS/connection.js');
 const express = require('express');
 const app = express();
 const layouts = require('ejs-mate')
@@ -25,7 +22,6 @@ const { cloudinary } = require('./cloudinary/cloudConfig');
 const multer = require('multer');
 const { storage } = require('./cloudinary/cloudConfig');
 const { randomUUID } = require('crypto');
-const { parse } = require('path');
 const upload = multer({ storage })
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SK)
@@ -65,11 +61,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(override('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-//app.use(express.json());
 
-
-const forSession = process.env.DB_PASS
-const nothingSpecial = process.env.IGNORE_ME
 
 const s_sk = process.env.STRIPE_SK;
 const s_pk = process.env.STRIPE_PK;
@@ -142,7 +134,6 @@ passport.deserializeUser((id, done) => {
 
 app.use(flash());
 
-
 app.use((req, res, next) => {
     //console.log('-----i am session-----', req.user)
     //console.log(req.sessionID)
@@ -150,16 +141,13 @@ app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next(); // Pass the request to the next middleware/route handler
-    
 })
 
 let todayDate = new Date();
 let date = todayDate.toLocaleDateString()
 let year = todayDate.getFullYear();
 
-
-
-let subtotal = [];
+//let subtotal = [];
 
 async function deleteZeroQty() {
     await conn.query(`DELETE FROM varijacije WHERE qty = '0' RETURNING *`, async(err, result) => {
@@ -186,6 +174,15 @@ async function deleteZeroQty() {
             console.log(err.message);
         }
     });
+}
+
+function calculateTotal(cart, req) {
+    total = 0;
+    for (let i = 0; i < cart.length; i++) {
+        total = total + (cart[i].price * cart[i].qty)
+    }
+    req.session.total = total;
+    return total;
 }
 
 deleteZeroQty();
@@ -219,7 +216,6 @@ app.get('/searched', async (req, res) => {
     deleteZeroQty();
     res.render('pages/searched')
 })
-
 
 app.post('/search', async (req, res) => {
     let data = req.body.searched;
@@ -290,74 +286,6 @@ app.get('/product/:id', async (req, res) => {
     })
 })
 
-app.get('/register', async (req, res) => {
-    /*
-    res.render('users/register')
-    */
-    req.flash("success", "Get req working. Page not ready yet.")
-    res.redirect('/')
-})
-
-app.get("/login", (req, res) => {
-    /*
-    res.render('users/login')
-    */
-    req.flash("success", "Get req working. Page not ready yet.")
-    res.redirect('/')
-})
-
-//? WORKING ALL!!
-app.post("/userLogin", passport.authenticate('local', { failureFlash: true, failureRedirect: 'login', keepSessionInfo: true }), async (req, res) => {
-    const redirect = req.session.returnTo || '/';
-    req.flash('success', 'Successfully logged', req.user.fname)
-    delete req.session.returnTo;
-    res.redirect(redirect)
-})
-
-//? WORKING!! Automatically LOGIN YESSSSSS WORKING!
-
-app.post('/register', async (req, res, next) => {
-    const users = req.body;
-
-    await conn.query(`SELECT * FROM users WHERE users.email='${users.email}'`, async (notExists, exists) => {
-        if (exists.rows.length) {
-            req.flash('error', `${users.email} že obstaja. Registrirajte se s drugim računom ali se logirajte.`)
-            res.redirect('/register')
-        } else {
-            const userPassword = await bcrypt.hash(users.password, 10)
-            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}')`, async (err, user) => {
-                if (!err) {
-                    passport.authenticate('local')(req, res, () => {
-                        req.flash('success', `Successfully register ${users.fname}`);
-                        res.redirect('/')
-                    })
-                }
-                else {
-                    console.log(err.message)
-                    res.redirect('/register')
-                }
-            })
-        }
-    })
-
-})
-
-app.get('/logout', (req, res, next) => {
-    /*
-    req.logout(function (err) {
-        if (err) {
-            return next(err);
-        } else {
-            req.flash('success', 'Logged out.');
-            res.redirect('/');
-        }
-    });
-    */
-   req.flash("success", "Get req working. Page not ready yet.")
-   res.redirect("/")
-});
-
-
 app.get("/users", async (req, res) => {
     await conn.query(`SELECT * FROM users`, (err, result) => {
         if (!err) return res.send(result.rows)
@@ -365,16 +293,97 @@ app.get("/users", async (req, res) => {
     })
 })
 
+app.post('/add-to-cart', async (req, res) => {
+    let { product_id, product_name, product_color, product_size, product_price, product_sku, invt_sku } = req.body;
+    let exist ;
+    let user_id = randomUUID();
+    console.log("body", req.body)
+    if (req.session.cart) {
+        for (let i = 0; i < req.session.cart.length; i++) {
+            if (req.session.cart[i].sku === product_sku) {
+                exist = true;
+            }
+        }
+        if (exist) {
+            req.flash('error', "Izdelek je že dodan v košarico.")
+                res.redirect(`/product/${product_id}`)
+        } else {
+            let product = { product_id: product_id, sku: product_sku, invt_sku: invt_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
+            let cart = req.session.cart;
+            cart.push(product)
+            req.flash('success', 'Uspečno dodano v košarico')
+            res.redirect(`/product/${product_id}`)
+            }
 
-function calculateTotal(cart, req) {
-    total = 0;
-    for (let i = 0; i < cart.length; i++) {
-        total = total + (cart[i].price * cart[i].qty)
+    } else {
+        let product = { user_id: user_id , product_id: product_id, sku: product_sku, invt_sku: invt_sku,name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
+        req.session.cart = [product]
+        req.session.userID = user_id;
+        let cart = req.session.cart;
+        req.flash('success', 'Uspečno dodano v košarico')
+        res.redirect(`/product/${product_id}`)
     }
-    req.session.total = total;
-    return total;
-}
 
+
+});
+
+app.get('/remove/:id', async (req, res) => {
+    const { id } = req.params;
+    let cart = req.session.cart;
+
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i].sku == id) {
+            cart.splice(cart.indexOf(cart[i]), 1)
+        }
+    }
+    res.redirect('/cart')
+
+})
+
+app.post('/edit_qty', async (req, res) => {
+    let id = req.body.id;
+    let qty = req.body.qty;
+    let plus_btn = req.body.plus;
+    let minus_btn = req.body.minus;
+    let cart = req.session.cart;
+    if (plus_btn) {
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].sku == id) {
+                await conn.query(`SELECT qty FROM varijacije WHERE sku = '${cart[i].sku}'`, (err, result) => { 
+                    if (!err) {
+                        if (cart[i].qty > 0 && cart[i].qty < result.rows[0].qty) {
+                            cart[i].qty = parseInt(cart[i].qty) + 1;
+                            res.redirect('/cart');
+                        } else {
+                            req.flash('error', `Maximalna količina za naročilo je ${result.rows[0].qty}`)
+                            res.redirect('/cart')
+                        }
+                    } else {
+                        req.flash('error',err.message);
+                        res.redirect('/cart');
+                    }
+                    })
+            }
+        }
+
+    }
+    if (minus_btn) {
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].sku == id) {
+                if (cart[i].qty > 1) {
+                    cart[i].qty = parseInt(cart[i].qty) - 1;
+                    res.redirect('/cart');
+                } else {
+                    req.flash('error', "Minimalna količina je 1.")
+                    res.redirect('/cart');
+                }
+            }
+        }
+    }
+
+    calculateTotal(cart, req)
+
+})
 
 app.get("/cart", async (req, res) => {
     let items = [];
@@ -418,98 +427,6 @@ app.get("/cart", async (req, res) => {
 
 })
 
-app.post('/add-to-cart', async (req, res) => {
-    let { product_id, product_name, product_color, product_size, product_price, product_sku, invt_sku } = req.body;
-    let exist ;
-    let user_id = randomUUID();
-    console.log("body", req.body)
-    if (req.session.cart) {
-        for (let i = 0; i < req.session.cart.length; i++) {
-            if (req.session.cart[i].sku === product_sku) {
-                exist = true;
-            }
-        }
-        if (exist) {
-            req.flash('error', "Izdelek je že dodan v košarico.")
-                res.redirect(`/product/${product_id}`)
-        } else {
-            let product = { product_id: product_id, sku: product_sku, invt_sku: invt_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
-            let cart = req.session.cart;
-            cart.push(product)
-            req.flash('success', 'Successfully added to cart')
-            res.redirect(`/product/${product_id}`)
-            }
-
-    } else {
-        let product = { user_id: user_id , product_id: product_id, sku: product_sku, invt_sku: invt_sku,name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
-        req.session.cart = [product]
-        req.session.userID = user_id;
-        let cart = req.session.cart;
-        req.flash('success', 'Successfully added to cart')
-        res.redirect(`/product/${product_id}`)
-    }
-
-
-});
-
-app.get('/remove/:id', async (req, res) => {
-    const { id } = req.params;
-    let cart = req.session.cart;
-
-    for (let i = 0; i < cart.length; i++) {
-        if (cart[i].sku == id) {
-            cart.splice(cart.indexOf(cart[i]), 1)
-        }
-    }
-    res.redirect('/cart')
-
-})
-
-app.post('/edit_qty', async (req, res) => {
-    let id = req.body.id;
-    let qty = req.body.qty;
-    let plus_btn = req.body.plus;
-    let minus_btn = req.body.minus;
-    let cart = req.session.cart;
-    if (plus_btn) {
-        for (let i = 0; i < cart.length; i++) {
-            if (cart[i].sku == id) {
-                await conn.query(`SELECT qty FROM varijacije WHERE sku = '${cart[i].sku}'`, (err, result) => { 
-                    if (!err) {
-                        if (cart[i].qty > 0 && cart[i].qty < result.rows[0].qty) {
-                            cart[i].qty = parseInt(cart[i].qty) + 1;
-                            res.redirect('/cart');
-                        } else {
-                            req.flash('error', `The maximum allowed qty for this product is ${result.rows[0].qty}`)
-                            res.redirect('/cart')
-                        }
-                    } else {
-                        req.flash('error',err.message);
-                        res.redirect('/cart');
-                    }
-                    })
-            }
-        }
-
-    }
-    if (minus_btn) {
-        for (let i = 0; i < cart.length; i++) {
-            if (cart[i].sku == id) {
-                if (cart[i].qty > 1) {
-                    cart[i].qty = parseInt(cart[i].qty) - 1;
-                    res.redirect('/cart');
-                } else {
-                    req.flash('error', "Quantity can't be smaller than 1")
-                    res.redirect('/cart');
-                }
-            }
-        }
-    }
-
-    calculateTotal(cart, req)
-
-})
-
 app.get('/order', async (req, res) => {
     let cart = req.session.cart;
     if(!cart){
@@ -536,7 +453,6 @@ app.get('/order', async (req, res) => {
                     await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                         let userData = user.rows[0]
                         //! only testing, change it for order
-    
                         res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey, totalPrice });
                     })
                 }
@@ -549,187 +465,12 @@ app.get('/order', async (req, res) => {
 }
 })
 
-
-app.get('/payment', checkCart, async (req, res) => {
-    const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
-    let invoicePrefix = Math.floor(1000 + Math.random() * 9000) + "-" + year;
-    let invoice;
-    if (ifPayed) {
-        if (ifPayed.status == 'succeeded') {
-            //? Create a new invoice
-
-            await conn.query(`SELECT * FROM orders`, async (e, result) => {
-                if (e) {
-                    console.log('Error was returned', e.message)
-                } else {
-                    let data = result.rows;
-                    if (!data.length) {
-                        invoice = invoicePrefix + "-" + 1
-                    } else {
-                        invoiceNum = data.length + 1;
-                        console.log("invoiceNum: ",invoiceNum)
-                        invoice =invoicePrefix + "-" + invoiceNum;
-                    }
-                }
-            })
-
-            //! Update payment object, added invoice number
-
-            const shippingInfo = ifPayed.shipping;
-            const paymenthMethod = await stripe.paymentMethods.retrieve(ifPayed.payment_method);
-            await stripe.paymentIntents.update(ifPayed.id, {
-                receipt_email: paymenthMethod.billing_details.email,
-                metadata: {
-                    invoice: `${invoice}`,
-                }
-            });
-            const updated = await stripe.paymentIntents.retrieve(req.session.payment);
-            
-            //! Start of code for saving data to dbs
-
-            let orderDate = todayDate.toLocaleString();
-            let product_ids = [];
-            let product_qtys = [];
-            //let product_qtys = "";
-            let cart = req.session.cart;
-            let user_id = cart[0].user_id;
-            for (let i = 0; i < cart.length; i++) {
-                product_ids.push(cart[i].sku)
-                product_qtys.push(cart[i].qty)
-                //product_qtys = cart[i].qty + ',' + product_qtys;
-            }
-
-            try {
-                await conn.query(`INSERT INTO orders(trackingNum, invoice, name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${ifPayed.metadata.trackOrder_id}', '${invoice}','${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','false','${orderDate}', '${req.session.total}', '${product_ids}', '${product_qtys}', '${user_id}')`, async (err, result) => {
-                    if (err) { 
-                        req.flash('error', "Error: " + err.message);
-                        res.redirect('/order')
-                    } else {
-                        req.session.cart = "";
-                        req.session.total = "";
-                        req.session.trackingNumber = "";
-
-                        let transporter = nodemailer.createTransport({
-                            service: "gmail",
-                            auth: {
-                                user: "jolda.ermin@gmail.com",
-                                pass: `${yoo}`,
-                            },
-                            tls: {
-                                rejectUnauthorized: false,
-                            }
-                        });
-        
-                        let mailOptions = {
-                            from: "jolda.ermin@gmail.com",
-                            to: "ermin.alma1011@gmail.com",
-                            subject: "NAROČILO",
-                            html: `
-                            <html>
-                              <head>
-                                <style>
-                                  body {
-                                    font-family: Arial, sans-serif;
-                                    background-color: white;
-                                  }
-                                  p {
-                                    color: cyan;
-                                  }
-                                  .container{
-                                    height: 20vh;
-                                    width: 15vh
-                                    margin: 2px;
-                                    padding: 4px;
-                                    border: 2px solid black;
-                                  }
-        
-                                </style>
-                              </head>
-                              <body>
-                                <div class="container">
-                                    <p>Korisnik <stron>${shippingInfo.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
-                                    <!-- Add the rest of your HTML content here -->
-                                </div>
-                                </body>
-                            </html>
-                          `,
-                        };
-        
-                        transporter.sendMail(mailOptions, function (err, success) {
-                            if (err) {
-                                console.log(err.message);
-                            } else {
-                                console.log("Email sended");
-                            }
-        
-                        })
-
-                        for (let j = 0; j < product_ids.length; j++) {
-                            await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
-                                if(e){
-                                    console.log("error update qty products", e.message);
-                                }
-                                else{
-                                    const qty = result.rows[0].qty - parseInt(product_qtys[j]);
-                                    await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
-                                    console.log("Successfully updated")
-                                }
-                            })
-                        }
-
-                        req.flash('success', "Hvala za zaupanje. Vaše naročilo je v obdelavi")
-                        res.redirect('/redirect')
-                    }
-                })
-                
-            } catch (e) { 
-                req.flash('error', "Error: ", e.message)
-                res.redirect('/order');
-            }
-            
-
-            
-        } else {
-            req.flash('error', "Prosim, izberite način plačila.")
-            res.redirect('/order');
-        }
-    } else {
-        res.redirect('/');
-    }
-})
-
-app.get('/redirect', async (req, res) => {
-    if (req.session.payment) {
-        const data = await stripe.paymentIntents.retrieve(req.session.payment);
-        await conn.query(`SELECT * FROM orders WHERE user_id = '${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
-            if (error) {
-                console.log("this is error", error.message)
-                res.redirect('/')
-            } else {
-                const myOrder = order.rows;
-                if (!myOrder.length) {
-                    req.flash('error', "Nothin saved to db")
-                    req.session.payment = '';
-                    res.redirect('/')
-                } else {
-                    req.session.payment = '';
-                    deleteZeroQty();
-                    res.render('orders/redirect', { myOrder })
-                }
-            }
-        })
-    } else {
-        res.redirect('/')
-    }
-})
-
 app.get('/config', (req, res) => {
     const user_id = req.session.user_id
     res.send({
       publishableKey: process.env.STRIPE_PK, SERVER_URL: server_url, user_id: user_id
     });
 });
-
 
 app.get("/fetchOrder", async (req, res) => {
     let total = req.session.total.toFixed(2)
@@ -772,10 +513,174 @@ app.get("/fetchOrder", async (req, res) => {
       clientSecret: paymentIntent.client_secret
     });
 });
+
+app.get('/payment', checkCart, async (req, res) => {
+    const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
+    let invoicePrefix = Math.floor(1000 + Math.random() * 9000) + "-" + year;
+    let invoice;
+    if (ifPayed) {
+        if (ifPayed.status == 'succeeded') {
+            //? Create a new invoice
+
+            await conn.query(`SELECT * FROM orders`, async (e, result) => {
+                if (e) {
+                    console.log('Error was returned', e.message)
+                } else {
+                    let data = result.rows;
+                    if (!data.length) {
+                        invoice = invoicePrefix + "-" + 1
+                    } else {
+                        invoiceNum = data.length + 1;
+                        //console.log("invoiceNum: ",invoiceNum)
+                        invoice =invoicePrefix + "-" + invoiceNum;
+                    }
+                }
+            })
+
+            //! Update payment object, added invoice number
+
+            const shippingInfo = ifPayed.shipping;
+            const paymenthMethod = await stripe.paymentMethods.retrieve(ifPayed.payment_method);
+            await stripe.paymentIntents.update(ifPayed.id, {
+                receipt_email: paymenthMethod.billing_details.email,
+                metadata: {
+                    invoice: `${invoice}`,
+                }
+            });
+            const updated = await stripe.paymentIntents.retrieve(req.session.payment);
+            //! Start of code for saving data to dbs
+
+            let orderDate = todayDate.toLocaleString();
+            let product_ids = [];
+            let product_qtys = [];
+            //let product_qtys = "";
+            let cart = req.session.cart;
+            let user_id = cart[0].user_id;
+            for (let i = 0; i < cart.length; i++) {
+                product_ids.push(cart[i].sku)
+                product_qtys.push(cart[i].qty)
+                //product_qtys = cart[i].qty + ',' + product_qtys;
+            }
+
+            try {
+                await conn.query(`INSERT INTO orders(trackingNum, invoice, name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${ifPayed.metadata.trackOrder_id}', '${invoice}','${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','false','${orderDate}', '${req.session.total}', '${product_ids}', '${product_qtys}', '${user_id}')`, async (err, result) => {
+                    if (err) {
+                        req.flash('error', "Error: " + err.message);
+                        res.redirect('/order')
+                    } else {
+                        req.session.cart = "";
+                        req.session.total = "";
+                        req.session.trackingNumber = "";
+
+                        let transporter = nodemailer.createTransport({
+                            service: "gmail",
+                            auth: {
+                                user: "jolda.ermin@gmail.com",
+                                pass: `${yoo}`,
+                            },
+                            tls: {
+                                rejectUnauthorized: false,
+                            }
+                        });
+                        let mailOptions = {
+                            from: "jolda.ermin@gmail.com",
+                            to: "ermin.alma1011@gmail.com",
+                            subject: "NAROČILO",
+                            html: `
+                            <html>
+                              <head>
+                                <style>
+                                  body {
+                                    font-family: Arial, sans-serif;
+                                    background-color: white;
+                                  }
+                                  p {
+                                    color: cyan;
+                                  }
+                                  .container{
+                                    height: 20vh;
+                                    width: 15vh
+                                    margin: 2px;
+                                    padding: 4px;
+                                    border: 2px solid black;
+                                  }
+        
+                                </style>
+                              </head>
+                              <body>
+                                <div class="container">
+                                    <p>Korisnik <stron>${shippingInfo.name}</stron> je z dnem ${orderDate} oddal naročilo!</p>
+                                    <!-- Add the rest of your HTML content here -->
+                                </div>
+                                </body>
+                            </html>
+                          `,
+                        };
+                        transporter.sendMail(mailOptions, function (err, success) {
+                            if (err) {
+                                console.log(err.message);
+                            } else {
+                                console.log("Email sended");
+                            }
+                        })
+                        for (let j = 0; j < product_ids.length; j++) {
+                            await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_ids[j]}'`, async (e, result) => {
+                                if(e){
+                                    console.log("error update qty products", e.message);
+                                }
+                                else{
+                                    const qty = result.rows[0].qty - parseInt(product_qtys[j]);
+                                    await conn.query(`UPDATE varijacije SET QTY = '${qty}' WHERE sku = '${result.rows[0].sku}'`);
+                                    console.log("Successfully updated")
+                                }
+                            })
+                        }
+
+                        req.flash('success', "Hvala za zaupanje. Vaše naročilo je v obdelavi.")
+                        res.redirect('/redirect')
+                    }
+                })
+            } catch (e) {
+                req.flash('error', "Error: ", e.message)
+                res.redirect('/order');
+            }
+        } else {
+            req.flash('error', "Prosim, izberite način plačila.")
+            res.redirect('/order');
+        }
+    } else {
+        res.redirect('/');
+    }
+})
+
+app.get('/redirect', async (req, res) => {
+    if (req.session.payment) {
+        const data = await stripe.paymentIntents.retrieve(req.session.payment);
+        await conn.query(`SELECT * FROM orders WHERE user_id = '${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
+            if (error) {
+                console.log("this is error", error.message)
+                res.redirect('/')
+            } else {
+                const myOrder = order.rows;
+                if (!myOrder.length) {
+                    req.flash('error', "Nothin saved to db")
+                    req.session.payment = '';
+                    res.redirect('/')
+                } else {
+                    req.session.payment = '';
+                    deleteZeroQty();
+                    res.render('orders/redirect', { myOrder })
+                }
+            }
+        })
+    } else {
+        res.redirect('/')
+    }
+})
+
 app.get('/add', async (req, res) => {
     res.render('addProducts/add')
 });
-
 
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     const product = req.body;
@@ -863,10 +768,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 
     res.redirect('/add')
 })
-async function DeleteZeroQty() {
-    await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
-}
-DeleteZeroQty();
 
 
 // ARTICL PAGES
@@ -1139,6 +1040,89 @@ app.get('/category/kids/subcategory/underwear', async (req, res) => {
 app.get('/category/other', async (req, res) => {
     res.render('artikli/other/other')
 })
+
+
+app.get('/company', async (req, res) => {
+    res.render('company/companyInfo')
+})
+
+app.get('/privacy', async (req, res) => {
+    res.render('company/privacy')
+})
+
+
+//?---------------------------------------------
+
+app.get('/register', async (req, res) => {
+    /*
+    res.render('users/register')
+    */
+    req.flash("success", "Get req working. Page not ready yet.")
+    res.redirect('/')
+})
+
+app.get("/login", (req, res) => {
+    /*
+    res.render('users/login')
+    */
+    req.flash("success", "Get req working. Page not ready yet.")
+    res.redirect('/')
+})
+
+//? WORKING ALL!!
+app.post("/userLogin", passport.authenticate('local', { failureFlash: true, failureRedirect: 'login', keepSessionInfo: true }), async (req, res) => {
+    const redirect = req.session.returnTo || '/';
+    req.flash('success', 'Successfully logged', req.user.fname)
+    delete req.session.returnTo;
+    res.redirect(redirect)
+})
+
+//? WORKING!! Automatically LOGIN YESSSSSS WORKING!
+
+app.post('/register', async (req, res, next) => {
+    /*
+    const users = req.body;
+
+    await conn.query(`SELECT * FROM users WHERE users.email='${users.email}'`, async (notExists, exists) => {
+        if (exists.rows.length) {
+            req.flash('error', `${users.email} že obstaja. Registrirajte se s drugim računom ali se prijavite.`)
+            res.redirect('/register')
+        } else {
+            const userPassword = await bcrypt.hash(users.password, 10)
+            await conn.query(`INSERT INTO users (fName ,lName ,email ,country ,city ,zip, address, password) VALUES('${users.fname}' ,'${users.lname}', '${users.email}', '${users.country}', '${users.city}', '${users.zip}','${users.address}','${userPassword}')`, async (err, user) => {
+                if (!err) {
+                    passport.authenticate('local')(req, res, () => {
+                        req.flash('success', `Uspešna registracija ${users.fname}`);
+                        res.redirect('/')
+                    })
+                }
+                else {
+                    console.log(err.message)
+                    res.redirect('/register')
+                }
+            })
+        }
+    })
+    */
+   req.flash('success',"Post req working but not ready yet.")
+   res.redirect('/')
+})
+
+app.get('/logout', (req, res, next) => {
+    /*
+    req.logout(function (err) {
+        if (err) {
+            return next(err);
+        } else {
+            req.flash('success', 'Logged out.');
+            res.redirect('/');
+        }
+    });
+    */
+   req.flash("success", "Get req working. Page not ready yet.")
+   res.redirect("/")
+});
+
 
 
 //?---------------------------------------------
