@@ -286,12 +286,6 @@ app.get('/product/:id', async (req, res) => {
     })
 })
 
-app.get("/users", async (req, res) => {
-    await conn.query(`SELECT * FROM users`, (err, result) => {
-        if (!err) return res.send(result.rows)
-        else return res.send(err.message)
-    })
-})
 
 app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, product_sku, invt_sku } = req.body;
@@ -427,44 +421,6 @@ app.get("/cart", async (req, res) => {
 
 })
 
-app.get('/order', async (req, res) => {
-    let cart = req.session.cart;
-    if(!cart){
-        res.redirect('/')
-    }else{
-    let total = req.session.total.toFixed(2)
-    let totalPrice
-    if(total > 50){
-        discountPrice = total - (total * 0.10).toFixed(2)
-        totalPrice = discountPrice.toFixed(2)
-    }else{
-        totalPrice = total;
-    }
-    let items = [];
-    let cartItems = []
-    let count = 0
-    const publishableKey = process.env.STRIPE_PK;
-    for (let i = 0; i < cart.length; i++) {
-        await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
-            if (!err) {
-                count += 1;
-                items.push(product.rows);
-                if (cart.length === count) {
-                    await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
-                        let userData = user.rows[0]
-                        //! only testing, change it for order
-                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey, totalPrice });
-                    })
-                }
-            } else {
-                req.flash('error', `Error ${err.message}`);
-                res.redirect('/')
-            }
-        })
-    }
-}
-})
-
 app.get('/config', (req, res) => {
     const user_id = req.session.user_id
     res.send({
@@ -513,6 +469,44 @@ app.get("/fetchOrder", async (req, res) => {
       clientSecret: paymentIntent.client_secret
     });
 });
+app.get('/order', async (req, res) => {
+    let cart = req.session.cart;
+    if(!cart){
+        res.redirect('/')
+    }else{
+    let total = req.session.total.toFixed(2)
+    let totalPrice
+    if(total > 50){
+        discountPrice = total - (total * 0.10).toFixed(2)
+        totalPrice = discountPrice.toFixed(2)
+    }else{
+        totalPrice = total;
+    }
+    let items = [];
+    let cartItems = []
+    let count = 0
+    const publishableKey = process.env.STRIPE_PK;
+    for (let i = 0; i < cart.length; i++) {
+        await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
+            if (!err) {
+                count += 1;
+                items.push(product.rows);
+                if (cart.length === count) {
+                    await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
+                        let userData = user.rows[0]
+                        //! only testing, change it for order
+                        res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey, totalPrice });
+                    })
+                }
+            } else {
+                req.flash('error', `Error ${err.message}`);
+                res.redirect('/')
+            }
+        })
+    }
+}
+})
+
 
 app.get('/payment', checkCart, async (req, res) => {
     const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
@@ -852,6 +846,37 @@ app.get('/category/mens/subcategory/underwear', async (req, res) => {
     })
 })
 
+app.get('/category/mens/subcategory/shoes', async (req, res) => {
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Shoes'`, async (err, result) => {
+
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+
+                res.render('artikli/mens/shoes', { products })
+            }
+        }
+    })
+})
+
+app.get('/category/mens/subcategory/pajamas', async (req, res) => {
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Pajamas'`, async (err, result) => {
+
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+
+                res.render('artikli/kids/pajamas', { products })
+            }
+        }
+    })
+})
 //! WOMENS
 
 app.get('/category/womens', async (req, res) => {
@@ -933,6 +958,37 @@ app.get('/category/womens/subcategory/underwear', async (req, res) => {
     })
 })
 
+app.get('/category/womens/subcategory/pajamas', async (req, res) => {
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Pajamas'`, async (err, result) => {
+
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+
+                res.render('artikli/kids/pajamas', { products })
+            }
+        }
+    })
+})
+
+app.get('/category/womens/subcategory/shoes', async (req, res) => {
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Shoes'`, async (err, result) => {
+
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+
+                res.render('artikli/womens/shoes', { products })
+            }
+        }
+    })
+})
 //! KIDS
 
 app.get('/category/baby', async (req, res) => {
@@ -1033,12 +1089,126 @@ app.get('/category/kids/subcategory/underwear', async (req, res) => {
                 res.render('artikli/kids/kidsUnderwear', { products })
             }
         }
+    })
+})
+
+app.get('/category/kids/subcategory/pajamas', async (req, res) => {
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Pajamas'`, async (err, result) => {
+
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+
+                res.render('artikli/kids/pajamas', { products })
+            }
+        }
+    })
+})
+
+app.get('/category/kids/subcategory/shoes', async (req, res) => {
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Shoes'`, async (err, result) => {
+
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+
+                res.render('artikli/kids/shoes', { products })
+            }
+        }
+    })
+})
+app.get('/category/kids/subcategory/toys', async (req, res) => {
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Toys'`, async (err, result) => {
+
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+
+                res.render('artikli/kids/toys', { products })
+            }
+        }
 
     })
 })
 
+//! Jewerly
+app.get('/category/jewerly', async (req,res)=>{
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly'`, async(err, result)=>{
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+                res.render('artikli/jewerly', { products })
+            }
+        }
+    })
+})
+
+app.get('/category/jewerly/subcategory/chain', async (req,res)=>{
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly' AND subcategory = 'chain'`, async(err, result)=>{
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+                res.render('artikli/jewerly/chain', { products })
+            }
+        }
+    })
+})
+
+app.get('/category/jewerly/subcategory/bracelet', async (req,res)=>{
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly' AND subcategory = 'bracelet'`, async(err, result)=>{
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+                res.render('artikli/jewerly/bracelet', { products })
+            }
+        }
+    })
+})
+
+app.get('/category/jewerly/subcategory/clock', async (req,res)=>{
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly' AND subcategory = 'clock'`, async(err, result)=>{
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+                res.render('artikli/jewerly/clock', { products })
+            }
+        }
+    })
+})
+
 app.get('/category/other', async (req, res) => {
-    res.render('artikli/other/other')
+    await conn.query(`SELECT * FROM inventory WHERE category = 'Other'`, async(e, result)=>{
+        let products = result.rows
+        if (!products.length) {
+            req.flash('error', ' Nothing to display.')
+            res.redirect('/')
+        } else {
+            if (!err) {
+                res.render('artikli/other/other')
+            }
+        }
+    })
 })
 
 
@@ -1048,6 +1218,10 @@ app.get('/company', async (req, res) => {
 
 app.get('/privacy', async (req, res) => {
     res.render('company/privacy')
+})
+
+app.get('/contract', async (req, res) => {
+    res.render('company/contract')
 })
 
 

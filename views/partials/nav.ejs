@@ -13,47 +13,60 @@
         </li>
         <li class="nav-item dropdown m-2">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Categories
+            Kategorije
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/mens">Mens</a></li>
-            <li><a class="dropdown-item" href="/category/womens">Womens</a></li>
-            <li><a class="dropdown-item" href="/category/kids">Kids</a></li>
+            <li><a class="dropdown-item" href="/category/mens">Moški</a></li>
+            <li><a class="dropdown-item" href="/category/womens">Ženske</a></li>
+            <li><a class="dropdown-item" href="/category/jewerly">Nakit</a></li>
+            <li><a class="dropdown-item" href="/category/kids">Otroci</a></li>
             <li><a class="dropdown-item" href="/category/baby">Baby</a></li>
-            <li><a class="dropdown-item" href="/category/other">Other</a></li>
+            <li><a class="dropdown-item" href="/category/kids/subcategory/toys">Igrače</a></li>
+            <li><a class="dropdown-item" href="/category/other">Drugo</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown m-2">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Men
+            Moški
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/mens/subcategory/shirts">Shirts</a></li>
-            <li><a class="dropdown-item" href="/category/mens/subcategory/jackets">Jackets</a></li>
-            <li><a class="dropdown-item" href="/category/mens/subcategory/pants">Pants</a></li>
-            <li><a class="dropdown-item" href="/category/mens/subcategory/underwear">Underwear</a></li>
+            <li><a class="dropdown-item" href="/category/mens/subcategory/shirts">Majce</a></li>
+            <li><a class="dropdown-item" href="/category/mens/subcategory/jackets">Jakne</a></li>
+            <li><a class="dropdown-item" href="/category/mens/subcategory/pants">Hlače</a></li>
+            <li><a class="dropdown-item" href="/category/mens/subcategory/underwear">Spodnje Perilo</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown m-2">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Women
+            Ženske
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/womens/subcategory/shirts">Shirts</a></li>
-            <li><a class="dropdown-item" href="/category/womens/subcategory/jackets">Jackets</a></li>
-            <li><a class="dropdown-item" href="/category/womens/subcategory/pants">Pants</a></li>
-            <li><a class="dropdown-item" href="/category/womens/subcategory/underWear">Underwear</a></li>
+            <li><a class="dropdown-item" href="/category/womens/subcategory/shirts">Majce</a></li>
+            <li><a class="dropdown-item" href="/category/womens/subcategory/jackets">Jakne</a></li>
+            <li><a class="dropdown-item" href="/category/womens/subcategory/pants">Hlače</a></li>
+            <li><a class="dropdown-item" href="/category/womens/subcategory/underWear">Spodnje perilo</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown m-2">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Kids
+            Nakit
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/kids/subcategory/shirts">Shirts</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/jackets">Jackets</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/pants">Pants</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/underwear">Pants</a></li>
+            <li><a class="dropdown-item" href="/category/jewerly/subcategory/chain">Verižica</a></li>
+            <li><a class="dropdown-item" href="/category/jewerly/subcategory/bracelet">Zapestnica</a></li>
+            <li><a class="dropdown-item" href="/category/jewerly/subcategory/clock">Ura</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown m-2">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Otroci
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/category/kids/subcategory/shirts">Majce</a></li>
+            <li><a class="dropdown-item" href="/category/kids/subcategory/jackets">Jakne</a></li>
+            <li><a class="dropdown-item" href="/category/kids/subcategory/pants">Hlače</a></li>
+            <li><a class="dropdown-item" href="/category/kids/subcategory/underwear">Spodnje Perilo</a></li>
+            <li><a class="dropdown-item" href="/category/kids/subcategory/toys">Igrače</a></li>
             <li><a class="dropdown-item" href="/category/baby">Baby</a></li>
           </ul>
         </li>
@@ -66,14 +79,14 @@
           </li>
           <% if(!logedUser) {%>
             <li class="nav-item m-2">
-              <a class="nav-link" href="/login">Log in</a>
+              <a class="nav-link" href="/login">Prijava</a>
             </li>
             <li class="nav-item m-2">
-              <a class="nav-link" href="/register">Register</a>
+              <a class="nav-link" href="/register">Registracija</a>
             </li>
             <% }else {%>
               <li class="nav-item m-2 ms-auto">
-                <a class="nav-link" href="/logout">Log out</a>
+                <a class="nav-link" href="/logout">Odjava</a>
               </li>
               <% } %>
         
