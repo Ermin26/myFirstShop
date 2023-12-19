@@ -6,10 +6,12 @@
 #contract h1{
     margin-top: 100px;
 }
-
+#printButton{
+    max-width: 20%;
+}
 
 @media print{
-    #printButton,#navbar,#searchBar,#footer{
+    #printButton,#navbar,#searchBar,#footer,#btn{
         display: none;
     }
     #contract h1{

@@ -24,25 +24,46 @@
 <div id="contract" class="row d-flex flex-column mt-5 p-3">
     <h1 class="mb-5 text-center">Pogodba o odstopu od nakupa</h1>
     <h2>Za:</h2>
-    <div class="naslov d-flex flex-column mt-5 mb-5">
+    <div class="naslov d-flex flex-column mt-3 mb-5">
         <h3>Xy podjetje</h3>
         <h3>v prod 84</h3>
         <h3>1000 Ljubljana</h3>
         <h3>example@gmail.com</h3>
     </div>
 
-    <div class="info mt-5 mb-5">
+    <div class="info mt-3 mb-5">
         <p>Jaz/Mi sporočam/o da Jaz/mi odstopam/o od moje/naše pogodbe o nakupu naslednjih izdelkov:</p>
-         <p class="mt-5 border bi-border-bottom border-1 border-dark w-100"></p>
+         <p class="mt-5 border border-bottom border-1 border-dark w-100"></p>
 
-         <p class="mt-5 border bi-border-bottom border-1 border-dark w-100"></p>
-        <div class="row row-cols-2 mt-4">
-            <p class="d-inline-flex">naročenih dne _________________________</p> <p class="d-inline-flex">prejetih dne _________________________</p>
-            <p class="d-inline-flex">številka naročila ________________________</p> <p class="d-inline-flex">številka računa ________________________</p>
-            <p class="d-inline-flex">Ime strank/e _________________________</p> <p class="d-inline-flex">Naslov strank/e _________________________</p>
+         <p class="mt-5 border border-bottom border-1 border-dark w-100"></p>
+        <div class="row row-cols-1 row-cols-sm-2 mt-4">
+            <div class="col">
+                <p class="mt-3">naročenih dne</p>
+                <p class="mt-4 border-bottom border-1 border-dark w-75"></p>
+            </div>
+            <div class="col">
+                <p class="mt-3">prejetih dne</p>
+                <p class="mt-4 border-bottom border-1 border-dark w-75"></p>
+            </div>
+            <div class="col">
+                <p class="mt-3">številka naročila</p>
+                <p class="mt-4 border-bottom border-1 border-dark w-75"></p>
+            </div>
+            <div class="col">
+                <p class="mt-3">številka računa</p>
+                <p class="mt-4 border-bottom border-1 border-dark w-75"></p>
+            </div>
+            <div class="col">
+                <p class="mt-3">Ime strank/e </p>
+                <p class="mt-4 border-bottom border-1 border-dark w-75"></p>
+            </div>
+            <div class="col">
+                <p class="mt-3">Naslov strank/e</p>
+                <p class="mt-4 border-bottom border-1 border-dark w-75"></p>
+            </div>
         </div>
     </div>
-    <div class="podpis mt-5">
+    <div class="podpis mt-3">
         <div class="row">
             <p  class="row mt-2">Podpis strank/e_________________________ (samo če je obrazec oddan v papirni obliki)</p>
         </div>
@@ -53,8 +74,9 @@
     </div>
 
 </div>
-
-<button id="printButton" class="btn btn-info mt-2 d-flex ms-auto me-auto" onclick="window.print()">Print</button>
+<div id="btn" class="row">
+    <button id="printButton" class="btn btn-info d-inline mt-2 ms-auto me-auto" onclick="window.print()">Print</button>
+</div>
 <%- include('../partials/footer.ejs') %>
 </body>
 </html>

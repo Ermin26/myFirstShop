@@ -1219,6 +1219,12 @@ app.get('/company', async (req, res) => {
 app.get('/privacy', async (req, res) => {
     res.render('company/privacy')
 })
+app.get('/questions', async (req, res) => {
+    res.render('company/questions')
+})
+app.get('/delivery', async (req, res) => {
+    res.render('company/delivery')
+})
 
 app.get('/contract', async (req, res) => {
     res.render('company/contract')
