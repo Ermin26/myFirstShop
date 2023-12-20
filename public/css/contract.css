@@ -7,7 +7,7 @@
     margin-top: 100px;
 }
 #printButton{
-    max-width: 20%;
+    width: fit-content;
 }
 
 @media print{
@@ -15,6 +15,6 @@
         display: none;
     }
     #contract h1{
-        margin-top: 0px;
+        margin-top: -10px;
     }
 }

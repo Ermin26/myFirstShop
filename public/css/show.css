@@ -128,6 +128,7 @@ h3{
 .selected{
     background-color: #023e8a;
     box-sizing: border-box;
+    box-shadow: 5px 5px 5px #1260c7;
     color: white;
     border-radius: 45% 5% 45% 0%;
 }
