@@ -1,6 +1,9 @@
 *, *::after, *::before{
     box-sizing: border-box;
-    font-family: 'Karla', sans-serif;
+    /*font-family: 'Karla', sans-serif;
+    font-family: 'Dancing Script', cursive;*/
+    font-family: 'Diphylleia', serif;
+
 }
 html{
     margin: 0;
@@ -59,6 +62,7 @@ body{
 }
 #searchBar{
     display: inline-flex;
+    flex-wrap: wrap;
     top: 70px;
     position: fixed;
     z-index: 99999998;
@@ -67,6 +71,21 @@ body{
     width: 100%;
     margin-bottom: 100vh;
 }
+#postnina{
+    width: fit-content;
+    top:70px;
+    background-color: darkblue;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0px 0px 5px darkblue, 0px 0px 25px darkblue, 0px 0px 50px darkblue, 0px 0px 100px darkblue;
+    border-radius: 10px;
+}
+#postnina:hover{
+    background-color: darkblue;
+    color: white;
+    box-shadow: 0px 0px 5px darkblue, 0px 0px 25px darkblue, 0px 0px 50px darkblue, 0px 0px 100px darkblue;
+  }
 #footer {
     position: sticky;
     bottom: 0;
