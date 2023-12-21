@@ -104,3 +104,15 @@
     </svg></button>
   </form>
 </div>
+
+<script>
+  let parent = document.getElementById('navbar').parentElement;
+
+while (parent) {
+  const hasOverflow = getComputedStyle(parent).overflow;
+  if (hasOverflow !== 'visible') {
+    console.log("this is overflow",hasOverflow, "this is parrent",parent);
+  }
+  parent = parent.parentElement;
+}
+</script>
