@@ -61,9 +61,8 @@ h3{
     box-shadow: 5px 5px 10px #bfc0c2;
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    filter: invert(60%);
+.carousel-control-prev-icon,.carousel-control-next-icon{
+    background-color: rgb(39, 90, 230);
 }
 
 .add-to-cart{

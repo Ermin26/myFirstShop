@@ -6,7 +6,7 @@
 
         <%# for(let info of shirts) {%>
             <div id="col1" class="p-0 m-0">
-                <div id="carouselExampleControls" class="carousel slide m-0">
+                <div id="carouselExampleControls" class="carousel slide m-0" data-bs-ride="carousel">
                     <div id="carousel" class="carousel-inner text-center">
                         <%shirts.links.forEach((img, i)=>{%>
                             <div id="item" class="carousel-item <%= i === 0 ? 'active' : '' %> " data-num= '<%= i%>'>
