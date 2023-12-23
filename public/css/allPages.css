@@ -89,7 +89,7 @@ body{
     font-weight: 700;
     color: blue;
     text-shadow: 0px 0px 15px cyan, 0px 0px 35px cyan, 0px 0px 50px cyan, 0px 0px 100px cyan;
-    
+    text-wrap: nowrap;
 }
 #postnina strong{
     margin-left: auto;
