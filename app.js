@@ -507,8 +507,41 @@ app.get('/order', async (req, res) => {
 }
 })
 
+app.post('/placeOrder', async (req, res) => {
+    let total = req.session.total.toFixed(2);
+    console.log("No my turn")
+    try {
+        // Extract necessary information from the request
+        const { payment_Method, billing_details } = req.body;
+        console.log(payment_Method);
+        console.log("--///----///-----");
+        console.log(billing_details);
+        // Perform any additional validation or processing as needed
 
-app.get('/payment', checkCart, async (req, res) => {
+        // Create a PaymentIntent or retrieve an existing one
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: total,
+            currency: 'eur',
+            description: 'Your Description',
+            payment_method: payment_Method,
+            receipt_email: billing_details.email,  // Optional: Set the receipt email
+            // Add any other relevant parameters
+        });
+
+        // Confirm the PaymentIntent
+        const confirmResult = await stripe.paymentIntents.confirm(paymentIntent.id);
+
+        // Handle the result of confirmation
+
+            //res.redirect('/payment')
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        req.flash('Error processing payment:', error);
+        res.redirect('/order');
+    }
+});
+
+app.get('/payment', async (req, res) => {
     const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
     let invoicePrefix = Math.floor(1000 + Math.random() * 9000) + "-" + year;
     let invoice;
