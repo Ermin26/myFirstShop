@@ -14,7 +14,7 @@
 <body>
     <%- include('../partials/nav.ejs') %>
 
-    <div class="container text-center justify-content-center" style="margin-bottom: 15vh; margin-top: 20vh;">
+    <div id="paymentOptions" class="container text-center justify-content-center">
         <%- include('../../flash') %>
             <div class="info text-center">
                 <div class="row row-cols-2 mt-5 g-2 ms-auto me-auto">
@@ -90,7 +90,7 @@
                     </div>
 
                     <div class="col-12 col-lg-5 ms-auto me-auto">
-                    <form id="payment-form" action="/placeOrder" method="POST">
+                    <form id="paymentForm" action="/placeOrder" method="POST" style="margin-bottom: 15vh;">
                         <div id="payment-element">
                             <!--Stripe.js injects the Payment Element-->
                                         </div>
@@ -101,7 +101,7 @@
                             <div id="link-authentication-element">
                             </div>
                         </div>
-                        <button type="submit" class="col btn btn-outline-primary mt-4 mb-5" id="submit-button">Plačaj</button>
+                        <button id="payButton" type="submit" class="col btn mt-4 mb-5" id="submit-button">Plačaj</button>
                     </form>
                     </div>
                 </div>
