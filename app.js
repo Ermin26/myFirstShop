@@ -27,6 +27,8 @@ const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SK)
 const nodemailer = require('nodemailer');
 //const upload = multer({ dest: 'uploads/' })
+
+
 const yoo = process.env.YOO;
 const client = new Client({
     user: process.env.DB_USERN,
@@ -433,7 +435,7 @@ app.get("/fetchOrder", async (req, res) => {
     let user_id = req.session.cart[0].user_id;
     let cart = req.session.cart;
     let invoice = Math.floor(1000 + Math.random() * 9000) + "-" + year + "-" + Math.floor(Math.random() * 10);
-    
+
     let checkTrackNum = req.session.trackingNumber;
     if (!checkTrackNum) {
         req.session.trackingNumber = Math.floor(10000 + Math.random() * 90000) + year + "-" + Math.floor(Math.random() * 7500);
@@ -464,7 +466,8 @@ app.get("/fetchOrder", async (req, res) => {
         });
        // console.log("Payment intent on fetchOrder",paymentIntent)
         req.session.payment = paymentIntent.id;
-        
+        invoice = ""
+
     res.send({
       clientSecret: paymentIntent.client_secret
     });
@@ -509,31 +512,22 @@ app.get('/order', async (req, res) => {
 
 app.post('/placeOrder', async (req, res) => {
     let total = req.session.total.toFixed(2);
-    console.log("No my turn")
+    console.log("No my turn",total);
     try {
-        // Extract necessary information from the request
         const { payment_Method, billing_details } = req.body;
         console.log(payment_Method);
         console.log("--///----///-----");
         console.log(billing_details);
-        // Perform any additional validation or processing as needed
-
-        // Create a PaymentIntent or retrieve an existing one
         const paymentIntent = await stripe.paymentIntents.create({
             amount: total,
             currency: 'eur',
             description: 'Your Description',
             payment_method: payment_Method,
-            receipt_email: billing_details.email,  // Optional: Set the receipt email
-            // Add any other relevant parameters
+            receipt_email: billing_details.email,
         });
 
-        // Confirm the PaymentIntent
         const confirmResult = await stripe.paymentIntents.confirm(paymentIntent.id);
 
-        // Handle the result of confirmation
-
-            //res.redirect('/payment')
     } catch (error) {
         console.error('Error processing payment:', error);
         req.flash('Error processing payment:', error);

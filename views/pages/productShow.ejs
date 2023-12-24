@@ -165,9 +165,6 @@
           const productsCat = JSON.parse('<%- checkCat %>');
           document.getElementById('p_invt_sku').value = invt_sku;
           if(sub_cat === 'Toys' || productsCat === 'Jewerly'){
-            console.log("empty products")
-            // Test colors div
-
             function handleColors(colors) {
               colors.forEach((color) => {
                 const colorDiv = document.createElement('div');
@@ -219,7 +216,6 @@
             // End Test
           }
           else{
-            console.log(products)
             function handleColors(colors) {
               colors.forEach((color) => {
                 const colorDiv = document.createElement('div');
@@ -251,7 +247,7 @@
                 colorDiv.classList.add('selected');
                 selectedColorDiv = colorDiv;
                 let checkSku = selectedColorDiv.getAttribute('data-sku');
-                let imgItems = document.getElementById('carousel')
+              let imgItems = document.getElementById('carousel')
               for(let j = 0; j < products.length; j++){
                 if(products[j].size[0].sku === checkSku){
                   let removeClass = imgItems.getElementsByClassName('active');
@@ -315,8 +311,6 @@
                         this.classList.toggle('selected');
                         document.getElementById('p_size').value = selectedSize;
                         document.getElementById('p_sku').value = selectedSku;
-                        // console.log(selectedSize);  
-                        // console.log(selectedSku);  
                         if(selectedSize && selectedSku){
                           btnInfo.removeAttribute('disabled');
                           console.log('working');

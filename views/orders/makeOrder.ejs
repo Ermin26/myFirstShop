@@ -119,7 +119,7 @@
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
-
+        document.getElementById('payButton').disabled = true;
         addEventListener('DOMContentLoaded',async()=>{
             const {publishableKey, SERVER_URL, user_id} = await fetch('/config').then((r) => r.json());
             const stripe = Stripe(publishableKey);
@@ -165,20 +165,32 @@
                 })
 
                 let addressData = {};
+                let emailData = [];
 
                 addressElement.on('change', function(event) {
                     if (event.complete) {
                             // extract potentially complete address
                             addressData = event.value;
+                            if(addressData && emailData.length){
+                                document.getElementById('payButton').removeAttribute('disabled');
+                            }
                         }
                     });
-                let emailData = [];
                 linkAuthenticationElement.on('change', function(event) {
                         if(event.complete){
                             emailData.pop();
                             emailData.push(event.value.email);
+                            console.log(addressData.length, "----",emailData.length)
+                            if(addressData && emailData.length){
+                                console.log("yeeahh")
+                                document.getElementById('payButton').removeAttribute('disabled');
+                            }
+                            console.log(addressData)
+                            console.log('------------')
+                            console.log(emailData)
                         }
                     })
+
                     const form = document.getElementById('paymentForm');
                         form.addEventListener('submit', async (event) => {
                             event.preventDefault();
