@@ -6,7 +6,7 @@
 
         <%# for(let info of shirts) {%>
             <div id="col1" class="p-0 m-0">
-                <div id="carouselExampleControls" class="carousel slide m-0" data-bs-ride="carousel">
+                <div id="carouselExampleControls" class="carousel slide m-0">
                     <div id="carousel" class="carousel-inner text-center">
                         <%shirts.links.forEach((img, i)=>{%>
                             <div id="item" class="carousel-item <%= i === 0 ? 'active' : '' %> " data-num= '<%= i%>'>
@@ -127,7 +127,7 @@
     </div>
 
     <div id="other-row" class="row justify-content-center g-0">
-      <% if(randomProducts.length) {%>
+      <% if(randomProducts.length >= 10) {%>
       <h1 class="text-center mb-3"> Druge stranke su izbrale</h1>
       <div id="carouselOut" class="slideshow-container">
       <% for(product of randomProducts) {%>
@@ -221,6 +221,7 @@
                 const colorDiv = document.createElement('div');
                 colorDiv.classList.add('color');
                 colorDiv.setAttribute('data-color', color.color);
+                colorDiv.setAttribute('data-sku', color.size[0].sku);
                 colorDiv.textContent = color.color;
                 colorDiv.addEventListener('click', function () {
                   const selectedColor = this.getAttribute('data-color');
@@ -247,7 +248,7 @@
                 colorDiv.classList.add('selected');
                 selectedColorDiv = colorDiv;
                 let checkSku = selectedColorDiv.getAttribute('data-sku');
-              let imgItems = document.getElementById('carousel')
+                let imgItems = document.getElementById('carousel')
               for(let j = 0; j < products.length; j++){
                 if(products[j].size[0].sku === checkSku){
                   let removeClass = imgItems.getElementsByClassName('active');

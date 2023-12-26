@@ -82,19 +82,38 @@ const create = async (req, res) => {
         //await conn.query("DROP TABLE IF EXISTS inventory");
         //await conn.query("DROP TABLE IF EXISTS orders");
         //await conn.query("DROP TABLE IF EXISTS users");
-        await conn.query("DROP TABLE IF EXISTS varijacije");
+        //await conn.query("DROP TABLE IF EXISTS varijacije");
 //
         //await conn.query("CREATE TABLE bills (id BIGSERIAL,bill_number SERIAL, order_number_id VARCHAR(50),orders_product_ids TEXT,price VARCHAR(50),billDate TIMESTAMP, PRIMARY KEY(ID))");
         //await conn.query("CREATE TABLE deleted (id VARCHAR, sku VARCHAR, name VARCHAR, neto_price VARCHAR, info VARCHAR, description VARCHAR,category VARCHAR, subcategory VARCHAR, links TEXT)");
         //await conn.query("CREATE TABLE inventory (id BIGSERIAL, name VARCHAR, neto_price FLOAT, info VARCHAR, description VARCHAR,category VARCHAR, subcategory VARCHAR, links json, created TEXT, inventory_sku VARCHAR, PRIMARY KEY (id), UNIQUE (name))");
         //await conn.query("CREATE TABLE orders (id BIGSERIAL ,trackingNum VARCHAR(50), invoice VARCHAR(50), name VARCHAR(50),lastname VARCHAR(50),email VARCHAR(50),country VARCHAR(50),city VARCHAR(50),zip VARCHAR(20),street VARCHAR(50),phone VARCHAR(50),products_ids TEXT,costs VARCHAR(50),sended boolean DEFAULT FALSE,date TEXT, product_qtys TEXT, user_id TEXT,PRIMARY KEY (ID))");
         //await conn.query("CREATE TABLE users (id BIGSERIAL,fname VARCHAR(30),lname VARCHAR(30),email VARCHAR(100),country VARCHAR(50),city VARCHAR(30),zip VARCHAR(15),address VARCHAR(50),password VARCHAR(80), PRIMARY KEY (ID))");
-        await conn.query("CREATE TABLE varijacije (id BIGSERIAL, product_id NUMERIC, size VARCHAR, img_link json, var_sku VARCHAR,  qty INTEGER, color VARCHAR, PRIMARY KEY(id), UNIQUE (sku))");
+        //await conn.query("CREATE TABLE varijacije (id BIGSERIAL, product_id NUMERIC, size VARCHAR, img_link json, var_sku VARCHAR,  qty INTEGER, color VARCHAR, PRIMARY KEY(id), UNIQUE (sku))");
         //await conn.query("CREATE TABLE products (id BIGSERIAL ,p_name VARCHAR,p_qty NUMERIC,p_price FLOAT,p_cat VARCHAR(15),p_subcat VARCHAR(15),p_size VARCHAR(20),p_color TEXT[],p_desc VARCHAR(150),p_fulldesc VARCHAR(300),p_imgdestination json, PRIMARY KEY (ID))");
         //await conn.query("CREATE TABLE sended (id BIGSERIAL, sended_number SERIAL, order_id VARCHAR(50), bill_id VARCHAR(50), send_date TIMESTAMP, courier VARCHAR(50), PRIMARY KEY (id))")
         //await conn.query("CREATE TABLE session(sid CHARACTER(100),expire TIMESTAMP, sess json)");
 
-        console.log('Successfully created dbs')
+        await conn.query(`SELECT inventory_pid FROM inventory ORDER BY inventory_pid DESC LIMIT 1`, async(err, result) => {
+            const data = result.rows[0];
+            console.log("This is typeof",typeof(data.inventory_pid));
+            if(data.inventory_pid != 'undefined'){
+                console.log("Yoooo");
+                console.log("inventory_pid is undefined");
+            }else{
+                console.log("inventory_pid is not undefined");
+            }
+            //console.log(typeof(data.invent_pid));
+            /*
+            let invent_pid = 1;
+            for (let i = 0; i < data.length; i++) {
+                await conn.query(`UPDATE inventory SET inventory_pid = '${invent_pid}' WHERE id = '${data[i].id}'`)
+                invent_pid ++;
+                console.log(invent_pid);
+            }
+            */
+        })
+      console.log('Successfully created dbs')
     } catch (e) {
         console.log(e.message)
     }

@@ -190,6 +190,7 @@ function calculateTotal(cart, req) {
 deleteZeroQty();
 
 app.get('/', async (req, res) => {
+    await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
     let date = new Date();
     let day = date.getDay()
     await conn.query(`SELECT * FROM inventory ORDER BY RANDOM()`, async (err, result) => {
@@ -259,13 +260,13 @@ app.get('/product/:id', async (req, res) => {
                             products.push({ color: colorName, size});
                         }
                         if (shirts.category === 'Kids' && kidsSubcategories.includes(shirts.subcategory)){
-                            const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
+                            const sizesResult = await conn.query(`SELECT size,img_link, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY size ASC`);
                             const size = sizesResult.rows.map((row) => row);
                             //console.log("Sizes", size)
                             products.push({ color: colorName, size });
                         }
                         if((shirts.category === 'Mens' || shirts.category === 'Womens') && !excludedSubcategories.includes(shirts.subcategory)) {
-                            const sizesResult = await conn.query(`SELECT size, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
+                            const sizesResult = await conn.query(`SELECT size,img_link, sku FROM varijacije WHERE product_id='${id}' AND color='${colorName}' ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`);  
                             const size = sizesResult.rows.map((row) => row);
                             products.push({ color: colorName, size });
                         }
@@ -706,6 +707,7 @@ app.get('/add', async (req, res) => {
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     const product = req.body;
     console.log("-----///--------///-----");
+    //const subCategoryes = ['Jackets', 'Shirts', 'Dress', 'Pants', 'Underwear', 'Pajamas'];
     let bgImage = req.files['bgImage'][0].path;
     let brutoPrice = Math.ceil(product.p_price * 0.18)
     let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
@@ -720,7 +722,6 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     images = [];
     if (imgTest.length <= 2) {
         const productImgs = req.files[`image${imgNum}`];
-        console.log("me to")
         for(let productimg of productImgs) {
             images.push(productimg.path);
         }
@@ -741,22 +742,44 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
     }
         let month = todayDate.getMonth() + 1;
         let day = todayDate.getDate();
-        let some_sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year;
-        let randomNum = parseInt(Math.random(15 * 12489) * 1000)
-        let invt_sku = day + "-" + month + randomNum + '-' + some_sku;
+        let getInvt_sku;
+        let varijacijePid;
 
-    if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Other'){
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (err, result) => {
+        await conn.query(`SELECT inventory_pid FROM inventory ORDER BY inventory_pid DESC LIMIT 1`,async(e,lastSku)=>{
+            const pid = lastSku.rows[0]
+            console.log(pid,"-----", pid == undefined)
+            if(pid !== undefined){
+                console.log("Check for invt sku")
+                getInvt_sku = parseInt(pid.inventory_pid) + 1;
+            }else{
+                console.log("Set invt sku to 1")
+                getInvt_sku = "1";
+            }
+        await conn.query(`SELECT var_pid FROM varijacije ORDER BY var_pid DESC LIMIT 1`,async(e,varSku)=>{
+            const vid = varSku.rows[0]
+            if(vid != undefined){
+                varijacijePid = parseInt(vid.var_pid) + 1;
+            }else{
+                varijacijePid = "1";
+            }
+        });
+    if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Other' && product.p_cat !== 'Jewerly'){
+        let invt_sku = day + "-" + month + "-" + year + "-" + getInvt_sku;
+        console.log("getInvt_sku: ", getInvt_sku)
+        console.log("Invt_sku: ", invt_sku)
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku, inventory_pid) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${getInvt_sku}') RETURNING id`, async (err, result) => {
         if (!err) {
             for (let i = 0; i < product.color.length; i++) {
                 for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {
-                    let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
-                    await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color) VALUES('${result.rows[0].id}', '${req.body[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`][j]}', '${product.color[i]}')`)
+                    sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year + "-" + varijacijePid;
+                    console.log("sku", sku)
+                    console.log("varijacijepid", varijacijePid)
+                    await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color, var_pid) VALUES('${result.rows[0].id}', '${req.body[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`][j]}', '${product.color[i]}', '${parseInt(varijacijePid)}')`)
+                    varijacijePid = parseInt(varijacijePid) + 1;
                 }
                 sizeCount += 1;
             }
             req.flash('success', "Successfully added new product")
-            await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
         }
         else {
             console.log("Here is error jebeni: ", err.message)
@@ -766,27 +789,47 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         })
     }
     else{
-        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory,bgImage, links, created, inventory_sku) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}') RETURNING id`, async (e, toys) => {
+        await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory,bgImage, links, created, inventory_sku, inventory_pid) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${getInvt_sku}') RETURNING id`, async (e, toys) => {
             if(e){
                 req.flash('error', "Error inserting product into database", e.message)
-                console.log("Error", e.message)
+                console.log("Error","this is error", e.message)
             }
             else{
                 if(Array.isArray(product.color)){
                     for (let i = 0; i < product.color.length; i++) {
-                        let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
-                        await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${product.qty1[i]}', '${product.color[i]}')`)
+                        await conn.query(`SELECT var_pid FROM varijacije ORDER BY var_pid DESC LIMIT 1`,async(e,varSku)=>{
+                            const vid = varSku.rows[0]
+                            //console.log(vid,"-----", varSku.rows)
+                            if(vid != undefined){
+                                varijacijePid = parseInt(vid.var_pid) + 1;
+                            }else{
+                                varijacijePid = "1";
+                            }
+                        });
+                        let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year + "-" + varijacijePid;
+                        await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color, var_pid) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${product.qty1[i]}', '${product.color[i]}'), '${varijacijePid}'`)
                     }
                 }
                 else{
-                    let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year
-                    await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl}}'::text[]), '${product.qty1}', '${product.color}')`)
+                    await conn.query(`SELECT var_pid FROM varijacije ORDER BY var_pid DESC LIMIT 1`,async(e,varSku)=>{
+                        const vid = varSku.rows[0]
+                        //console.log(vid,"-----", varSku.rows)
+                        if(vid != undefined){
+                            varijacijePid = parseInt(vid.var_pid) + 1;
+                        }else{
+                            console.log("set var pid to 1")
+                            varijacijePid = "1";
+                        }
+                    });
+                    let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year + "-" + varijacijePid;
+                    await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color, var_pid) VALUES('${toys.rows[0].id}', '${sku}',array_to_json('{${imgsUrl}}'::text[]), '${product.qty1}', '${product.color}'), '${varijacijePid}'`)
                     console.log("Single added product toys")
                 }
             }
         })
     }
-
+});
+await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
     res.redirect('/add')
 })
 
