@@ -591,14 +591,14 @@
         subCategory = "";
         imageNum = 2;
 
-        let checkSub = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas','Body']
+        let checkSub = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas']
+        let checkSubKids = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas','Body']
         let checkJewerlySub = ['Chain', 'Bracelet', 'Clock'];
         function subSelected() {
             category = document.getElementById("p_cat").value;
             subCategory = document.getElementById("p_subcat").value;
             let allSubs = document.getElementById("p_subcat")
-            console.log(allSubs)
-            
+
             if (category == 'Mens' || category == 'Womens') {
                 document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
                 document.getElementById("kidsClothes").style.display = "none";
@@ -764,7 +764,7 @@
             if (category == 'Kids') {
                 console.log(category);
                 for(let i = 1; i < allSubs.length; i++){
-                    if(checkSub.includes(allSubs[i].value) || allSubs[i].value == 'Toys'){
+                    if(checkSubKids.includes(allSubs[i].value) || allSubs[i].value == 'Toys'){
                         allSubs[i].style.display = 'flex';
                     }
                     else{

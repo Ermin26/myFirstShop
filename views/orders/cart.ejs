@@ -9,17 +9,17 @@
             <table class="table">
                 <thead>
                     <tr class="text-center">
-                        <th class="col border-2 border-bottom">Izdelek</td>
-                        <th class="col border-2 border-bottom">Količina</td>
-                        <th class="col border-2 border-bottom">Cena</td>
-                        <th class="col border-2 border-bottom"></td>
+                        <th class="border-2 border-bottom">Izdelek</td>
+                        <th class="border-2 border-bottom">Količina</td>
+                        <th class="border-2 border-bottom">Cena</td>
+                        <th class="border-2 border-bottom"></td>
                     </tr>
                 </thead>
                 <tbody>
                     <% for (product of items) { %>
                         <% for (products of product) { %>
                             <tr>
-                                <td>
+                                <td id="first">
                                     <div id="cartCard" class="card flex-md-column flex-lg-row">
                                         <div class="card-header ms-auto me-auto m-0 p-0 align-middle"
                                             style="height: 100px; width: 100px;">
@@ -52,7 +52,7 @@
                                             </div>
                                         </div>
                                         <div class="card-body p-0">
-                                            <h5 class="d-inline-block">
+                                            <h5 class="d-inline-flex">
                                                 <%= products.name %>
                                             </h5>
                                             <h6># <%= products.color %></h6>
@@ -62,22 +62,22 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="col-4 text-center align-middle p-0">
+                                <td id="second" class="text-center align-middle p-0">
                                     <% for(qty of cart) {%>
                                         <form action="/edit_qty" method="post">
                                             <% if(qty.sku==products.sku) {%>
                                                 <input type="hidden" value="<%= products.sku %>" name="id">
-                                                <input type="submit" class="bg-light text-dark rounded border-0"
+                                                <input type="submit"
                                                     id="minus" name="minus" value="-">
                                                 <input type="text" class="w-25 text-center" id="qty" name="qty"
                                                     value="<%= qty.qty %>" readonly min="1" max="<%= products.qty %>">
-                                                <input type="submit" class="bg-light text-dark rounded border-0"
+                                                    <input type="submit"
                                                     id="plus" name="plus" value="+">
                                                 <% } %>
                                         </form>
                                         <% } %>
                                 </td>
-                                <td class="col-4 text-center align-middle">
+                                <td id="third" class="text-center align-middle">
                                             <h3 class="card-text">
                                                 <% for(qty of cart) {%>
                                                     <% if(qty.sku==products.sku) {%>
@@ -86,7 +86,7 @@
                                                                 <% } %>
                                             </h3>
                                 </td>
-                                <td class="col text-center align-middle">
+                                <td id="fourth" class="col text-center align-middle">
                                     <a class="remove btn btn-sm" href="/remove/<%=products.sku %>">x</a>
                                 </td>
                             </tr>
