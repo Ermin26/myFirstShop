@@ -2,7 +2,6 @@
 
     <link rel="stylesheet" href="/css/allPages.css">
     <link rel="stylesheet" href="/css/cart.css">
-    <script> let stripePK = ` <%= s_pk %> ` </script>
     <div id="myCart" class="myCart mt-5 justify-content-center text-center">
         <% if(items.length) {%>
 
@@ -69,7 +68,7 @@
                                                 <input type="hidden" value="<%= products.sku %>" name="id">
                                                 <input type="submit"
                                                     id="minus" name="minus" value="-">
-                                                <input type="text" class="w-25 text-center" id="qty" name="qty"
+                                                <input type="text" class=" text-center rounded-circle" id="qty" name="qty"
                                                     value="<%= qty.qty %>" readonly min="1" max="<%= products.qty %>">
                                                     <input type="submit"
                                                     id="plus" name="plus" value="+">
