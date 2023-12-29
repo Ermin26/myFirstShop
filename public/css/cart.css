@@ -37,10 +37,13 @@
 }
 
 .card-body{
+  text-align: start;
   align-self: center;
-
+  text-wrap: wrap;
 }
-
+h6{
+  display: inline-flex;
+}
 #minus{
   background-color: #ebe9e8;
   width: 25px;
