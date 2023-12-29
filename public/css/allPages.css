@@ -69,12 +69,14 @@ body{
 }
 
 #cartIcon{
+    display: flex;
     position: relative;
     top: 5px;
     right: 10px;
 }
 
 #cartNotifications{
+    display: flex;
     position: relative;
     top: -27px;
     left: 15px;

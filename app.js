@@ -194,6 +194,7 @@ app.get('/', async (req, res) => {
     let date = new Date();
     let day = date.getDay()
     const cart = req.session.cart
+    console.log("Cart:",cart.length)
     await conn.query(`SELECT * FROM inventory ORDER BY RANDOM()`, async (err, result) => {
         let products = result.rows
         //console.log(products);
