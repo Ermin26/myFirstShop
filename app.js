@@ -162,6 +162,7 @@ function calculateTotal(cart, req) {
 }
 
 app.get('/', async (req, res) => {
+    const cart = req.session.cart;
     try{
         const products = await functions.getAllProducts();
         const varijacije = await functions.getVarijace();
@@ -169,7 +170,7 @@ app.get('/', async (req, res) => {
             req.flash('error', "Nothing to display.")
             res.redirect('/add');
         }else{
-            res.render('pages/home', {products, varijacije});
+            res.render('pages/home', {products, varijacije, cart});
         }
     }catch(err){
         console.log("Error: ",err.message)
