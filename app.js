@@ -26,6 +26,7 @@ const upload = multer({ storage })
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SK)
 const nodemailer = require('nodemailer');
+const functions = require('./siteJS/functions');
 //const upload = multer({ dest: 'uploads/' })
 
 
@@ -151,33 +152,6 @@ let year = todayDate.getFullYear();
 
 //let subtotal = [];
 
-async function deleteZeroQty() {
-    await conn.query(`DELETE FROM varijacije WHERE qty = '0' RETURNING *`, async(err, result) => {
-        if (!err) {
-            const data = result.rows;
-            if (data.length) {
-                for (let i = 0; i < data.length; i++) {
-                    let product = data[i].product_id;
-                    await conn.query(`SELECT * FROM varijacije WHERE product_id ='${product}'`, async (e, info) => {
-                        if (!info.rows.length) {
-                            await conn.query(`DELETE FROM inventory WHERE id='${product}' RETURNING *`, async (err, answer) => {
-                                if (!err) {
-                                    let result = answer.rows;
-                                    await conn.query(`INSERT INTO deleted (id, sku, name, neto_price, info, description,category, subcategory, links) VALUES( '${data[i].product_id}', '${data[i].sku}', '${result[0].name}', '${result[0].neto_price}', '${result[0].info}', '${result[0].description}', '${result[0].category}','${result[0].subcategory}', '${result[0].links}')`)
-                                } else {
-                                    console.log("Error deleting from inventory: ", err);
-                                }
-                            })
-                        }
-                    })
-                }
-            }
-        } else {
-            console.log(err.message);
-        }
-    });
-}
-
 function calculateTotal(cart, req) {
     total = 0;
     for (let i = 0; i < cart.length; i++) {
@@ -187,8 +161,23 @@ function calculateTotal(cart, req) {
     return total;
 }
 
-deleteZeroQty();
+app.get('/', async (req, res) => {
+    try{
+        const products = await functions.getAllProducts();
+        const varijacije = await functions.getVarijace();
+        if(!products.length){
+            req.flash('error', "Nothing to display.")
+            res.redirect('/add');
+        }else{
+            res.render('pages/home', {products, varijacije});
+        }
+    }catch(err){
+        console.log("Error: ",err.message)
+    }
+})
 
+
+/*
 app.get('/', async (req, res) => {
     await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
     let date = new Date();
@@ -214,26 +203,58 @@ app.get('/', async (req, res) => {
         }
     })
 })
-
+*/
 app.get('/searched', async (req, res) => {
-    deleteZeroQty();
     res.render('pages/searched')
 })
 
 app.post('/search', async (req, res) => {
     let data = req.body.searched;
-    
-    await conn.query(`SELECT * FROM inventory WHERE category ~* '${data}' OR name ~* '${data}' OR subcategory ~*'${data}' OR info ~* '${data}' OR description ~* '${data}'`, async (err, shirts) => {
-        if (!err) {
-            let products = shirts.rows;
-            res.render('pages/searched', { products })
-        } else {
-            req.flash('error', 'Nothing to show')
-            res.redirect('/')
-        }
-    })
+    try{
+        const shirts = await conn.query(`SELECT * FROM inventory WHERE category ~* $1 OR name ~* $2 OR subcategory ~* $3 OR info ~* $4 OR description ~* $5`, [data,data,data,data,data])
+        let products = shirts.rows;
+        res.render('pages/searched', { products });
+    }catch(err){
+        console.error("error: ", err.message);
+        req.flash('error', "Ni najdenih izdelkov.");
+        res.redirect('/');
+    }
+
 })
 
+app.get('/product/:id', async (req, res) => {
+    let { id } = req.params;
+    let randomProducts;
+    let products = [];
+    let sizes = [];
+    let varijacijeSku;
+    try{
+        const shirts = await functions.getProductDetails(id);
+        const colors = await functions.getDistinctColors(id);
+        let invt_sku = shirts.inventory_sku
+        const subCat = shirts.subcategory;
+        if(colors.length > 0) {
+            for (let i = 0; i < colors.length; i++) {
+                const colorName = colors[i].color;
+                const size = await functions.getSizes(id, colorName, shirts);
+                products.push({color: colorName, size})
+            }
+        }
+        else{
+            await conn.query(`SELECT * FROM varijacije WHERE PRODUCT_id= '${id}'`,async (e, var_sku) => {
+                let result = var_sku.rows;
+                varijacijeSku = result;
+            })
+        }
+        const randomProducts = await functions.getRandomProducts(id);
+        res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category) });
+    }catch(err){
+        console.error("error: ", err.message);
+        req.flash('error', err.message);
+        res.redirect('/');
+    }
+})
+/*
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
     const excludedSubcategories = ['Shoes', 'Toys'];
@@ -288,22 +309,17 @@ app.get('/product/:id', async (req, res) => {
         }
     })
 })
+*/
 
 
 app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, product_sku, invt_sku } = req.body;
-    let exist ;
     let user_id = randomUUID();
-    console.log("body", req.body)
     if (req.session.cart) {
-        for (let i = 0; i < req.session.cart.length; i++) {
-            if (req.session.cart[i].sku === product_sku) {
-                exist = true;
-            }
-        }
-        if (exist) {
+        const existing = req.session.cart.some(item => item.sku === product_sku);
+        if (existing) {
             req.flash('error', "Izdelek je že dodan v košarico.")
-                res.redirect(`/product/${product_id}`)
+            res.redirect(`/product/${product_id}`)
         } else {
             let product = { product_id: product_id, sku: product_sku, invt_sku: invt_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
             let cart = req.session.cart;
@@ -311,7 +327,6 @@ app.post('/add-to-cart', async (req, res) => {
             req.flash('success', 'Uspečno dodano v košarico')
             res.redirect(`/product/${product_id}`)
             }
-
     } else {
         let product = { user_id: user_id , product_id: product_id, sku: product_sku, invt_sku: invt_sku,name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
         req.session.cart = [product]
@@ -320,10 +335,73 @@ app.post('/add-to-cart', async (req, res) => {
         req.flash('success', 'Uspečno dodano v košarico')
         res.redirect(`/product/${product_id}`)
     }
-
-
 });
 
+app.get('/cart', async (req, res) => {
+    const cart = req.session.cart;
+
+    if (!cart || !cart.length) {
+        req.flash('error', "Košarica je prazna.")
+        return res.redirect('/');
+    }
+
+    try {
+        const items = await functions.getCartItemDetails(cart);
+        const ordered = items.flat(); // Flatten the array of items
+
+        calculateTotal(cart, req);
+
+        res.render('orders/cart', { items, cart, ordered, s_pk });
+    } catch (error) {
+        console.error("Error:", error.message);
+        req.flash('error', error.message);
+        res.redirect('/');
+    }
+})
+
+/*
+app.get("/cart", async (req, res) => {
+    let items = [];
+    let cartItems = []
+    let sizes = [];
+    let randomProducts;;
+    let count = 0
+    let countSizes = 0;
+    let cart = req.session.cart;
+    let total = req.session.total;
+    //console.log("cart", cart)
+    if (cart) {
+        if (!cart.length) {
+            req.flash('error', "Košarica je prazna.")
+            res.redirect('/')
+        } else {
+            for (let i = 0; i < cart.length; i++) {
+                await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
+                    if (!e) {
+                        let ordered = results.rows;
+                        //console.log("ordered",ordered)
+                        items.push(results.rows)
+                        countSizes += 1;
+                        if (cart.length === countSizes) {
+                            //console.log(items)
+                            res.render('orders/cart', { items, cart, ordered, s_pk })
+                        }
+                    }
+                    else {
+                        console.log(e.message);
+                        res.redirect('/')
+                    }
+                })
+            }
+            calculateTotal(cart, req)
+        }
+    } else {
+        req.flash('error', "Košarica je prazna.")
+        res.redirect('/')
+    }
+
+})
+*/
 app.get('/remove/:id', async (req, res) => {
     const { id } = req.params;
     let cart = req.session.cart;
@@ -379,48 +457,6 @@ app.post('/edit_qty', async (req, res) => {
     }
 
     calculateTotal(cart, req)
-
-})
-
-app.get("/cart", async (req, res) => {
-    let items = [];
-    let cartItems = []
-    let sizes = [];
-    let randomProducts;;
-    let count = 0
-    let countSizes = 0;
-    let cart = req.session.cart;
-    let total = req.session.total;
-    //console.log("cart", cart)
-    if (cart) {
-        if (!cart.length) {
-            req.flash('error', "Košarica je prazna.")
-            res.redirect('/')
-        } else {
-            for (let i = 0; i < cart.length; i++) {
-                await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${cart[i].product_id}' AND varijacije.sku='${cart[i].sku}' `, async (e, results) => {
-                    if (!e) {
-                        let ordered = results.rows;
-                        //console.log("ordered",ordered)
-                        items.push(results.rows)
-                        countSizes += 1;
-                        if (cart.length === countSizes) {
-                            //console.log(items)
-                            res.render('orders/cart', { items, cart, ordered, s_pk })
-                        }
-                    }
-                    else {
-                        console.log(e.message);
-                        res.redirect('/')
-                    }
-                })
-            }
-            calculateTotal(cart, req)
-        }
-    } else {
-        req.flash('error', "Košarica je prazna.")
-        res.redirect('/')
-    }
 
 })
 
