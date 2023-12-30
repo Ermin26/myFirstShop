@@ -182,6 +182,7 @@ app.get('/', async (req, res) => {
     await conn.query(`DELETE FROM varijacije WHERE qty = '0'`);
     let date = new Date();
     let day = date.getDay()
+    const cart = req.session.cart
     await conn.query(`SELECT * FROM inventory ORDER BY RANDOM()`, async (err, result) => {
         let products = result.rows
         //console.log(products);
@@ -196,7 +197,7 @@ app.get('/', async (req, res) => {
 
                     } else {
                         const varijacije = vari.rows;
-                        res.render('pages/home', { products, varijacije })
+                        res.render('pages/home', { products, varijacije, cart })
                     }
                 })
             }
@@ -301,7 +302,7 @@ app.get('/product/:id', async (req, res) => {
                 }
                 const productsRandom = await conn.query(`SELECT * FROM inventory WHERE id != '${shirts.id}' ORDER BY RANDOM() LIMIT 10`)
                         randomProducts = productsRandom.rows;
-                res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category) });
+                res.render('pages/productShow', { shirts, products, colors,cart, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category) });
             });
         } else {
             req.flash('error', err.message);
