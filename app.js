@@ -207,15 +207,17 @@ app.get('/', async (req, res) => {
 })
 */
 app.get('/searched', async (req, res) => {
-    res.render('pages/searched')
+    const cart = req.session.cart;
+    res.render('pages/searched', {cart})
 })
 
 app.post('/search', async (req, res) => {
     let data = req.body.searched;
+    const cart = req.session.cart;
     try{
         const shirts = await conn.query(`SELECT * FROM inventory WHERE category ~* $1 OR name ~* $2 OR subcategory ~* $3 OR info ~* $4 OR description ~* $5`, [data,data,data,data,data])
         let products = shirts.rows;
-        res.render('pages/searched', { products });
+        res.render('pages/searched', { products,cart });
     }catch(err){
         console.error("error: ", err.message);
         req.flash('error', "Ni najdenih izdelkov.");
@@ -226,6 +228,7 @@ app.post('/search', async (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
     let { id } = req.params;
+    const cart = req.session.cart;
     let randomProducts;
     let products = [];
     let sizes = [];
@@ -249,7 +252,7 @@ app.get('/product/:id', async (req, res) => {
             })
         }
         const randomProducts = await functions.getRandomProducts(id);
-        res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category) });
+        res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
     }catch(err){
         console.error("error: ", err.message);
         req.flash('error', err.message);
