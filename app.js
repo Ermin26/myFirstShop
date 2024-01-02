@@ -501,6 +501,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 
 //! MENS
 app.get('/category/mens', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -508,13 +509,14 @@ app.get('/category/mens', async (req, res) => {
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/mens/mens', { products })
+                res.render('artikli/mens/mens', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/mens/subcategory/shirts', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Shirts'`, async (err, result) => {
         //console.log(result.rows.length)
         let products = result.rows
@@ -523,7 +525,7 @@ app.get('/category/mens/subcategory/shirts', async (req, res) => {
             res.redirect('/mens')
         } else {
             if (!err) {
-                res.render('artikli/mens/shirts', { products })
+                res.render('artikli/mens/shirts', { products, cart })
             }
         }
     })
@@ -531,6 +533,7 @@ app.get('/category/mens/subcategory/shirts', async (req, res) => {
 })
 
 app.get('/category/mens/subcategory/jackets', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Jackets'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -538,7 +541,7 @@ app.get('/category/mens/subcategory/jackets', async (req, res) => {
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/mens/jackets', { products })
+                res.render('artikli/mens/jackets', { products, cart })
             }
         }
     })
@@ -546,6 +549,7 @@ app.get('/category/mens/subcategory/jackets', async (req, res) => {
 })
 
 app.get('/category/mens/subcategory/pants', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Pants'`, async (err, result) => {
 
         let products = result.rows
@@ -555,7 +559,7 @@ app.get('/category/mens/subcategory/pants', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/mens/pants', { products })
+                res.render('artikli/mens/pants', { products, cart })
 
             }
         }
@@ -563,6 +567,7 @@ app.get('/category/mens/subcategory/pants', async (req, res) => {
 })
 
 app.get('/category/mens/subcategory/underwear', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Underwear'`, async (err, result) => {
 
         let products = result.rows
@@ -572,7 +577,7 @@ app.get('/category/mens/subcategory/underwear', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/mens/underwear', { products })
+                res.render('artikli/mens/underwear', { products, cart })
 
             }
         }
@@ -580,6 +585,7 @@ app.get('/category/mens/subcategory/underwear', async (req, res) => {
 })
 
 app.get('/category/mens/subcategory/shoes', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Shoes'`, async (err, result) => {
 
         let products = result.rows
@@ -589,13 +595,14 @@ app.get('/category/mens/subcategory/shoes', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/mens/shoes', { products })
+                res.render('artikli/mens/shoes', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/mens/subcategory/pajamas', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Mens' AND subcategory = 'Pajamas'`, async (err, result) => {
 
         let products = result.rows
@@ -605,7 +612,7 @@ app.get('/category/mens/subcategory/pajamas', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/pajamas', { products })
+                res.render('artikli/kids/pajamas', { products, cart })
             }
         }
     })
@@ -613,6 +620,7 @@ app.get('/category/mens/subcategory/pajamas', async (req, res) => {
 //! WOMENS
 
 app.get('/category/womens', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -621,7 +629,7 @@ app.get('/category/womens', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/womens/womens', { products })
+                res.render('artikli/womens/womens', { products, cart })
 
             }
         }
@@ -629,6 +637,7 @@ app.get('/category/womens', async (req, res) => {
 })
 
 app.get('/category/womens/subcategory/shirts', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Shirts'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -636,7 +645,7 @@ app.get('/category/womens/subcategory/shirts', async (req, res) => {
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/womens/shirts', { products })
+                res.render('artikli/womens/shirts', { products,cart })
             }
         }
     })
@@ -644,6 +653,7 @@ app.get('/category/womens/subcategory/shirts', async (req, res) => {
 })
 
 app.get('/category/womens/subcategory/jackets', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Jackets'`, async (err, result) => {
 
         let products = result.rows
@@ -653,7 +663,7 @@ app.get('/category/womens/subcategory/jackets', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/womens/jackets', { products })
+                res.render('artikli/womens/jackets', { products, cart })
 
             }
         }
@@ -661,6 +671,7 @@ app.get('/category/womens/subcategory/jackets', async (req, res) => {
 })
 
 app.get('/category/womens/subcategory/pants', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Pants'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -669,7 +680,7 @@ app.get('/category/womens/subcategory/pants', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/womens/pants', { products })
+                res.render('artikli/womens/pants', { products, cart })
 
             }
         }
@@ -677,6 +688,7 @@ app.get('/category/womens/subcategory/pants', async (req, res) => {
 })
 
 app.get('/category/womens/subcategory/underwear', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Underwear'`, async (err, result) => {
 
         let products = result.rows
@@ -685,13 +697,14 @@ app.get('/category/womens/subcategory/underwear', async (req, res) => {
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/womens/underwear', { products })
+                res.render('artikli/womens/underwear', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/womens/subcategory/pajamas', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Pajamas'`, async (err, result) => {
 
         let products = result.rows
@@ -701,13 +714,14 @@ app.get('/category/womens/subcategory/pajamas', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/pajamas', { products })
+                res.render('artikli/kids/pajamas', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/womens/subcategory/shoes', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Womens' AND subcategory = 'Shoes'`, async (err, result) => {
 
         let products = result.rows
@@ -717,7 +731,7 @@ app.get('/category/womens/subcategory/shoes', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/womens/shoes', { products })
+                res.render('artikli/womens/shoes', { products, cart })
             }
         }
     })
@@ -725,6 +739,7 @@ app.get('/category/womens/subcategory/shoes', async (req, res) => {
 //! KIDS
 
 app.get('/category/baby', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Baby'`, async (err, result) => {
         let products = result.rows
         if (!products.length) {
@@ -732,13 +747,14 @@ app.get('/category/baby', async (req, res) => {
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/kids/baby', { products })
+                res.render('artikli/kids/baby', { products, cart })
             }
         }
     })
 })
 app.get('/category/kids', async (req, res) => {
     let allProducts = [];
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids'`, async (err, result) => {
         if (!err) {
             let products = result.rows;
@@ -747,7 +763,7 @@ app.get('/category/kids', async (req, res) => {
                 req.flash('error', ' Nothing to display.')
                 res.redirect('/');
             } else {
-                res.render('artikli/kids/kids', { products })
+                res.render('artikli/kids/kids', { products, cart })
             }
         } else {
             req.flash('error', err.message);
@@ -759,6 +775,7 @@ app.get('/category/kids', async (req, res) => {
 })
 
 app.get('/category/kids/subcategory/shirts', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Shirts'`, async (err, result) => {
 
         let products = result.rows
@@ -768,7 +785,7 @@ app.get('/category/kids/subcategory/shirts', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/shirts', { products })
+                res.render('artikli/kids/shirts', { products, cart })
 
             }
         }
@@ -777,6 +794,7 @@ app.get('/category/kids/subcategory/shirts', async (req, res) => {
 })
 
 app.get('/category/kids/subcategory/jackets', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Jackets'`, async (err, result) => {
 
         let products = result.rows
@@ -786,13 +804,14 @@ app.get('/category/kids/subcategory/jackets', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/jackets', { products })
+                res.render('artikli/kids/jackets', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/kids/subcategory/pants', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Pants'`, async (err, result) => {
 
         let products = result.rows
@@ -802,7 +821,7 @@ app.get('/category/kids/subcategory/pants', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/kidsPants', { products })
+                res.render('artikli/kids/kidsPants', { products, cart })
 
             }
         }
@@ -810,6 +829,7 @@ app.get('/category/kids/subcategory/pants', async (req, res) => {
 })
 
 app.get('/category/kids/subcategory/underwear', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Underwear'`, async (err, result) => {
 
         let products = result.rows
@@ -819,13 +839,14 @@ app.get('/category/kids/subcategory/underwear', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/kidsUnderwear', { products })
+                res.render('artikli/kids/kidsUnderwear', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/kids/subcategory/pajamas', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Pajamas'`, async (err, result) => {
 
         let products = result.rows
@@ -835,13 +856,14 @@ app.get('/category/kids/subcategory/pajamas', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/pajamas', { products })
+                res.render('artikli/kids/pajamas', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/kids/subcategory/shoes', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Shoes'`, async (err, result) => {
 
         let products = result.rows
@@ -851,12 +873,13 @@ app.get('/category/kids/subcategory/shoes', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/shoes', { products })
+                res.render('artikli/kids/shoes', { products, cart })
             }
         }
     })
 })
 app.get('/category/kids/subcategory/toys', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Kids' AND subcategory = 'Toys'`, async (err, result) => {
 
         let products = result.rows
@@ -866,7 +889,7 @@ app.get('/category/kids/subcategory/toys', async (req, res) => {
         } else {
             if (!err) {
 
-                res.render('artikli/kids/toys', { products })
+                res.render('artikli/kids/toys', { products, cart })
             }
         }
 
@@ -875,6 +898,7 @@ app.get('/category/kids/subcategory/toys', async (req, res) => {
 
 //! Jewerly
 app.get('/category/jewerly', async (req,res)=>{
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly'`, async(err, result)=>{
         let products = result.rows
         if (!products.length) {
@@ -882,13 +906,14 @@ app.get('/category/jewerly', async (req,res)=>{
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/jewerly', { products })
+                res.render('artikli/jewerly/jewerly', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/jewerly/subcategory/chain', async (req,res)=>{
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly' AND subcategory = 'chain'`, async(err, result)=>{
         let products = result.rows
         if (!products.length) {
@@ -896,13 +921,14 @@ app.get('/category/jewerly/subcategory/chain', async (req,res)=>{
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/jewerly/chain', { products })
+                res.render('artikli/jewerly/chain', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/jewerly/subcategory/bracelet', async (req,res)=>{
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly' AND subcategory = 'bracelet'`, async(err, result)=>{
         let products = result.rows
         if (!products.length) {
@@ -910,13 +936,14 @@ app.get('/category/jewerly/subcategory/bracelet', async (req,res)=>{
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/jewerly/bracelet', { products })
+                res.render('artikli/jewerly/bracelet', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/jewerly/subcategory/clock', async (req,res)=>{
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Jewerly' AND subcategory = 'clock'`, async(err, result)=>{
         let products = result.rows
         if (!products.length) {
@@ -924,13 +951,14 @@ app.get('/category/jewerly/subcategory/clock', async (req,res)=>{
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/jewerly/clock', { products })
+                res.render('artikli/jewerly/clock', { products, cart })
             }
         }
     })
 })
 
 app.get('/category/other', async (req, res) => {
+    const cart = req.session.cart;
     await conn.query(`SELECT * FROM inventory WHERE category = 'Other'`, async(e, result)=>{
         let products = result.rows
         if (!products.length) {
@@ -938,7 +966,7 @@ app.get('/category/other', async (req, res) => {
             res.redirect('/')
         } else {
             if (!err) {
-                res.render('artikli/other/other')
+                res.render('artikli/other/other',{products, cart})
             }
         }
     })
@@ -946,21 +974,26 @@ app.get('/category/other', async (req, res) => {
 
 
 app.get('/company', async (req, res) => {
-    res.render('company/companyInfo')
+    const cart = req.session.cart;
+    res.render('company/companyInfo', {cart})
 })
 
 app.get('/privacy', async (req, res) => {
-    res.render('company/privacy')
+    const cart = req.session.cart;
+    res.render('company/privacy', {cart})
 })
 app.get('/questions', async (req, res) => {
-    res.render('company/questions')
+    const cart = req.session.cart;
+    res.render('company/questions', {cart})
 })
 app.get('/delivery', async (req, res) => {
-    res.render('company/delivery')
+    const cart = req.session.cart;
+    res.render('company/delivery', {cart})
 })
 
 app.get('/contract', async (req, res) => {
-    res.render('company/contract')
+    const cart = req.session.cart;
+    res.render('company/contract', {cart})
 })
 
 
