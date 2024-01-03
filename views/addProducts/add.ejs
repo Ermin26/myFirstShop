@@ -591,8 +591,8 @@
         subCategory = "";
         imageNum = 2;
 
-        let checkSub = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas']
-        let checkSubKids = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas','Body']
+        let checkSub = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas', 'Shoes']
+        let checkSubKids = ['Jackets', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas','Body', 'Shoes']
         let checkJewerlySub = ['Chain', 'Bracelet', 'Clock'];
         function subSelected() {
             category = document.getElementById("p_cat").value;
@@ -1328,7 +1328,7 @@
                 <input type="text" class="form-control p-3" id="color" name="color[]" placeholder="Barva" value="" required>
             </div>
             <div id="qtyForToys" class="col d-flex flex-column mt-2">
-                <input type="text" class="form-control p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
+                <input type="number" class="form-control p-3" id="qty1" name="qty1" placeholder="Količina" value="" required>
             </div>
             <div class="col mt-2" id="imgForToys">
                 <div class="input-group-sm d-flex align-self-center w-100">
@@ -1350,51 +1350,51 @@
                         box.classList.add('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4','mb-2', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto')
                         box.innerHTML = `<div class="mb-3 group-item d-flex flex-column">
                 <label for="num_xs">XS</label>
-                <input type="number" id="num_xs" name="size${imageNum}" placeholder="velikost" value="XS" readonly style="display: none;">
+                <input type="text" id="num_xs" name="size${imageNum}" placeholder="velikost" value="XS" readonly style="display: none;">
                 <label for="#xs"></label>
                 <input type="number" id="#xs" name="qty${imageNum}" placeholder="0" value="0">
             </div>
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_s">S</label>
-                <input type="number" id="num_s" name="size${imageNum}" placeholder="velikost" value="M" readonly style="display: none;">
+                <input type="text" id="num_s" name="size${imageNum}" placeholder="velikost" value="M" readonly style="display: none;">
                 <label for="#s"></label>
                 <input type="number" id="#s" name="qty${imageNum}" placeholder="0" value="0">
             </div>
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_M">M</label>
-                <input type="number" id="num_M" name="size${imageNum}" placeholder="velikost" value="M" readonly style="display: none;">
+                <input type="text" id="num_M" name="size${imageNum}" placeholder="velikost" value="M" readonly style="display: none;">
                 <label for="#M"></label>
                 <input type="number" id="#M" name="qty${imageNum}" placeholder="0" value="0" style="display: inline-flex;">
             </div>
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_L">L</label>
-                <input type="number" id="num_L" name="size${imageNum}" placeholder="velikost" value="L" readonly style="display: none;">
+                <input type="text" id="num_L" name="size${imageNum}" placeholder="velikost" value="L" readonly style="display: none;">
                 <label for="#L"></label>
                 <input type="number" id="#L" name="qty${imageNum}" placeholder="0" value="0">
             </div>
 
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_XL">XL</label>
-                <input type="number" id="num_XL" name="size${imageNum}" placeholder="velikost" value="XL" readonly style="display: none;">
+                <input type="text" id="num_XL" name="size${imageNum}" placeholder="velikost" value="XL" readonly style="display: none;">
                 <label for="#XL"></label>
                 <input type="number" id="#XL" name="qty${imageNum}" placeholder="0" value="0">
             </div>
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_2XL">2XL</label>
-                <input type="number" id="num_2XL" name="size${imageNum}" placeholder="velikost" value="2XL" readonly style="display: none;">
+                <input type="text" id="num_2XL" name="size${imageNum}" placeholder="velikost" value="2XL" readonly style="display: none;">
                 <label for="#2XL"></label>
                 <input type="number" id="#2XL" name="qty${imageNum}" placeholder="0" value="0">
             </div>
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_3XL">3XL</label>
-                <input type="number" id="num_3XL" name="size${imageNum}" placeholder="velikost" value="3XL" readonly style="display: none;">
+                <input type="text" id="num_3XL" name="size${imageNum}" placeholder="velikost" value="3XL" readonly style="display: none;">
                 <label for="#3XL"></label>
                 <input type="number" id="#3XL" name="qty${imageNum}" placeholder="0" value="0">
             </div>
 
             <div class="mb-3 group-item d-flex flex-column">
                 <label for="num_4XL">4XL</label>
-                <input type="number" id="num_4XL" name="size${imageNum}" placeholder="velikost" value="4XL" readonly style="display: none;">
+                <input type="text" id="num_4XL" name="size${imageNum}" placeholder="velikost" value="4XL" readonly style="display: none;">
                 <label for="#4XL"></label>
                 <input type="number" id="#4XL" name="qty${imageNum}" placeholder="0" value="0">
             </div>

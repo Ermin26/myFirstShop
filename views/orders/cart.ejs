@@ -5,7 +5,7 @@
     <div id="myCart" class="myCart mt-5 justify-content-center text-center">
         <% if(items.length) {%>
 
-            <table class="table">
+            <table class="table table-borderless">
                 <thead>
                     <tr class="text-center">
                         <th class="border-2 border-bottom">Izdelek</td>
@@ -17,7 +17,7 @@
                 <tbody>
                     <% for (product of items) { %>
                         <% for (products of product) { %>
-                            <tr>
+                            <tr style="background-color: #ebe9e8;">
                                 <td id="first">
                                     <div id="cartCard" class="card flex-md-column flex-lg-row">
                                         <div class="card-header ms-auto me-auto m-0 p-0 align-middle"
@@ -89,6 +89,12 @@
                                     <a class="remove btn btn-sm" href="/remove/<%=products.sku %>">x</a>
                                 </td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                             <% } %>
                                 <% } %>
 
@@ -99,6 +105,12 @@
                                         <td></td>
                                     </tr>
                                     <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="border border-2 border-dark border-start-0 border-end-0">
                                         <td class="align-bottom">
                                             <h1 style="font-weight: 700;">Skupaj</h1>
                                         </td>
@@ -108,7 +120,6 @@
                                                 <%=total.toFixed(2)%> €
                                             </h2>
                                         </td>
-                                        
                                     </tr>
                 </tbody>
             </table>

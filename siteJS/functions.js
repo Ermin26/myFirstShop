@@ -401,7 +401,6 @@ async function addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,
             }
             sizeCount += 1;
         }
-        req.flash('success', "Successfully added new product")
     }catch(e){
         console.error("Error adding product with sizes", e.message);
     }

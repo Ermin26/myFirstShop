@@ -473,6 +473,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         let firstCheck = Object.keys(req.files).length - 1;
         let imgTest = Object.keys(req.files);
         images = [];
+        let sizeCount = 1;
         await functions.checkImages(req, firstCheck, imgTest, images,imgsUrl);
         const resultt = await functions.setInvtAndVarPid(day,month,year)
         inventoryPid = resultt.inventoryPid;
@@ -490,6 +491,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
                     await functions.addSingleProduct(year,varijacijePid,result, imgsUrl, product)
                 }
         }
+        req.flash('success',"Uspešno dodan produkt")
         }catch(e){
             console.log("Error: " + e.message);
         }
