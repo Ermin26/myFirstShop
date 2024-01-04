@@ -1,9 +1,17 @@
 .card a{
     text-decoration: none;
     color: black;
-    font-weight: 600;
+    font-weight: 700;
+    height: auto;
+    border-radius: 15%;
+    padding: 2px;
     background-color:orange;
 };
+
+.card a:hover{
+    text-decoration: none;
+    background-color: orange;
+}
 
 #paymentForm{
     margin-bottom: 20vh;

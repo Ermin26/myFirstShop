@@ -452,6 +452,9 @@ app.get('/redirect', async (req, res) => {
     } else {
         res.redirect('/')
     }
+    /*
+    res.render('orders/redirect', {cart})
+    */
 })
 
 app.get('/add', async (req, res) => {

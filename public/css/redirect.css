@@ -1,0 +1,12 @@
+
+.row{
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.card, .card-header, .card-footer{
+    background-color: white;
+}
+.card-header{
+    padding: 0;
+}
