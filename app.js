@@ -443,14 +443,14 @@ app.get('/payment', async (req, res) => {
 
 app.get('/redirect', async (req, res) => {
     const cart = req.session.cart;
-    await functions.showUserOrderInfo(stripe,cart, req,res)
-/*
+    //await functions.showUserOrderInfo(stripe,cart, req,res)
+
     if (req.session.payment) {
         await functions.showUserOrderInfo(stripe,cart, req,res)
     } else {
         res.redirect('/')
     }
-*/
+
     /*
     res.render('orders/redirect', {cart})
     */
