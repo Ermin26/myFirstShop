@@ -269,7 +269,6 @@ app.get('/cart', async (req, res) => {
         const ordered = items.flat();
 
         calculateTotal(cart, req);
-        console.log(req.session.cart)
 
         res.render('orders/cart', { items, cart, ordered, s_pk });
     } catch (error) {
@@ -397,11 +396,9 @@ app.post('/placeOrder', async (req, res) => {
         res.redirect('/order');
     }
 });
-
 app.get('/payment', async (req, res) => {
     const ifPayed = await stripe.paymentIntents.retrieve(req.session.payment);
     let invoicePrefix = Math.floor(1000 + Math.random() * 9000) + "-" + year;
-    let invoice;
     if (ifPayed) {
         if (ifPayed.status == 'succeeded') {
             const shippingInfo = ifPayed.shipping;
@@ -415,7 +412,7 @@ app.get('/payment', async (req, res) => {
                 product_qtys.push(cart[i].qty)
             }
             //? Create a new invoice
-            await functions.getOrdersAndInvoiceInfo(invoice, invoicePrefix)
+            let invoice = await functions.getOrdersAndInvoiceInfo(invoicePrefix)
 
             //! Update payment object, added invoice number
 
@@ -425,15 +422,14 @@ app.get('/payment', async (req, res) => {
 
             try {
                 await functions.updateOrdersTable(ifPayed,invoice, shippingInfo, paymenthMethod, orderDate, product_sku, product_qtys,cart, user_id, req)
-                await functions.sendEmailOrder(yoo, shippingInfo, orderDate);
+                await functions.sendEmailOrder(yoo,nodemailer, shippingInfo, orderDate);
                 await functions.updateVarijacijeTable(product_sku,product_qtys);
-
                 await functions.deleteZeroQtyVariations();
 
                 req.flash('success', "Hvala za zaupanje. Vaše naročilo je v obdelavi.")
                 res.redirect('/redirect')
             } catch (e) {
-                req.flash('error', "Error: ", e.message)
+                req.flash('error', "This is route Error: ", e.message)
                 res.redirect('/order');
             }
         } else {
@@ -447,11 +443,14 @@ app.get('/payment', async (req, res) => {
 
 app.get('/redirect', async (req, res) => {
     const cart = req.session.cart;
+    await functions.showUserOrderInfo(stripe,cart, req,res)
+/*
     if (req.session.payment) {
-        await functions.showUserOrderInfo(cart, req)
+        await functions.showUserOrderInfo(stripe,cart, req,res)
     } else {
         res.redirect('/')
     }
+*/
     /*
     res.render('orders/redirect', {cart})
     */

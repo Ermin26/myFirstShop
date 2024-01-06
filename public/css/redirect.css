@@ -4,9 +4,18 @@
     margin-left: auto;
     margin-right: auto;
 }
+.table{
+    font-weight: 700;
+}
 .card, .card-header, .card-footer{
     background-color: white;
+    font-weight: 700
 }
 .card-header{
     padding: 0;
+}
+img{
+    width: 100px;
+    aspect-ratio: 1/1;
+    border-radius: 10%;
 }

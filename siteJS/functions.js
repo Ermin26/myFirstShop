@@ -83,11 +83,9 @@ async function getRandomProducts(id){
 
 async function getCartItemDetails(cart){
     const items = [];
-
     for (let i = 0; i < cart.length; i++) {
         const product_id = cart[i].product_id;
         const sku = cart[i].sku;
-
         const result = await conn.query(`SELECT * FROM inventory, varijacije WHERE inventory.id='${product_id}' AND varijacije.sku='${sku}' `);
 
         if (!result.rows.length) {
@@ -167,16 +165,15 @@ async function getOrderData(cart, total, cart,items,count, s_pk, s_sk, publishab
             })
         }
     }catch(err){
-        console.error(err);
+        console.error("This is getOrderData error: ",err);
         res.redirect('/')
     }
 }
 
-async function getOrdersAndInvoiceInfo(invoice, invoicePrefix){
+async function getOrdersAndInvoiceInfo(invoicePrefix){
     try{
         const orders = await conn.query(`SELECT * FROM orders`);
         let data = orders.rows;
-        console.log(data);
         console.log(data.length);
         if (!data.length) {
             invoice = invoicePrefix + "-" + 1
@@ -187,6 +184,8 @@ async function getOrdersAndInvoiceInfo(invoice, invoicePrefix){
     }catch(err){
         console.error("Error get data from orders",err.message);
     }
+    console.log("This is invoice inside function: " ,invoice)
+    return invoice;
 }
 
 async function updateUserPaymentIntent(ifPayed, stripe,invoice){
@@ -199,6 +198,7 @@ async function updateUserPaymentIntent(ifPayed, stripe,invoice){
             }
         });
     }catch(e){
+        console.log("Error updating payment intent")
         console.error("Error updating payment intent",e.message)
     }
 
@@ -206,7 +206,7 @@ async function updateUserPaymentIntent(ifPayed, stripe,invoice){
 
 async function updateOrdersTable(ifPayed,invoice, shippingInfo, paymenthMethod, orderDate, product_sku, product_qtys,cart, user_id, req){
     try{
-        await conn.query(`INSERT INTO orders(trackingNum, invoice, name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${ifPayed.metadata.trackOrder_id}', '${invoice}','${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','false','${orderDate}', '${req.session.total}', '${product_sku}', '${product_qtys}', '${user_id}')`);
+        await conn.query(`INSERT INTO orders(trackingNum, invoice, name, email, country, city, zip, street, phone, sended,date, costs, products_ids, product_qtys, user_id) VALUES('${ifPayed.metadata.trackOrder_id}', '${invoice}','${shippingInfo.name}', '${paymenthMethod.billing_details.email}', '${shippingInfo.address.country}', '${shippingInfo.address.city}', '${shippingInfo.address.postal_code}', '${shippingInfo.address.line1}', '${shippingInfo.phone}','false','${orderDate}', '${req.session.total}',array_to_json('{${product_sku}}'::text[]), array_to_json('{${product_qtys}}'::text[]), '${user_id}')`);
         req.session.cart = "";
         req.session.total = "";
         req.session.trackingNumber = "";
@@ -274,6 +274,7 @@ async function sendEmailOrder(nodemailer,yoo, shippingInfo, orderDate){
 }
 
 async function updateVarijacijeTable(product_sku,product_qtys){
+    console.log("Updating varijacije table")
     try{
         for (let j = 0; j < product_sku.length; j++) {
             await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_sku[j]}'`, async (e, result) => {
@@ -308,26 +309,42 @@ async function deleteZeroQtyVariations(){
     }
 }
 
-async function showUserOrderInfo(cart, req){
+async function showUserOrderInfo(stripe, cart, req,res){
     try{
         const data = await stripe.paymentIntents.retrieve(req.session.payment);
-        await conn.query(`SELECT * FROM orders WHERE user_id = '${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
+        await conn.query(`SELECT * FROM orders WHERE user_id ='${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
             if (error) {
                 console.log("this is error", error.message)
                 res.redirect('/')
             } else {
-                const myOrder = order.rows;
-                if (!myOrder.length) {
-                    req.flash('error', "Nothin saved to db")
+                let myOrder = order.rows[0]
+                if (myOrder == undefined || !myOrder) {
+                    req.flash('error', "Nothing saved to db")
                     req.session.payment = '';
                     res.redirect('/')
                 } else {
-                    req.session.payment = '';
-                    res.render('orders/redirect', { myOrder,cart })
+                    let items = [];
+                    for(let i = 0; i < myOrder.products_ids.length; i++) {
+                        const buyedVarijacije = await conn.query(`SELECT * FROM varijacije WHERE sku = '${myOrder.products_ids[i]}'`)
+
+                        const buyed = await conn.query(`SELECT name, neto_price FROM inventory WHERE id = '${buyedVarijacije.rows[0].product_id}'`)
+                        if(myOrder.products_ids[i] == buyedVarijacije.rows[0].sku ){
+                        let item ={
+                            name: buyed.rows[0].name,
+                            img: buyedVarijacije.rows[0].img_link[0],
+                            qty: myOrder.product_qtys[i],
+                            size: buyedVarijacije.rows[0].size,
+                            price: buyed.rows[0].neto_price
+                        }
+                        items.push(item)
+                        }
+                    }
+                    res.render('orders/redirect', { myOrder,cart, items })
                 }
             }
         })
     }catch(err){
+        console.log("Error on showUserOrderInfo")
         console.error("Error redirecting: ", err.message);
     }
 }

@@ -6,27 +6,26 @@
 
         <div class="row row-cols-1 row-cols-md-2 d-flex flex-column flex-md-row shadow">
             <div class="col">
-                <% for(data of myOrder) {%> <br>
+                <% if(myOrder) {%> <br>
                 <div id="orderInfo" class="card ms-auto me-auto border border-1">
                     <div class="card-header">
-                        <div class="row p-1 border-bottom border-2 text-center"><strong>Številka za sledenje naročila</strong></div>
-                        <div class="col p-2 text-start"><%= data.trackingnum %></div>
+                        <div class="row p-1 border-bottom border-2 text-center"><strong>Številka naročila</strong></div>
+                        <div class="col p-2 text-start"><%= myOrder.trackingnum %></div>
                     </div>
                     <div class="card-body p-0">
                         <div class="row p-1 border-bottom border-2 text-center"><strong>Podatki za dostavo</strong></div>
-                        <div class="col p-2 text-start"><%= data.country %></div>
-                        <div class="col p-2 text-start"><%= data.city %></div>
-                        <div class="col p-2 text-start"><%= data.street %></div>
-                        <div class="col p-2 text-start"><%= data.zip %></div>
+                        <div class="col p-2 text-start"><%= myOrder.country %></div>
+                        <div class="col p-2 text-start"><%= myOrder.city %></div>
+                        <div class="col p-2 text-start"><%= myOrder.street %></div>
+                        <div class="col p-2 text-start"><%= myOrder.zip %></div>
                     </div>
                     <div class="card-footer p-0">
                         <div class="row p-1 border-bottom border-2 text-center"><strong>Kontakt</strong></div>
-                        <div class="col p-2 text-start"><%= data.name %></div>
-                        <div class="col p-2 text-start"><%= data.phone %></div>
-                        <div class="col p-2 text-start"><%= data.email %></div>
+                        <div class="col p-2 text-start"><%= myOrder.name %></div>
+                        <div class="col p-2 text-start"><%= myOrder.phone %></div>
+                        <div class="col p-2 text-start"><%= myOrder.email %></div>
                     </div>
                 </div>
-                <% } %>
             </div>
             <div class="col">
                 <table class="table border mt-4">
@@ -36,11 +35,13 @@
                         <th>Cena</th>
                     </tr>
                     <tbody>
+                        <% for(product of items) {%>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
+                            <td><div class="imgField"><img src="<%= product.img %>" alt=""></div> <%= product.name %> <%= product.size %></td>
+                            <td class="align-middle"><%= product.qty %></td>
+                            <td class="align-middle"><%= product.price  %></td>
                         </tr>
+                        <% } %>
                         <tr>
                             <td></td>
                             <td></td>
@@ -48,12 +49,13 @@
                         </tr>
                         <tr>
                             <td colspan="2" class="text-start"><strong>Skupaj</strong></td>
-                            <td><strong>12.99</strong> €</td>
+                            <td><strong><%= myOrder.costs %></strong> €</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
+            
+            <% } %>
         </div>
     </div>
 
