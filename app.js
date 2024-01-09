@@ -496,6 +496,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         req.flash('success',"Uspešno dodan produkt")
         }catch(e){
             console.log("Error: " + e.message);
+            res.send("Fucking error",e.message);
         }
     res.redirect('/add')
 })
