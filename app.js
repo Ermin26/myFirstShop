@@ -188,7 +188,12 @@ app.post('/search', async (req, res) => {
     try{
         const shirts = await conn.query(`SELECT * FROM inventory WHERE category ~* $1 OR name ~* $2 OR subcategory ~* $3 OR info ~* $4 OR description ~* $5`, [data,data,data,data,data])
         let products = shirts.rows;
-        res.render('pages/searched', { products,cart });
+        if(products.length){
+            res.render('pages/searched', { products,cart });
+        }else{
+            req.flash('error', "Ni najdenih izdelkov.");
+            res.redirect('/');
+        }
     }catch(err){
         console.error("error: ", err.message);
         req.flash('error', "Ni najdenih izdelkov.");
