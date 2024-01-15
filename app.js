@@ -29,7 +29,6 @@ const nodemailer = require('nodemailer');
 const functions = require('./siteJS/functions');
 //const upload = multer({ dest: 'uploads/' })
 
-
 const yoo = process.env.YOO;
 const client = new Client({
     user: process.env.DB_USERN,
@@ -175,6 +174,10 @@ app.get('/', async (req, res) => {
     }catch(err){
         console.log("Error: ",err.message)
     }
+})
+
+app.get('/verification', async (req, res) => {
+    res.render('verification')
 })
 
 app.get('/searched', async (req, res) => {
