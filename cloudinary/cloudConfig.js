@@ -11,7 +11,10 @@ const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'Salester-shop', // add folder on cloudinary in shrani slike noter 
-        allowedFormats: ['jpeg', 'png', 'jpg', 'gif']
+        allowedFormats: ['jpeg', 'png', 'jpg', 'gif'],
+        transformation: [
+            { width: 500, height: 500, crop: 'fill' } // Prilagodite želene dimenzije
+        ]
     }
 });
 

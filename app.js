@@ -60,9 +60,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.engine('ejs', layouts);
 app.use(express.urlencoded({ extended: true }));
-app.use(override('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+app.use(override('_method'))
 
 
 const s_sk = process.env.STRIPE_SK;
@@ -493,7 +493,10 @@ app.get('/add', async (req, res) => {
 
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     try{
-        const product = req.body;
+        const product = await req.body;
+        console.log(product);
+        console.log('------///-------///------///-----///----');
+        console.log(req.files)
         let bgImage = req.files['bgImage'][0].path;
         let brutoPrice = Math.ceil(product.p_price * 0.18)
         let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
@@ -511,8 +514,10 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         inventoryPid = resultt.inventoryPid;
         varijacijePid = resultt.varijacijePid;
         invt_sku = resultt.invt_sku;
+        console.log("Before inserting into inventory")
         const result = await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku, inventory_pid) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${inventoryPid}') RETURNING id`)
         if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Other' && product.p_cat !== 'Jewerly'){
+            console.log("Before add product function")
             await functions.addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product)
         }
         else{
@@ -525,10 +530,11 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }
         req.flash('success',"Uspešno dodan produkt")
         }catch(e){
-            console.log("Error: " + e.message);
+            console.error("Error: " + e.message);
             req.flash('error',"Error: ", e.message);
         }
-    res.redirect('/add')
+
+        res.redirect('/add')
 })
 
 

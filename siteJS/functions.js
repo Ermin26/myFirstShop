@@ -407,11 +407,11 @@ async function setInvtAndVarPid(day,month,year){
 async function addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product){
     console.log("Starting working on with sizes")
     try{
-        for (let i = 0; i < product.color.length; i++) {
-            for (let j = 0; j < req.body[`size${sizeCount}`].length; j++) {
+       for (let i = 0; i < product.color.length; i++) {
+            for (let j = 0; j < product[`size${sizeCount}`].length; j++) {
                 sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year + "-" + varijacijePid;
-                if(req.body[`qty${sizeCount}`][j] > 0) {
-                    await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color, var_pid) VALUES('${result.rows[0].id}', '${req.body[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${req.body[`qty${sizeCount}`][j]}', '${product.color[i]}', '${parseInt(varijacijePid)}')`)
+                if(product[`qty${sizeCount}`][j] > 0) {
+                    await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color, var_pid) VALUES('${result.rows[0].id}', '${product[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${product[`qty${sizeCount}`][j]}', '${product.color[i]}', '${parseInt(varijacijePid)}')`)
                     varijacijePid = parseInt(varijacijePid) + 1;
                     console.log("Varijacije pid",varijacijePid)
                 }
