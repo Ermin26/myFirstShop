@@ -265,3 +265,8 @@ a:hover{
     }
 }
 
+@media print{
+    #hideSpan{
+        display: none;
+    }
+}

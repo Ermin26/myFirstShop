@@ -176,6 +176,28 @@ app.get('/', async (req, res) => {
     }
 })
 
+app.get('/company', async (req, res) => {
+    const cart = req.session.cart;
+    res.render('company/companyInfo', {cart})
+})
+
+app.get('/privacy', async (req, res) => {
+    const cart = req.session.cart;
+    res.render('company/privacy', {cart})
+})
+app.get('/questions', async (req, res) => {
+    const cart = req.session.cart;
+    res.render('company/questions', {cart})
+})
+app.get('/delivery', async (req, res) => {
+    const cart = req.session.cart;
+    res.render('company/delivery', {cart})
+})
+
+app.get('/contract', async (req, res) => {
+    const cart = req.session.cart;
+    res.render('company/contract', {cart})
+})
 app.get('/verification', async (req, res) => {
     res.render('verification')
 })
@@ -504,7 +526,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         req.flash('success',"Uspešno dodan produkt")
         }catch(e){
             console.log("Error: " + e.message);
-            res.send("Fucking error",e.message);
+            req.flash('error',"Error: ", e.message);
         }
     res.redirect('/add')
 })
@@ -986,28 +1008,7 @@ app.get('/category/other', async (req, res) => {
 })
 
 
-app.get('/company', async (req, res) => {
-    const cart = req.session.cart;
-    res.render('company/companyInfo', {cart})
-})
 
-app.get('/privacy', async (req, res) => {
-    const cart = req.session.cart;
-    res.render('company/privacy', {cart})
-})
-app.get('/questions', async (req, res) => {
-    const cart = req.session.cart;
-    res.render('company/questions', {cart})
-})
-app.get('/delivery', async (req, res) => {
-    const cart = req.session.cart;
-    res.render('company/delivery', {cart})
-})
-
-app.get('/contract', async (req, res) => {
-    const cart = req.session.cart;
-    res.render('company/contract', {cart})
-})
 
 
 //?---------------------------------------------
