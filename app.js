@@ -253,7 +253,7 @@ app.get('/product/:id', async (req, res) => {
             })
         }
         const randomProducts = await functions.getRandomProducts(id);
-        res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
+        res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), description: JSON.stringify(shirts.description), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
     }catch(err){
         console.error("error: ", err.message);
         req.flash('error', err.message);
