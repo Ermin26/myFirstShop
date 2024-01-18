@@ -24,7 +24,7 @@ a{
 #carouselExampleControls{
     display: flex;
     max-width: 450px;
-    height: 450px;
+    max-width: 450px;
 }
 
 #carousel,#item{
@@ -36,6 +36,7 @@ a{
 #item > img{
     width: 100%;
     height: 100%;
+    aspect-ratio: 1/1;
     object-fit: fill;
     object-position: center;
 }
@@ -294,8 +295,8 @@ h3{
     }
     #carouselExampleControls{
         display: flex;
-        max-width: 350px;
-        height: 350px;
+        max-width: 450px;
+        max-height: 450px;
     }
 
     #carousel,#item{
@@ -305,6 +306,7 @@ h3{
     #item > img{
         width: 100%;
         height: 100%;
+        aspect-ratio: 1/1;
         object-fit: fill;
         object-position: center;
     }
@@ -402,8 +404,8 @@ h3{
     }
     #carouselExampleControls{
         display: flex;
-        width: 350px;
-        height: 350px;
+        max-width: 450px;
+        max-height: 450px;
     }
 
     #carousel,#item{
@@ -413,6 +415,7 @@ h3{
     #item > img{
         width: 100%;
         height: 100%;
+        aspect-ratio: 1/1;
         object-fit: fill;
         object-position: center;
     }

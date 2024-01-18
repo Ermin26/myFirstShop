@@ -28,8 +28,8 @@
         {
             "pgOptions": {
                 "ssl": {
-                    "cert": "C:\\Users\\Uporabnik\\Desktop\\Apps\\myFirstShop\\root.crt",
-                    "ca": "C:\\Users\\Uporabnik\\Desktop\\Apps\\myFirstShop\\root.crt"
+                    "cert": "C:\\Users\\MBwarehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt",
+                    "ca": "C:\\Users\\MBwarehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt"
                 }
             },
             "previewLimit": 50,
