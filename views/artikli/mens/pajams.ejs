@@ -1,5 +1,5 @@
 <% layout('layouts/boilerplate') %>
-    <title> Salester-Shop</title>
+    <title> Salester-Shop - Moški - Pižame</title>
     <link rel="stylesheet" href="/css/cardHeight.css">
     <div id="container" class="d-flex flex-row">
         <h1 class=" ms-auto me-auto"></h1>
@@ -7,7 +7,7 @@
         <div id="rowColumn" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 d-flex flex-row flex-wrap justify-content-center m-0">
             <% for(let product of products) {%>
             <div id="colRow" class="col mt-3 p-1 justify-content-center">
-                <a href="/product/<%= product.id %> " class="justify-content-center">
+                <a href="/product/<%= product.category%>/<%= product.subcategory %>/<%= product.name %>/<%= product.id %>" class="justify-content-center">
                         <div id="cardHome" class="card shadow m-0">
                             <div id="cardHeaderHome" class="card-header text-center">
                                 <img src="<%= product.links[0] %>" alt="img">

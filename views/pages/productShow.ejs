@@ -1,9 +1,8 @@
 <% layout('layouts/boilerplate') %>
     <link rel="stylesheet" href="/css/show.css">
     <link rel="stylesheet" href="/css/allPages.css">
+    <title><%= shirts.name%> - <%= shirts.info %></title>
     <div id="top-row" class="row row-cols-2 d-flex flex-row ms-auto me-auto mt-5">
-
-        <%# for(let info of shirts) {%>
             <div id="col1" class="p-0 m-0">
                 <div id="carouselExampleControls" class="carousel slide m-0">
                     <div id="carousel" class="carousel-inner text-center">
@@ -157,12 +156,28 @@
         btnInfo.setAttribute('disabled', 'true');
         let invt_sku = JSON.parse('<%- invt_SKU %>');
         let sub_cat = JSON.parse('<%- subCat %>');
-        let description = JSON.parse('<%- description %>');
+        let metaData = JSON.parse('<%- dataMeta %>')
         document.addEventListener('DOMContentLoaded', function () {
           function addMeta(){
-            const data = document.querySelector('meta[name="description"]');
-              console.log(data)
-              data.content = `${description}`
+            const data = document.getElementsByTagName('head')[0];
+            const thisUrl = window.location.href;
+            const tittleMeta = document.createElement('meta');
+            const descMeta = document.createElement('meta');
+            const imageMeta = document.createElement('meta');
+            const cardMeta = document.createElement('meta');
+            const pageUrl = document.createElement('meta');
+            descMeta.name = 'description';
+            descMeta.content = `${metaData.desc}`;
+            tittleMeta.setAttribute('property','og:title');
+            tittleMeta.content = `${metaData.name} - ${metaData.info}`;
+            imageMeta.setAttribute('property',"og:image");
+            imageMeta.content = `${metaData.img}`;
+            pageUrl.setAttribute('property', 'og:url')            //data.content = `${description}`
+            pageUrl.content = `${thisUrl}`;         //data.content = `${description}`
+            data.appendChild(descMeta)
+            data.appendChild(tittleMeta)
+            data.appendChild(imageMeta)
+            data.appendChild(pageUrl)
           }
           addMeta();
           const colorSection = document.getElementById('colorSection');
@@ -320,11 +335,9 @@
                         document.getElementById('p_sku').value = selectedSku;
                         if(selectedSize && selectedSku){
                           btnInfo.removeAttribute('disabled');
-                          console.log('working');
                         }
                         else{
                           btnInfo.setAttribute('disabled', 'true');
-                          console.log('else working');
                         }
                         //addToCart(selectedColor, selectedSize);
                         });

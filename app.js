@@ -227,7 +227,7 @@ app.post('/search', async (req, res) => {
 
 })
 
-app.get('/product/:id', async (req, res) => {
+app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
     let { id } = req.params;
     const cart = req.session.cart;
     let randomProducts;
@@ -252,8 +252,15 @@ app.get('/product/:id', async (req, res) => {
                 varijacijeSku = result;
             })
         }
+
+        const metaData = {
+            name: shirts.name,
+            info: shirts.info,
+            img: shirts.bgimage,
+            desc: shirts.description
+        }
         const randomProducts = await functions.getRandomProducts(id);
-        res.render('pages/productShow', { shirts, products, colors, productsJSON: JSON.stringify(products), description: JSON.stringify(shirts.description), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
+        res.render('pages/productShow', { shirts, products, colors,dataMeta: JSON.stringify(metaData), productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
     }catch(err){
         console.error("error: ", err.message);
         req.flash('error', err.message);

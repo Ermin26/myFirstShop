@@ -18,13 +18,13 @@ a{
     margin-bottom: 10vh;
 }
 #col1{
-    width: 35%;
+    width: 40%;
 }
 
 #carouselExampleControls{
     display: flex;
-    max-width: 350px;
-    height: 350px;
+    max-width: 450px;
+    height: 450px;
 }
 
 #carousel,#item{
@@ -42,7 +42,7 @@ a{
 
 
 #col2{
-    width: 65%;
+    width: 60%;
     padding: 0;
 }
 h1{

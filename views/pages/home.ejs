@@ -1,4 +1,16 @@
 <% layout('layouts/boilerplate') %>
+    <meta name="description" content="Raziskujte našo ponudbo otroških dresov, igrač in oblačil za otroke in odrasle. Vse kaj potrebujete na enem mestu. Salestershop. Otroški dresi. Poceni stvari. Poceni nakup. Kupim dres. Kje kupiti dres za otroka. Oblačila za odrasle. Otroci. Igrače za otroke.">
+        <!-- OG Tags za družabna omrežja -->
+    <meta property="og:title" content="Salestershop - za vsakega nekaj. ">
+    <meta property="og:url" content="https://salestershop.onrender.com">
+    <meta property="og:description" content="Raziskujte našo ponudbo otroških dresov, igrač in oblačil za otroke, odrasle, moške, ženske, nosećnice in še še veliko tega.. Vse kaj potrebujete na enem mestu. Uživajte v veliki izbiri različnih produktov ter se prepustite užitku nakupovanja.">
+    <meta property="og:image" content="Here will be link of slideshoshow imag">
+        <!-- OG Tags za Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Salestershop">
+    <meta name="twitter:description" content="Raziskujte našo ponudbo otroških dresov, igrač in oblačil za otroke in odrasle. Vse kaj potrebujete na enem mestu.">
+    <meta name="twitter:image" content="Here will be link of slideshoshow imag">
+<title>Salestershop</title>
     <link rel="stylesheet" href="/css/cardHeight.css">
     <div id="container" class="d-flex flex-row">
         <h1 class=" ms-auto me-auto"></h1>
@@ -6,7 +18,7 @@
         <div id="rowColumn" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 d-flex flex-row flex-wrap justify-content-center m-0">
             <% for(let product of products) {%>
             <div id="colRow" class="col mt-3 p-1 justify-content-center">
-                <a href="/product/<%= product.id %> " class="justify-content-center">
+                <a href="/product/<%= product.category%>/<%= product.subcategory %>/<%= product.name %>/<%= product.id %>" class="justify-content-center">
                         <div id="cardHome" class="card shadow m-0">
                             <div id="cardHeaderHome" class="card-header text-center">
                                 <img src="<%= product.bgimage %>" alt="img">
