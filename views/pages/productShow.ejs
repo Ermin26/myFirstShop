@@ -68,13 +68,11 @@
                                 <input type="hidden" id="p_size" name="product_size" value="">
                                 <input type="hidden" id="p_price" name="product_price" value="<%= shirts.neto_price %>">
                                 <button type="submit" id="btn" class="btn btn-lg m-0">Dodaj v
-                                    Košarico</button>
+                                    košarico</button>
                             </div>
                         </form>
                 </div>
-
             </div>
-            <%# } %>
     </div>
     </div>
 
@@ -116,37 +114,33 @@
           </div>
     </div>
 
-    <div id="next-row" class="row m-0 p-0 w-100">
-      <picture id="picture" class="col m-0 p-0">
+    <div id="next-row" class="row">
+      <picture id="picture" class="col">
           <% shirts.links.forEach((img)=>{%>
               <img src="<%= img %>" alt="" class="img-fluid">
             <% }) %>
       </picture>
     </div>
-    <!--
-    <div class="row row-cols-2 d-flex flex-row ms-auto me-auto w-100 m-0 p-0">
-      <div class="col">
-          <div class="card">
-            <div class="card-header">
-              <img src="<%# shirts.bgimage%>" alt="Otroški dresi." style="width: 415px; height: 415px;">
-            </div>
-            <div class="card-body">
-              <p><%# shirts.description %></p>
-            </div>
+    
+    <div id="imgsInfo" class="ms-auto me-auto w-100">
+      <div class="card">
+          <div class="card-header">
+              <img src="<%= shirts.bgimage%>" alt="Otroški dresi.">
+          </div>
+          <div class="card-body">
+              <p><%= shirts.description1 %></p>
           </div>
       </div>
-      <div class="col">
-          <div class="card">
-            <div class="card-header">
-              <img src="<%# shirts.links[1]%>" alt="Otroški dresi.">
-            </div>
-            <div class="card-body">
-              <p><%# shirts.description %></p>
-            </div>
-          </div>
+      <div class="card">
+        <div class="card-header">
+              <img src="<%= shirts.links[1]%>" alt="Otroški dresi.">
+        </div>
+        <div class="card-body">
+              <p><%= shirts.description2 %></p>
+        </div>
       </div>
     </div>
-    -->
+  
     <div id="other-row" class="row justify-content-center g-0">
       <% if(randomProducts.length >= 10) {%>
       <h1 class="text-center mb-3"> Druge stranke su izbrale</h1>
@@ -190,7 +184,7 @@
             const cardMeta = document.createElement('meta');
             const pageUrl = document.createElement('meta');
             descMeta.name = 'description';
-            descMeta.content = `${metaData.desc}`;
+            descMeta.content = `Brezplačna poštnina. ${metaData.desc} ${metaData.color}. ${metaData.image1} ${metaData.image2}`;
             tittleMeta.setAttribute('property','og:title');
             tittleMeta.content = `${metaData.name} - ${metaData.info}`;
             imageMeta.setAttribute('property',"og:image");
@@ -379,5 +373,5 @@
                   });
               }
           });
-          
+
     </script>

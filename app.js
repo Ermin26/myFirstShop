@@ -252,12 +252,18 @@ app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
                 varijacijeSku = result;
             })
         }
-
+        let metaColors = [];
+        for(let i = 0; i < colors.length; i++) {
+            metaColors.push(colors[i].color);
+        }
         const metaData = {
             name: shirts.name,
             info: shirts.info,
             img: shirts.bgimage,
-            desc: shirts.description
+            desc: shirts.description,
+            color: metaColors,
+            image1: shirts.description1,
+            image2: shirts.description2
         }
         const randomProducts = await functions.getRandomProducts(id);
         res.render('pages/productShow', { shirts, products, colors,dataMeta: JSON.stringify(metaData), productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
@@ -275,13 +281,13 @@ app.post('/add-to-cart', async (req, res) => {
         const existing = req.session.cart.some(item => item.sku === product_sku);
         if (existing) {
             req.flash('error', "Izdelek je že dodan v košarico.")
-            res.redirect(`/product/${product_id}`)
+            res.redirect(`/product/:category/:subcategory/:name/${product_id}`)
         } else {
             let product = { product_id: product_id, sku: product_sku, invt_sku: invt_sku, name: product_name, color: product_color, size: product_size, qty: 1, price: product_price };
             let cart = req.session.cart;
             cart.push(product)
             req.flash('success', 'Uspešno dodano v košarico')
-            res.redirect(`/product/${product_id}`)
+            res.redirect(`/product/:category/:subcategory/:name/${product_id}`)
             }
     } else {
         let product = { user_id: user_id , product_id: product_id, sku: product_sku, invt_sku: invt_sku,name: product_name, color: product_color, size: product_size, qty: 1, price: product_price};
@@ -289,7 +295,7 @@ app.post('/add-to-cart', async (req, res) => {
         req.session.userID = user_id;
         let cart = req.session.cart;
         req.flash('success', 'Uspešno dodano v košarico')
-        res.redirect(`/product/${product_id}`)
+        res.redirect(`/product/:category/:subcategory/:name/${product_id}`)
     }
 });
 
@@ -501,9 +507,6 @@ app.get('/add', async (req, res) => {
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     try{
         const product = await req.body;
-        console.log(product);
-        console.log('------///-------///------///-----///----');
-        console.log(req.files)
         let bgImage = req.files['bgImage'][0].path;
         let brutoPrice = Math.ceil(product.p_price * 0.18)
         let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
@@ -522,7 +525,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         varijacijePid = resultt.varijacijePid;
         invt_sku = resultt.invt_sku;
         console.log("Before inserting into inventory")
-        const result = await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku, inventory_pid) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${inventoryPid}') RETURNING id`)
+        const result = await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku, inventory_pid, description1, description2) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${inventoryPid}', '${product.description1}', '${product.description2}') RETURNING id`)
         if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Other' && product.p_cat !== 'Jewerly'){
             console.log("Before add product function")
             await functions.addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product)
