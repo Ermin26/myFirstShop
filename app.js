@@ -167,7 +167,7 @@ app.get('/', async (req, res) => {
         const varijacije = await functions.getVarijace();
         if(!products.length){
             req.flash('error', "Nothing to display.")
-            res.redirect('/add');
+            res.render('pages/home',{products, varijacije, cart});
         }else{
             res.render('pages/home', {products, varijacije, cart});
         }
