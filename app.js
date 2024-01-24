@@ -573,7 +573,7 @@ app.get('/category/mens/subcategory/shirts', async (req, res) => {
         let products = result.rows
         if (!products.length) {
             req.flash('error', ' Nothing to display.')
-            res.redirect('/mens')
+            res.redirect('/')
         } else {
             if (!err) {
                 res.render('artikli/mens/shirts', { products, cart })
