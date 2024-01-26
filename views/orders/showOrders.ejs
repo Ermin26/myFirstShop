@@ -1,0 +1,93 @@
+<% layout('layouts/boilerplate') %>
+<link rel="stylesheet" href="/css/showOrders.css">
+
+
+<section>
+    <header>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id ipsam tenetur quam vel delectus obcaecati incidunt eos numquam voluptatem? Dolores porro accusamus laudantium quod voluptatem libero non magnam neque laborum?</p>
+    </header>
+    <table class="table table-responsive table-hover table-secondary table-bordered align-middle text-center w-100">
+        <thead>
+                <tr>
+                <th>Order Id</th>
+                <th>Country</th>
+                <th>Buyer</th>
+                <th>Order date</th>
+                <th>Amount</th>
+                <th>Print</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(order of orders) {%>
+                <tr>
+                    <td><%= order.trackingnum %></td>
+                    <td><%= order.country %></td>
+                    <td><%= order.name %></td>
+                    <td><%= order.date %></td>
+                    <td><%= order.costs %></td>
+                    <td><button class="btn btn-success btn-sm">Print</button></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+
+    <article class="mt-5 w-100 bg-primary">
+        <div class="row w-100 p-2 m-2">
+            <h1>salestershop.si</h1>
+        </div>
+        <div class="row row-cols-3 d-flex flex-row w-100 bg-info ms-auto me-auto">
+            <div class="col d-flex flex-column bg-warning">
+                <p>Prejemnik:</p>
+                <p>Ermin Joldić</p>
+                <p>Goriška 22</p>
+                <p>2000, Maribor</p>
+                <p>SI - Slovenia</p>
+            </div>
+            <div class="col d-flex flex-column">
+                <p>Pošiljatelj</p>
+                <p>Salestershop</p>
+                <p>Goriška 22</p>
+                <p>2000, Maribor</p>
+                <p>SI - Slovenia</p>
+            </div>
+            <div class="col d-flex flex-column">
+                <p>Račun št: <strong>1234</strong></p>
+                <p>Datum Naročila: <strong>01.01.2024</strong></p>
+                <p>Kraj izdaje: <strong>Maribor</strong></p>
+            </div>
+        </div>
+        <table class="table table-bordered border-dark w-100 mt-5">
+            <thead class="bg-secondary">
+                <tr>
+                    <th>Naziv blaga / storitve</th>
+                    <th>Cena</th>
+                    <th>Kol.</th>
+                    <th>% DDV</th>
+                    <th>Znesek</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Blago</td>
+                    <td>Cena</td>
+                    <td>1</td>
+                    <td>0.00 €</td>
+                    <td>24.99 €</td>
+                </tr>
+                <tr>
+                    <td colspan="4">Bruto</td>
+                    <td><strong>24.99 €</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="4">Popust</td>
+                    <td><strong>0.00 €</strong> </td>
+                </tr>
+                <tr>
+                    <td colspan="4">Skupaj</td>
+                    <td><strong>24.99 €</strong> </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </article>
+</section>

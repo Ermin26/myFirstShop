@@ -547,6 +547,33 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         res.redirect('/add')
 })
 
+app.get('/allOrders', async(req,res)=>{
+    const cart = req.session.cart;
+    let ordersData = {
+        orders:[]
+    };
+    await conn.query(`SELECT * FROM orders`, async(e, result)=>{
+        if(!e){
+            const orders = result.rows;
+            for(let i = 0; i < orders.length; i++){
+                const orderInfo = {...orders[i], products: []};
+                for(let j = 0; j < orders[i].products_ids.length; j++){
+                    //! await conn.query(`SELECT * FROM varijacije WHERE sku = ${orders[i].product_ids[j]}`, async(err, result) =>{
+                    //! if(!err){
+                    //!     const product = result.rows[0];
+                    //!     orderInfo.products.push(product);
+                    //! }
+                    //!});
+                    orderInfo.products.push("no name");
+                    //console.log(orders[1]);
+                }
+                ordersData.orders.push(orderInfo)
+            }
+            console.log("This is orderData: ", ordersData.orders[0].products)
+            res.render('orders/showOrders', {cart,orders})
+        }
+    })
+})
 
 // ARTICL PAGES
 
