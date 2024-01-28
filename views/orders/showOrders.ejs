@@ -3,12 +3,9 @@
 
 
 <section>
-    <header>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id ipsam tenetur quam vel delectus obcaecati incidunt eos numquam voluptatem? Dolores porro accusamus laudantium quod voluptatem libero non magnam neque laborum?</p>
-    </header>
-    <table class="table table-responsive table-hover table-secondary table-bordered align-middle text-center w-100">
+    <table class="table table-responsive table-hover table-secondary table-bordered align-middle text-center w-100 mt-5">
         <thead>
-                <tr>
+            <tr>
                 <th>Order Id</th>
                 <th>Country</th>
                 <th>Buyer</th>
@@ -31,12 +28,12 @@
         </tbody>
     </table>
 
-    <article class="mt-5 w-100 bg-primary">
+    <article id="invoice" class="mt-5 w-100">
         <div class="row w-100 p-2 m-2">
             <h1>salestershop.si</h1>
         </div>
-        <div class="row row-cols-3 d-flex flex-row w-100 bg-info ms-auto me-auto">
-            <div class="col d-flex flex-column bg-warning">
+        <div class="row row-cols-3 d-flex flex-row w-100 ms-auto me-auto">
+            <div class="col d-flex flex-column">
                 <p>Prejemnik:</p>
                 <p>Ermin Joldić</p>
                 <p>Goriška 22</p>
@@ -52,42 +49,52 @@
             </div>
             <div class="col d-flex flex-column">
                 <p>Račun št: <strong>1234</strong></p>
-                <p>Datum Naročila: <strong>01.01.2024</strong></p>
+                <p>Datum naročila: <strong>01.01.2024</strong></p>
                 <p>Kraj izdaje: <strong>Maribor</strong></p>
             </div>
         </div>
-        <table class="table table-bordered border-dark w-100 mt-5">
+        <table class="table table-bordered border-dark text-center w-100 mt-5">
             <thead class="bg-secondary">
                 <tr>
-                    <th>Naziv blaga / storitve</th>
-                    <th>Cena</th>
-                    <th>Kol.</th>
-                    <th>% DDV</th>
-                    <th>Znesek</th>
+                    <th class="p-1">Naziv blaga / storitve</th>
+                    <th class="p-1">Cena</th>
+                    <th class="p-1">Kol.</th>
+                    <th class="p-1">% DDV</th>
+                    <th class="p-1">Znesek</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Blago</td>
-                    <td>Cena</td>
-                    <td>1</td>
-                    <td>0.00 €</td>
-                    <td>24.99 €</td>
+                    <td class="p-0">Blago</td>
+                    <td class="p-0">Cena</td>
+                    <td class="p-0">1</td>
+                    <td class="p-0">0.00 €</td>
+                    <td class="p-0">24.99 €</td>
                 </tr>
                 <tr>
-                    <td colspan="4">Bruto</td>
-                    <td><strong>24.99 €</strong></td>
+                    <td class="p-1" colspan="4">Bruto</td>
+                    <td class="p-1"><strong>24.99 €</strong></td>
                 </tr>
                 <tr>
-                    <td colspan="4">Popust</td>
-                    <td><strong>0.00 €</strong> </td>
+                    <td class="p-1" colspan="4">Popust</td>
+                    <td class="p-1"><strong>0.00 €</strong> </td>
                 </tr>
                 <tr>
-                    <td colspan="4">Skupaj</td>
-                    <td><strong>24.99 €</strong> </td>
+                    <td class="p-1" colspan="4">Skupaj</td>
+                    <td class="p-1"><strong>24.99 €</strong> </td>
                 </tr>
             </tbody>
 
         </table>
     </article>
 </section>
+
+
+
+<script>
+
+    const orders = JSON.parse('<%- ordersData %>');
+    for(order of orders.orders){
+        console.log(order);
+    }
+</script>

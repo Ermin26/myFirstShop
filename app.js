@@ -555,22 +555,26 @@ app.get('/allOrders', async(req,res)=>{
     await conn.query(`SELECT * FROM orders`, async(e, result)=>{
         if(!e){
             const orders = result.rows;
-            for(let i = 0; i < orders.length; i++){
-                const orderInfo = {...orders[i], products: []};
-                for(let j = 0; j < orders[i].products_ids.length; j++){
-                    //! await conn.query(`SELECT * FROM varijacije WHERE sku = ${orders[i].product_ids[j]}`, async(err, result) =>{
-                    //! if(!err){
-                    //!     const product = result.rows[0];
-                    //!     orderInfo.products.push(product);
-                    //! }
-                    //!});
-                    orderInfo.products.push("no name");
-                    //console.log(orders[1]);
-                }
-                ordersData.orders.push(orderInfo)
-            }
-            console.log("This is orderData: ", ordersData.orders[0].products)
-            res.render('orders/showOrders', {cart,orders})
+        const ordersData = { orders: [] };
+
+        // Uporabite Promise.all za počakanje na vse asinhrone klice v zanki
+        await Promise.all(orders.map(async (order) => {
+            const orderInfo = { ...order, products: [] };
+
+            // Uporabite Promise.all za počakanje na vse asinhrone klice v notranji zanki
+            await Promise.all(order.products_ids.map(async (productId) => {
+                const productResult = await conn.query(`SELECT * FROM varijacije WHERE sku = '${productId}'`);
+                const product = productResult.rows[0];
+                orderInfo.products.push(product);
+            }));
+
+            // Dodajte orderInfo v ordersData.orders, ko so vsi asinhroni klici končani
+            ordersData.orders.push(orderInfo);
+        }));
+        console.log(ordersData);
+        res.render('orders/showOrders', { cart,orders, ordersData: JSON.stringify(ordersData) });
+        }else{
+            console.log(e.message);
         }
     })
 })
