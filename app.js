@@ -549,13 +549,10 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 
 app.get('/allOrders', async(req,res)=>{
     const cart = req.session.cart;
-    let ordersData = {
-        orders:[]
-    };
     await conn.query(`SELECT * FROM orders`, async(e, result)=>{
         if(!e){
             const orders = result.rows;
-        const ordersData = { orders: [] };
+            const ordersData = { orders: [] };
 
         // Uporabite Promise.all za počakanje na vse asinhrone klice v zanki
         await Promise.all(orders.map(async (order) => {
@@ -563,15 +560,18 @@ app.get('/allOrders', async(req,res)=>{
 
             // Uporabite Promise.all za počakanje na vse asinhrone klice v notranji zanki
             await Promise.all(order.products_ids.map(async (productId) => {
+                //console.log(order)
                 const productResult = await conn.query(`SELECT * FROM varijacije WHERE sku = '${productId}'`);
                 const product = productResult.rows[0];
-                orderInfo.products.push(product);
+                const productNames = await conn.query(`SELECT name, neto_price FROM inventory WHERE id = ${product.product_id}`);
+                console.log(productNames.rows[0])
+                orderInfo.products.push(product, productNames.rows[0]);
             }));
 
             // Dodajte orderInfo v ordersData.orders, ko so vsi asinhroni klici končani
             ordersData.orders.push(orderInfo);
         }));
-        console.log(ordersData);
+        //console.log(ordersData.orders[0].products);
         res.render('orders/showOrders', { cart,orders, ordersData: JSON.stringify(ordersData) });
         }else{
             console.log(e.message);
