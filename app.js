@@ -579,10 +579,11 @@ app.get('/allOrders', async(req,res)=>{
     })
 })
 
-app.post('/orderStatus', async (req, res) => {
-    console.log("this is body",req.body);
-
-    res.json({ status: 'Podatki sprejeti' })
+app.post('/orderStatus/:id', async (req, res) => {
+    const id = req.params.id;
+    await conn.query(`UPDATE orders SET sended = 'printed' WHERE trackingnum = $1`, [id])
+    req.flash('success', "Uspešno printano!");
+    res.redirect('/allOrders')
 })
 
 // ARTICL PAGES

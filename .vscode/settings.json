@@ -4,6 +4,7 @@
         "Bigserial",
         "bruto",
         "btns",
+        "davčni",
         "dresov",
         "družabna",
         "fulldescription",
@@ -12,6 +13,8 @@
         "loged",
         "omrežja",
         "paymenth",
+        "Podjetje",
+        "Popust",
         "productimg",
         "qtys",
         "redirecturl",
@@ -23,7 +26,8 @@
         "Varijace",
         "verifikacija",
         "womens",
-        "yooo"
+        "yooo",
+        "zavezenec"
     ],
     "sqltools.connections": [
         {

@@ -180,14 +180,9 @@
                         if(event.complete){
                             emailData.pop();
                             emailData.push(event.value.email);
-                            console.log(addressData.length, "----",emailData.length)
                             if(addressData && emailData.length){
-                                console.log("yeeahh")
                                 document.getElementById('payButton').removeAttribute('disabled');
                             }
-                            console.log(addressData)
-                            console.log('------------')
-                            console.log(emailData)
                         }
                     })
 
