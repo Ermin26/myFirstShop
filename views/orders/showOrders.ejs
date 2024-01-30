@@ -3,7 +3,7 @@
 
 
 <section>
-    <table class="table table-responsive table-hover table-secondary table-bordered align-middle text-center w-100 mt-5">
+    <table id="tableOrders" class="table table-responsive table-hover table-secondary table-bordered align-middle text-center w-100 mt-5">
         <thead>
             <tr>
                 <th>#</th>
@@ -13,49 +13,53 @@
                 <th>Order date</th>
                 <th>Amount</th>
                 <th>Print</th>
+                <th>Finish</th>
             </tr>
         </thead>
         <tbody>
             <% for(order of orders) {%>
-                <tr class="buttons">
-                    <td><input type="checkbox" name="selected" value="<%= order.trackingnum %>"></td>
-                    <td><%= order.trackingnum %></td>
-                    <td><%= order.country %></td>
-                    <td><%= order.name %></td>
-                    <td><%= order.date %></td>
-                    <td><%= order.costs %></td>
-                    <td><button class="printBtn btn btn-success btn-sm" name="<%= order.trackingnum %>" disabled>Print</button></td>
-                </tr>
+                <% if(order.sended === 'false') {%>
+                    <tr class="buttons">
+                        <td><input type="checkbox" name="selected" value="<%= order.trackingnum %>"></td>
+                        <td><%= order.trackingnum %></td>
+                        <td><%= order.country %></td>
+                        <td><%= order.name %></td>
+                        <td><%= order.date %></td>
+                        <td><%= order.costs %></td>
+                        <td><button class="printBtn btn btn-success btn-sm" name="<%= order.trackingnum %>" disabled onclick="forPrint()">Print</button></td>
+                        <td id="finishBtn"><button id="finish" class="btn btn-sm btn-secondary btn-rounded" onclick="finish()" name="<%= order.trackingnum %>">Finish</button></td>
+                    </tr>
+                <% } %>
             <% } %>
         </tbody>
     </table>
 
-    <article id="bill" class="mt-5 w-100">
+    <article id="bill" class="w-100">
         <div class="row w-100 p-2 m-2">
             <h1>salestershop.si</h1>
         </div>
         <div class="row row-cols-3 d-flex flex-row w-100 ms-auto me-auto">
-            <div class="col d-flex flex-column">
+            <div class="col-3 d-flex flex-column">
                 <p>Prejemnik:</p>
                 <p id="buyer">Ermin Joldić</p>
                 <p id="street">Goriška 22</p>
                 <p id="city">2000, Maribor</p>
                 <p id="country">SI - Slovenia</p>
             </div>
-            <div class="col d-flex flex-column">
+            <div class="col-3 d-flex flex-column">
                 <p>Pošiljatelj</p>
                 <p>Salestershop</p>
                 <p>Goriška 22</p>
                 <p>2000, Maribor</p>
                 <p>SI - Slovenia</p>
             </div>
-            <div class="col d-flex flex-column">
+            <div class="col-6 d-flex flex-column">
                 <p>Račun št: <strong id="invoiceNumber">1234</strong></p>
                 <p>Datum naročila: <strong id="orderDate">01.01.2024</strong></p>
                 <p>Kraj izdaje: <strong>Maribor</strong></p>
             </div>
         </div>
-        <table id="invoice" class="table table-bordered border-dark text-center w-100 mt-5">
+        <table id="invoice" class="table table-bordered border-dark text-center w-100 mt-2">
             <thead class="bg-secondary">
                 <tr>
                     <th class="p-1">Naziv blaga / storitve</th>
@@ -67,20 +71,23 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="p-1" colspan="4">Bruto</td>
-                    <td class="p-1"><strong>24.99 €</strong></td>
+                    <td colspan="4">Bruto</td>
+                    <td><strong id="bruto">24.99 €</strong></td>
                 </tr>
                 <tr>
-                    <td class="p-1" colspan="4">Popust</td>
-                    <td class="p-1"><strong>0.00 €</strong> </td>
+                    <td colspan="4">Popust</td>
+                    <td><strong>0.00 €</strong> </td>
                 </tr>
                 <tr>
-                    <td class="p-1" colspan="4">Skupaj</td>
-                    <td class="p-1"><strong>24.99 €</strong> </td>
+                    <td colspan="4">Skupaj</td>
+                    <td><strong id="neto">24.99 €</strong> </td>
                 </tr>
             </tbody>
 
         </table>
+        <div class="row w-100 text.center">
+            <p class="text-center p-0">Podjetje ni davčni zavezenec.</p>
+        </div>
     </article>
 </section>
 
@@ -91,60 +98,80 @@
     const orders = JSON.parse('<%- ordersData %>');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     const btns = document.querySelectorAll('.printBtn');
-    console.log(orders)
+    const finishBtns = document.querySelectorAll('#finish');
+    console.log(orders.orders)
     const table = document.getElementById("invoice");
     const tableRows = table.rows.length - 1;
+    let selected;
 
+    for(btn of finishBtns){
+        btn.style.display = 'none';
+    }
     //console.log("This is table: ", orders.orders[0])
 
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('click', function() {
             if(checkbox.checked){
                 checkboxes.forEach(cb => {
-                if (cb !== checkbox) {
-                    cb.checked = false;
-                    const rows = table.rows.length - 4;
-                    if(rows >= 1){
+                    if (cb !== checkbox) {
+                        cb.checked = false;
+                        selected = checkbox.value;
+                        const rows = table.rows.length - 4;
+                        if(rows >= 1){
                         for(let i = 0; i < rows; i++){
                             table.deleteRow(1)
                         }
                     }
                         btns.forEach(btn =>{
                             if(btn.name === checkbox.value){
-                                for(order of orders.orders){
-                                    if(checkbox.value === order.trackingnum){
-                                        const dateOrder = order.date;
-                                        document.getElementById('buyer').textContent = order.name;
-                                        document.getElementById('street').textContent = order.street;
-                                        document.getElementById('city').textContent = order.zip, order.city;
-                                        document.getElementById('country').textContent = order.country;
-                                        for(let i = 0; i < order.products.length; i++){
-                                            let row = table.insertRow(i + 1);
-                                            let cell1 = row.insertCell(0)
-                                            let cell2 = row.insertCell(1)
-                                            let cell3 = row.insertCell(2)
-                                            let cell4 = row.insertCell(3)
-                                            let cell5 = row.insertCell(4)
-                                            cell1.textContent= order.products[i].color + ' ' + order.products[i].size;
-                                            cell2.textContent= order.products[i].id;
-                                            cell3.textContent= order.products[i].qty;
-                                            cell4.textContent= 0.00;
-                                            cell5.textContent= 'cena';
-                                        }
-                                        document.getElementById('invoiceNumber').innerHTML = order.invoice;
-                                        document.getElementById('orderDate').textContent = order.date;
+                            for(order of orders.orders){
+                                if(checkbox.value === order.trackingnum){
+                                    const dateOrder = order.date;
+                                    document.getElementById('buyer').textContent = order.name;
+                                    document.getElementById('street').textContent = order.street;
+                                    document.getElementById('city').textContent = order.zip + ',' + order.city;
+                                    document.getElementById('country').textContent = order.country + ' ' + '-' + ' ' + 'Slovenia';
+                                    document.getElementById('invoiceNumber').innerHTML = order.invoice;
+                                    document.getElementById('orderDate').textContent = order.date;
+                                    document.getElementById('neto').textContent = order.costs + ' ' + '€';
+                                    for(let i = 0; i < order.products.length; i++){
+                                        let row = table.insertRow(i + 1);
+                                        let cell1 = row.insertCell(0)
+                                        let cell2 = row.insertCell(1)
+                                        let cell3 = row.insertCell(2)
+                                        let cell4 = row.insertCell(3)
+                                        let cell5 = row.insertCell(4)
+                                        const size = ((order.products[i].size) ? '#' + order.products[i].size : ' ');
+                                        const color = ((order.products[i].color) ? '#' + order.products[i].color : ' ');
+                                        cell1.textContent= order.productNames[i].name + ' ' + size + ' ' + color;
+                                        cell2.textContent= order.productNames[i].neto_price;
+                                        cell3.textContent= order.products[i].qty;
+                                        cell4.textContent= '0.00 €';
+                                        cell5.textContent= parseFloat(order.productNames[i].neto_price) * parseInt(order.products[i].qty);
                                     }
                                 }
+                            }
+                            const afterUpdateTable = document.getElementById('invoice');
+                            const afterRows = afterUpdateTable.rows.length - 4;
+                            let bruto;
+                            for(let i = 1; i <= afterUpdateTable.rows.length - 4; i++){
+                                console.log(afterUpdateTable.rows[i].cells[4].innerText)
+                                if(bruto){
+                                    bruto = parseFloat(bruto) + parseFloat(afterUpdateTable.rows[i].cells[4].innerText);
+                                }else{
+                                    bruto = afterUpdateTable.rows[i].cells[4].innerText;
+                                }
+                            }
+                            console.log("This is bruto: ", bruto)
+                            document.getElementById('bruto').textContent = bruto + ' ' + '€';
+                            btn.removeAttribute('disabled')
 
-
-                btn.removeAttribute('disabled')
-
-            }else{
-                    btn.setAttribute('disabled', 'true');
-            }
-          })
-        }
-      });
+                        }else{
+                                btn.setAttribute('disabled', 'true');
+                            }
+                        })
+                    }
+                });
             }else if(!checkbox.checked){
                 btns.forEach(btn =>{
                     btn.setAttribute('disabled','true')
@@ -155,6 +182,41 @@
                     table.deleteRow(1)
                 }
             }
+        });
     });
-  });
+
+    function forPrint(){
+        console.log("This is selected: ", selected)
+        for(const finishBtn of finishBtns){
+            if(selected === finishBtn.name){
+                console.log("Btn name",finishBtn)
+                finishBtn.style.display = 'block';
+
+                window.print();
+            }
+        }
+    };
+
+    async function finish(){
+        const data = JSON.stringify(selected);
+        console.log("this is data: ", data)
+        await fetch('/orderStatus',{
+            method: 'POST',
+            headers:{
+                'Content-type': 'text/plain',
+            },
+            body: selected,
+        })
+        .then(response => response.json())
+        .then(data =>{
+            console.log(data);
+            window.location.reload();
+        })
+        .catch(error =>{
+            console.error("Napaka pri pošiljanju podatkov", error);
+        })
+        .then(errorMessage => {
+        console.log('Napaka sporočila od strežnika:', errorMessage);
+        });
+    }
 </script>

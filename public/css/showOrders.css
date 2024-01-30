@@ -6,3 +6,24 @@
 p{
     margin-bottom: 0;
 }
+
+#invoice td{
+    padding: 0;
+}
+
+#bill{
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+@media print{
+    #navbar,#searchBar, #footer, #tableOrders{
+        display: none;
+    }
+    #bill{
+        margin-top:0;
+        display: block;
+    }
+}

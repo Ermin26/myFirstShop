@@ -556,16 +556,16 @@ app.get('/allOrders', async(req,res)=>{
 
         // Uporabite Promise.all za počakanje na vse asinhrone klice v zanki
         await Promise.all(orders.map(async (order) => {
-            const orderInfo = { ...order, products: [] };
+            const orderInfo = { ...order, products: [],productNames:[] };
 
             // Uporabite Promise.all za počakanje na vse asinhrone klice v notranji zanki
             await Promise.all(order.products_ids.map(async (productId) => {
                 //console.log(order)
                 const productResult = await conn.query(`SELECT * FROM varijacije WHERE sku = '${productId}'`);
                 const product = productResult.rows[0];
-                const productNames = await conn.query(`SELECT name, neto_price FROM inventory WHERE id = ${product.product_id}`);
-                console.log(productNames.rows[0])
-                orderInfo.products.push(product, productNames.rows[0]);
+                const productNames = await conn.query(`SELECT name, neto_price,id FROM inventory WHERE id = ${product.product_id}`);
+                orderInfo.products.push(product);
+                orderInfo.productNames.push(productNames.rows[0]);
             }));
 
             // Dodajte orderInfo v ordersData.orders, ko so vsi asinhroni klici končani
@@ -577,6 +577,12 @@ app.get('/allOrders', async(req,res)=>{
             console.log(e.message);
         }
     })
+})
+
+app.post('/orderStatus', async (req, res) => {
+    console.log("this is body",req.body);
+
+    res.json({ status: 'Podatki sprejeti' })
 })
 
 // ARTICL PAGES
