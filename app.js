@@ -588,6 +588,22 @@ app.post('/orderStatus/:id', async (req, res) => {
 
 // ARTICL PAGES
 
+app.get('/:category/:subcategory?',async(req,res)=>{
+    const category = req.params.category;
+    const subcategory = req.params.subcategory;
+    console.log(category, subcategory)
+
+    if(category && subcategory){
+        const products = await conn.query(`SELECT * FROM inventory WHERE category = '${category}' AND subcategory = '${subcategory}'`)
+        console.log(products.rows)
+        res.send( products.rows[0])
+    }else if(category && !subcategory){
+        res.send("Only category")
+    }else if(subcategory && !category){
+        res.send("Subcategory only")
+    }
+})
+
 //! MENS
 app.get('/category/mens', async (req, res) => {
     const cart = req.session.cart;
