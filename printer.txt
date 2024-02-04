@@ -1,0 +1,84 @@
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Simulacija podatkovne baze naročil
+const ordersDatabase = [];
+
+// Obdelava naročil in "tiskanje"
+function processOrder(orderData) {
+    console.log('Obdelava naročila:', orderData);
+
+    // Pridobite naslov in port tiskalniškega strežnika
+    const printerAddress = '192.168.1.100'; // Prilagodite na vaš IP naslov tiskalniškega strežnika
+    const printerPort = 9100; // Prilagodite na vaš port tiskalniškega strežnika
+
+    // Pošljite podatke na tiskalnik prek socket.io
+    io.emit('printRequest', {
+        printerAddress,
+        printerPort,
+        printData: formatPrintData(orderData)
+    });
+}
+
+// Formatiranje podatkov za printanje
+function formatPrintData(orderData) {
+    const formattedData = `
+    ***** NAROČILO *****
+    Ime naročnika: ${orderData.customer.name}
+    Naslov naročnika: ${orderData.customer.address}
+    E-pošta naročnika: ${orderData.customer.email}
+    Telefon naročnika: ${orderData.customer.phone}
+
+    ***** IZDELKI *****
+    ${formatOrderItems(orderData.orderItems)}
+
+    ***** SKUPNA CENA *****
+    ${orderData.totalOrderAmount} EUR
+
+    ***** DATUM IN ČAS NAROČILA *****
+    ${formatDateTime(orderData.orderDateTime)}
+    `;
+
+    return formattedData;
+}
+
+// Formatiranje naročenih izdelkov
+function formatOrderItems(orderItems) {
+    return orderItems.map(item => `
+    Izdelek: ${item.productName}
+    Cena: ${item.price} EUR
+    Količina: ${item.quantity}
+    Skupna cena: ${item.total} EUR
+    `).join('\n');
+}
+
+// Formatiranje datuma in časa
+function formatDateTime(dateTime) {
+    const formattedDateTime = new Date(dateTime).toLocaleString('sl-SI', {
+        timeZone: 'Europe/Ljubljana', // Prilagodite na svojo časovno območje
+        dateStyle: 'full',
+        timeStyle: 'long'
+    });
+
+    return formattedDateTime;
+}
+
+io.on('connection', (socket) => {
+    console.log('Povezan nov odjemalec');
+
+    socket.on('orderPrint', (orderData) => {
+        console.log('Prejeto naročilo:', orderData);
+        ordersDatabase.push(orderData);
+
+        // Pošiljanje podatkov na tiskalnik
+        processOrder(orderData);
+
+        // Po uspešnem tiskanju lahko pošljete potrdilo stranki
+        socket.emit('orderPrinted', 'Naročilo je bilo natisnjeno');
+    });
+});

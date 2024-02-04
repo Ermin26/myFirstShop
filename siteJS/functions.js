@@ -451,6 +451,22 @@ async function addSingleProduct(year,varijacijePid,result, imgsUrl, product){
     console.log("end working on with single")
 }
 
+async function getCategoryItems(category, subcategory, subcategory2){
+    let product = [];
+    try {
+        if(category && subcategory2){
+            const data = await conn.query(`SELECT * FROM inventory WHERE category ILIKE '${category}' AND subcategory ILIKE '${subcategory2}'`)
+            product.push(data.rows[0]);
+        }else if(category && !subcategory2){
+            const data = await conn.query(`SELECT * FROM inventory WHERE category ILIKE '${category}'`)
+            product.push(data.rows[0]);
+        }
+    }catch(e){
+        console.error("Error: ", e.message)
+    }
+    return product
+}
+
 module.exports ={
     getAllProducts,
     getVarijace,
@@ -474,4 +490,5 @@ module.exports ={
     addProductWithSizes,
     addProductWithoutSizes,
     addSingleProduct,
+    getCategoryItems
 }
