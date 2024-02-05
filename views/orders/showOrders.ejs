@@ -94,17 +94,48 @@
         </div>
     </article>
 
+    <article id="shippingData" class="">
+        <div class="card">
+            <div class="card-body">
+                <p>Pošiljatelj</p>
+                <p>Salestershop</p>
+                <p>Goriška 22</p>
+                <p>2000, Maribor</p>
+                <p>SI - Slovenia</p>
+            </div>
+            <div class="card-body">
+                <p>Prejemnik</p>
+                <p id="ime"></p>
+                <p id="naslov"></p>
+                <p id="ulica"></p>
+                <p id="drzava"></p>
+            </div>
+            <div id="shippingFooter" class="card-footer">
+                <div class="row row-cols-2 w-100 ms-auto me-auto align-middle">
+                    <div id="shippingCol" class="col"></div>
+                    <div class="col m-0 p-0 text-end">
+                        <input id="inputQrCode" onchange="UpdateQRCode(this.value)" value="Hello World..."/>
+                        <div id="qrcode" class="text-end"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </article>
+
 </section>
 
 
 
 <script>
 
+    const footer = document.getElementById('shippingCol');
+
+
     const orders = JSON.parse('<%- ordersData %>');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     const btns = document.querySelectorAll('.printBtn');
     const finishBtns = document.querySelectorAll('#finish');
-    console.log(btns.name)
     const table = document.getElementById("invoice");
     const tableRows = table.rows.length - 1;
     let selected;
@@ -118,15 +149,16 @@
             if(checkboxes.length > 1){
                 if(checkbox.checked){
                     checkboxes.forEach(cb => {
-                        console.log("this is cb: ", cb)
                         if (cb !== checkbox) {
                             cb.checked = false;
                             selected = checkbox.value;
                             const rows = table.rows.length - 4;
                             if(rows >= 1){
-                            for(let i = 0; i < rows; i++){
-                                table.deleteRow(1)
-                            }
+                                for(let i = 0; i < rows; i++){
+                                    table.deleteRow(1)
+                                }
+                                footer.innerHTML = "";
+                                document.getElementById("qrcode").innerHTML= '';
                         }
                             btns.forEach(btn =>{
                                 if(btn.name === checkbox.value){
@@ -140,6 +172,13 @@
                                         document.getElementById('invoiceNumber').innerHTML = order.invoice;
                                         document.getElementById('orderDate').textContent = order.date;
                                         document.getElementById('neto').textContent = order.costs + ' ' + '€';
+
+                                        document.getElementById('ime').textContent = order.name;
+                                        document.getElementById('naslov').textContent = order.street;
+                                        document.getElementById('ulica').textContent = order.zip + ',' + ' ' + order.city;
+                                        document.getElementById('drzava').textContent = order.country + ' ' + '-' + ' ' + 'Slovenia';
+
+                                        UpdateQRCode(order.trackingnum)
                                         for(let i = 0; i < order.products.length; i++){
                                             let row = table.insertRow(i + 1);
                                             let cell1 = row.insertCell(0)
@@ -154,6 +193,10 @@
                                             cell3.textContent= order.products[i].qty;
                                             cell4.textContent= '0.00 €';
                                             cell5.textContent= parseFloat(order.productNames[i].neto_price) * parseInt(order.products[i].qty);
+                                            const box = document.createElement('p');
+                                            box.classList.add('row','d-flex', 'flex-column' ,'w-100')
+                                            box.textContent = `${order.productNames[i].name} #${order.products[i].size} #${order.products[i].color}`;
+                                            footer.appendChild(box);
                                         }
                                     }
                                 }
@@ -185,9 +228,10 @@
                 })
                 const rows = table.rows.length - 4;
                 for(let i = 0; i < rows; i++){
-                    console.log("delam")
                     table.deleteRow(1)
                 }
+                footer.innerHTML = "";
+                document.getElementById("qrcode").innerHTML= '';
             }
             }else{
                 btns.forEach(btn =>{
@@ -203,6 +247,12 @@
                                     document.getElementById('invoiceNumber').innerHTML = order.invoice;
                                     document.getElementById('orderDate').textContent = order.date;
                                     document.getElementById('neto').textContent = order.costs + ' ' + '€';
+
+                                    document.getElementById('ime').textContent = order.name;
+                                    document.getElementById('naslov').textContent = order.street;
+                                    document.getElementById('ulica').textContent = order.zip + ',' + ' ' + order.city;
+                                    document.getElementById('drzava').textContent = order.country + ' ' + '-' + ' ' + 'Slovenia';
+                                    UpdateQRCode(order.trackingnum)
                                     for(let i = 0; i < order.products.length; i++){
                                         let row = table.insertRow(i + 1);
                                         let cell1 = row.insertCell(0)
@@ -217,6 +267,10 @@
                                         cell3.textContent= order.products[i].qty;
                                         cell4.textContent= '0.00 €';
                                         cell5.textContent= parseFloat(order.productNames[i].neto_price) * parseInt(order.products[i].qty);
+                                        const box = document.createElement('p');
+                                        box.classList.add('row','d-flex', 'flex-column' ,'w-100')
+                                        box.textContent = `${order.productNames[i].name} #${order.products[i].size} #${order.products[i].color}`;
+                                        footer.appendChild(box);
                                     }
                                 }
                             }
@@ -224,7 +278,6 @@
                             const afterRows = afterUpdateTable.rows.length - 4;
                             let bruto;
                             for(let i = 1; i <= afterUpdateTable.rows.length - 4; i++){
-                                console.log(afterUpdateTable.rows[i].cells[4].innerText)
                                 if(bruto){
                                     bruto = parseFloat(bruto) + parseFloat(afterUpdateTable.rows[i].cells[4].innerText);
                                 }else{
@@ -253,5 +306,15 @@
             }
         }
     };
+    function UpdateQRCode(value) {
+        const qrcodeElement = document.getElementById("qrcode");
 
+        // Uporabite qrcode-generator za generiranje QR kode
+        const qrcode = new QRCode(qrcodeElement, {
+            text: value,
+            width: 70,
+            height: 70
+        });
+    }
 </script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>

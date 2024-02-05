@@ -8,8 +8,11 @@ p{
 }
 
 section{
+    display: flex;
+    flex-direction: column;
     max-width: 100%;
     overflow-x: auto;
+    justify-content: center;
 }
 
 #invoice td{
@@ -22,15 +25,64 @@ section{
     padding: 0;
     max-width: 100%;
     overflow-x: hidden;
+};
+
+.card-footer{
+    padding: 0;
+    margin: 0;
+}
+
+#shippingData{
+    width: 100mm;
+    height: 150mm;
+    display: none;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    transform: rotate(270deg);
+    page-break-inside: avoid;
+    page-break-after: avoid;
+    margin: 0;
+    padding: 0;
+}
+
+#shippingData .card{
+    height: 100%;
+    width: 100%;
+    border-radius: 0;
+}
+
+#inputQrCode{
+    display: none;
+}
+#qrcode img{
+    margin-left: auto;
+    padding: 1px;
 }
 
 
+
+
 @media print{
-    #navbar,#searchBar, #footer, #tableOrders{
+    #navbar,#searchBar, #footer, #tableOrders, #alter{
         display: none;
     }
     #bill{
-        margin-top:0;
+        margin:0;
+        padding: 0;
         display: block;
+        page-break-inside: avoid;
+        page-break-after: avoid;
+        page-break-inside:avoid;
+    }
+
+    #shippingData{
+        width: 100mm;
+        height: 150mm;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        justify-content: center;
+        page-break-before: always;
     }
 }
