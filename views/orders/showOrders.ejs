@@ -142,7 +142,6 @@
     for(btn of finishBtns){
         btn.style.display = 'none';
     }
-    //console.log("This is table: ", orders.orders[0])
 
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('click', function() {
@@ -159,7 +158,7 @@
                                 }
                                 footer.innerHTML = "";
                                 document.getElementById("qrcode").innerHTML= '';
-                        }
+                            }
                             btns.forEach(btn =>{
                                 if(btn.name === checkbox.value){
                                 for(order of orders.orders){
@@ -204,14 +203,12 @@
                                 const afterRows = afterUpdateTable.rows.length - 4;
                                 let bruto;
                                 for(let i = 1; i <= afterUpdateTable.rows.length - 4; i++){
-                                    console.log(afterUpdateTable.rows[i].cells[4].innerText)
                                     if(bruto){
                                         bruto = parseFloat(bruto) + parseFloat(afterUpdateTable.rows[i].cells[4].innerText);
                                     }else{
                                         bruto = afterUpdateTable.rows[i].cells[4].innerText;
                                     }
                                 }
-                                console.log("This is bruto: ", bruto)
                                 document.getElementById('bruto').textContent = bruto + ' ' + '€';
                                 btn.removeAttribute('disabled')
 
@@ -233,8 +230,10 @@
                 footer.innerHTML = "";
                 document.getElementById("qrcode").innerHTML= '';
             }
-            }else{
-                btns.forEach(btn =>{
+            }
+            else{
+                if(checkbox.checked){
+                    btns.forEach(btn =>{
                             if(btn.name === checkbox.value){
                             for(order of orders.orders){
                                 if(checkbox.value === order.trackingnum){
@@ -284,7 +283,6 @@
                                     bruto = afterUpdateTable.rows[i].cells[4].innerText;
                                 }
                             }
-                            console.log("This is bruto: ", bruto)
                             document.getElementById('bruto').textContent = bruto + ' ' + '€';
                             btn.removeAttribute('disabled')
 
@@ -292,7 +290,20 @@
                                 btn.setAttribute('disabled', 'true');
                             }
                         })
-                console.log("this is checkbox: ",checkbox)
+                    console.log("this is checkbox: ",checkbox)
+                }else{
+                    document.getElementById('neto').textContent = "";
+                    document.getElementById('bruto').textContent ="";
+                    btns.forEach(btn =>{
+                    btn.setAttribute('disabled','true')
+                    })
+                    const rows = table.rows.length - 4;
+                    for(let i = 0; i < rows; i++){
+                        table.deleteRow(1)
+                    }
+                    footer.innerHTML = "";
+                    document.getElementById("qrcode").innerHTML= '';
+                    }
             }
         });
     });

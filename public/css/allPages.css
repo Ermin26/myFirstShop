@@ -177,8 +177,17 @@ a:hover{
 #searched{
     width: 25%;
 }
-
-
+#checkBoxes{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2px;
+}
+#checkBoxes div{
+    width: 45%;
+    border-radius: 10px;
+    margin: 2px;
+    padding: 0;
+};
 
 @media(max-width: 3000px){
     #searchBar form{
@@ -246,7 +255,6 @@ a:hover{
         margin-right: auto;
     }
 }
-
 
 @media(max-width: 600px){
     #searchBar form{
