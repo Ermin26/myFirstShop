@@ -183,10 +183,11 @@ a:hover{
     padding: 2px;
 }
 #checkBoxes div{
-    width: 45%;
-    border-radius: 10px;
+    width: 40%;
     margin: 2px;
     padding: 0;
+    margin-left: auto;
+    margin-right: auto
 };
 
 @media(max-width: 3000px){

@@ -631,24 +631,29 @@
         document.getElementById("adultClothes").style.display = "none";
         document.getElementById("adultShoes").style.display = "none";
         document.getElementById("checkBoxes").style.display = "none";
-        //document.getElementById('showAddBtn').style.display = "none";
 
         let toysField = document.getElementById("toys");
-        toysField.style.display = "none";
-        toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
-
         let infoKidsClothes = document.getElementById("kidsClothes").getElementsByTagName('input');
         let infoKidsShoes = document.getElementById("kidsShoes").getElementsByTagName('input');
         let infoAdultClothes = document.getElementById("adultClothes").getElementsByTagName('input');
         let infoAdultShoes = document.getElementById("adultShoes").getElementsByTagName('input');
         let infoToys = document.getElementById("toys").getElementsByTagName('input');
+        let otrociObutev = document.getElementById("OtrociObutev");
+        let otrociPerilo = document.getElementById("OtrociPerilo");
+        let barve = document.getElementById("barve");
+        let odrasliPerilo = document.getElementById("OdrasliPerilo");
+        let odrasliObutev = document.getElementById("OdrasliObutev");
+
+        toysField.style.display = "none";
+        toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+
         category = "";
         subCategory = "";
         imageNum = 2;
         let newCategory;
         let checkSub = ['Jakne', 'Majce', 'Hlače', 'Obleka', 'Spodnje perilo', 'Pižama', 'Obutev', 'New']
         let checkSubKids = ['Jakne', 'Majce', 'Hlače', 'Obleka', 'Spodnje perilo', 'Pižama','Bodi', 'Obutev', 'Igrače','New']
-        let checkJewerlySub = ['Verižica', 'Zapestnica', 'Ura'];
+        let checkJewerlySub = ['Verižica', 'Zapestnica', 'Ura', 'New'];
 
         const checkBoxes = document.querySelectorAll('input[type="checkbox"]');
         checkBoxes.forEach(checkbox =>{
@@ -660,30 +665,28 @@
                         }
                     })
                     newCategory = checkbox.value;
-                    removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
-                    hideAddButton();
-                    if(newCategory == 'Odrasli perilo'){
-                        addAdultClothes(infoAdultClothes);
-                        console.log("1")
-                    }
-                    else if(newCategory == 'Odrasli obutev'){
-                        addAdultShoes(infoAdultShoes);
-                        console.log("2")
-                    }
-                    else if(newCategory == 'Otroci perilo'){
-                        addKidsClothes(infoKidsClothes);
-                        console.log("3")
-                    }
-                    else if(newCategory == 'Otroci obutev'){
-                        addKidsShoes(infoKidsShoes);
-                        console.log("4")
-                    }
-                    else if(newCategory == 'Barve'){
-                        addToysFields(infoToys, toysField);
-                        console.log("5")
-                    }
 
-                    showAddButton();
+                    removeFieldsAfterCheckBox(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
+
+                    hideAddButton();
+                    if(category && category !== 'Select Category'){
+                        if(newCategory == 'Odrasli perilo' && category !== 'Otroci' && category !== 'Nakit'){
+                            addAdultClothes(infoAdultClothes);
+                        }
+                        else if(newCategory == 'Odrasli obutev' && category !== 'Otroci' && category !== 'Nakit'){
+                            addAdultShoes(infoAdultShoes);
+                        }
+                        else if(newCategory == 'Otroci perilo' && category !== 'Moški'  && category !== 'Ženske' && category !== 'Nakit'){
+                            addKidsClothes(infoKidsClothes);
+                        }
+                        else if(newCategory == 'Otroci obutev' && category !== 'Moški'  && category !== 'Ženske' && category !== 'Nakit'){
+                            addKidsShoes(infoKidsShoes);
+                        }
+                        else if(newCategory == 'Barve'){
+                            addToysFields(infoToys, toysField);
+                        }
+                        showAddButton();
+                    }
                 }
             })
         });
@@ -701,8 +704,9 @@
                     else{
                         allSubs[i].style.display = 'none';
                     }
-                }
-
+                };
+                resetCheckbox(checkBoxes)
+                enableMensAndWomens(otrociObutev, otrociPerilo, barve, odrasliObutev, odrasliPerilo)
                 removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
 
                 if (subCategory !== 'Select Subcategory' && checkSub.includes(subCategory) && subCategory !== 'Obutev'  && subCategory !== 'New') {
@@ -726,8 +730,9 @@
                         allSubs[i].style.display = 'none';
                     }
                 }
-                hideAddButton()
-
+                hideAddButton();
+                resetCheckbox(checkBoxes);
+                enableKids(otrociObutev, otrociPerilo, barve, odrasliObutev, odrasliPerilo)
                 removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
 
                 if(subCategory !== 'Select Subcategory' && checkSub.includes(subCategory) && subCategory !== 'Obutev' && subCategory !== 'Igrače'  && subCategory !== 'New') {
@@ -758,6 +763,8 @@
                     }
                 }
                 hideAddButton()
+                resetCheckbox(checkBoxes);
+                enableNakit(otrociObutev, otrociPerilo, barve, odrasliObutev, odrasliPerilo)
                 removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
 
                 if(subCategory !== 'Select Subcategory' && checkJewerlySub.includes(subCategory)){
@@ -770,13 +777,12 @@
             if (category == 'NewCat' || category == 'null'){
                 imageNum = 2;
                 userEnter = prompt('Name of Category');
-                console.log("User entered",userEnter.length);
                 while(!userEnter.length){
                     userEnter = prompt('Name of Category');
                 }
                     document.getElementById('newCat').value = userEnter;
                     document.getElementById('newCat').text = userEnter;
-                    category.value = userEnter;
+                    document.getElementById("p_cat").value = userEnter;
             }
             let newSub;
             if (subCategory == 'New'){
@@ -787,7 +793,7 @@
                 document.getElementById('new').value = newSub;
                 document.getElementById('new').text = newSub;
                 document.getElementById("checkBoxes").style.display = "flex";
-                subCategory.value = newSub;
+                document.getElementById("p_subcat").value = newSub;
                 //subSelected();
             }
         }
@@ -795,64 +801,8 @@
         function addRow() {
             cate = document.getElementById("p_cat").value;
             subCat = document.getElementById("p_subcat").value;
-
-            if(imageNum == 10){
-                const btnDisable = document.getElementById('showAddBtn');
-                btnDisable.classList.remove('btn-info');
-                btnDisable.classList.add('btn-danger');
-            }
-
-            if(imageNum == 11){
-                const btnDisable = document.getElementById('showAddBtn');
-                btnDisable.removeAttribute('onclick');
-                window.alert("Maximalan broj varijacija je 10!")
-            }
-            else{
-                if(cate == 'Otroci'){
-                    if (checkSub.includes(subCat) && subCat !== 'Obutev' && subCat !== 'Igrače') {
-                        addKidsClothesRows(imageNum);
-                    }
-                    else if(subCategory == 'Obutev'){
-                        addKidsShoesRow(imageNum);
-                    }
-                    else{
-                        addToysRow(imageNum);
-                    }
-                }
-                else if(cate = 'Moški' || cate== 'Ženske'){
-                    if(checkSub.includes(subCat) && subCat !== 'Obutev'){
-                        addAdultsClothesRow(imageNum);
-                    }
-                    else if(subCat == 'Obutev'){
-                        addAdultsShoesRow(imageNum);
-                    }
-                    else{
-                        addToysRow(imageNum);
-                    }
-                }
-                else if(cate = 'Nakit'){
-                    if(checkJewerlySub.includes(subCat)){
-                        addToysRow(imageNum);
-                    }
-                }
-                else{
-                    if(newCategory == 'Odrasli perilo'){
-                        addAdultsClothesRow(imageNum);
-                    }
-                    else if(newCategory == 'Odrasli obutev'){
-                        addAdultsShoesRow(imageNum);
-                    }
-                    else if(newCategory == 'Otroci perilo'){
-                        addKidsClothesRows(imageNum);
-                    }
-                    else if(newCategory == 'Otroci obutev'){
-                        addKidsShoesRow(imageNum);
-                    }
-                    else if(newCategory == 'Barve'){
-                        addToysRow(imageNum);
-                    }
-                }
-            }
+            addFieldSizes(imageNum);
+            imageNum += 1;
         }
 
 

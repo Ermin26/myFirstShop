@@ -63,10 +63,56 @@ function removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothe
     document.getElementById("kidsClothes").style.display = "none";
     document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
     document.getElementById("kidsShoes").style.display = "none";
+    /*
     document.getElementById('newCat').value = "NewCat";
     document.getElementById('newCat').text = "NewCat";
     document.getElementById('new').value = "New";
     document.getElementById('new').text = "New";
+*/
+    toysField.style.display = "none";
+    toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
+
+    if (infoKidsClothes.length) {
+        for(let i = 0; i < infoKidsClothes.length; i++){
+            infoKidsClothes[i].setAttribute('disabled', true);
+        }
+        document.getElementById('addRow').innerHTML="";
+    }
+    if (infoKidsShoes.length) {
+        for(let i = 0; i < infoKidsShoes.length; i++){
+            infoKidsShoes[i].setAttribute('disabled', true);
+        }
+        document.getElementById('addRow').innerHTML="";
+    }
+    if (infoToys.length) {
+        for(let i = 0; i < infoToys.length; i++){
+            infoToys[i].setAttribute('disabled', true);
+        }
+        document.getElementById('addRow').innerHTML="";
+    }
+    if(infoAdultClothes.length) {
+        for(let i = 0; i < infoAdultClothes.length; i++){
+        infoAdultClothes[i].removeAttribute('disabled');
+        }
+        document.getElementById('addRow').innerHTML="";
+    }
+    if(infoAdultShoes.length) {
+        for(let i = 0; i < infoAdultShoes.length; i++){
+        infoAdultShoes[i].setAttribute('disabled', true);
+        }
+        document.getElementById('addRow').innerHTML="";
+    }
+};
+
+function removeFieldsAfterCheckBox(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys){
+    document.getElementById("adultClothes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+    document.getElementById("adultClothes").style.display = "none";
+    document.getElementById("adultShoes").classList.remove('row', 'row-cols-3','row-cols-md-5', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+    document.getElementById("adultShoes").style.display = "none";
+    document.getElementById("kidsClothes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+    document.getElementById("kidsClothes").style.display = "none";
+    document.getElementById("kidsShoes").classList.remove('row', 'row-cols-3','row-cols-md-6', 'd-flex', 'flex-wrap', 'mt-4', 'text-center', 'border-2', 'border-dark', 'shadow' ,'w-100', 'ms-auto', 'me-auto');
+    document.getElementById("kidsShoes").style.display = "none";
     toysField.style.display = "none";
     toysField.classList.remove('row', 'row-cols-1', 'row-cols-md-2', 'shadow')
 
@@ -190,7 +236,6 @@ function addAdultsClothesRow(imageNum){
                 </div>
             </div>`
                         boxWrapper.appendChild(box);
-                        imageNum += 1;
 };
 
 function addAdultsShoesRow(imageNum){
@@ -267,7 +312,6 @@ function addAdultsShoesRow(imageNum){
                 </div>
             </div>`
                         boxWrapper.appendChild(box);
-                        imageNum += 1;
 };
 
 function addKidsClothesRows(imageNum){
@@ -405,7 +449,6 @@ function addKidsClothesRows(imageNum){
                     </div>
                 </div>`;
                         boxWrapper.appendChild(box);
-                        imageNum += 1;
 };
 
 function addKidsShoesRow(imageNum){
@@ -549,7 +592,6 @@ function addKidsShoesRow(imageNum){
                 </div>
             </div>`
                         boxWrapper.appendChild(box);
-                        imageNum += 1;
 };
 
 function addToysRow(imageNum){
@@ -573,5 +615,118 @@ function addToysRow(imageNum){
                 </div>
             </div>`;
                         boxWrapper.appendChild(box);
-                        imageNum += 1;
+};
+
+function enableMensAndWomens(otrociObutev, otrociPerilo, barve, odrasliObutev, odrasliPerilo){
+    otrociObutev.setAttribute('disabled', 'disabled');
+    otrociPerilo.setAttribute('disabled', 'disabled');
+    barve.setAttribute('disabled', 'disabled');
+    document.querySelectorAll('label[for="OtrociObutev"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="OtrociPerilo"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="OdrasliObutev"]')[0].style.display = "block";
+    document.querySelectorAll('label[for="OdrasliPerilo"]')[0].style.display = "block";
+    document.querySelectorAll('label[for="barve"]')[0].style.display = "none";
+    odrasliPerilo.removeAttribute('disabled');
+    odrasliObutev.removeAttribute('disabled');
+}
+function enableKids(otrociObutev, otrociPerilo, barve, odrasliObutev, odrasliPerilo){
+    odrasliPerilo.setAttribute('disabled', 'disabled');
+    odrasliObutev.setAttribute('disabled', 'disabled');
+    barve.setAttribute('disabled', 'disabled');
+    document.querySelectorAll('label[for="OdrasliObutev"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="OdrasliPerilo"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="OtrociObutev"]')[0].style.display = "block";
+    document.querySelectorAll('label[for="OtrociPerilo"]')[0].style.display = "block";
+    document.querySelectorAll('label[for="barve"]')[0].style.display = "none";
+    otrociObutev.removeAttribute('disabled');
+    otrociPerilo.removeAttribute('disabled');
+}
+function enableNakit(otrociObutev, otrociPerilo, barve, odrasliObutev, odrasliPerilo){
+    odrasliPerilo.setAttribute('disabled', 'disabled');
+    odrasliObutev.setAttribute('disabled', 'disabled');
+    otrociObutev.setAttribute('disabled', 'disabled');
+    otrociPerilo.setAttribute('disabled', 'disabled');
+    barve.removeAttribute('disabled');
+    document.querySelectorAll('label[for="OdrasliPerilo"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="OdrasliObutev"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="OtrociObutev"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="OtrociPerilo"]')[0].style.display = "none";
+    document.querySelectorAll('label[for="barve"]')[0].style.display = "block";
+}
+
+function resetCheckbox(checkBoxes){
+    checkBoxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+};
+
+function addFieldSizes(imageNum){
+    if(imageNum == 10){
+        const btnDisable = document.getElementById('showAddBtn');
+        btnDisable.classList.remove('btn-info');
+        btnDisable.classList.add('btn-danger');
+    }
+
+    if(imageNum == 11){
+        const btnDisable = document.getElementById('showAddBtn');
+        btnDisable.removeAttribute('onclick');
+        window.alert("Maximalan broj varijacija je 10!")
+    }
+    
+    else{
+        if(cate == 'Otroci'){
+            if (checkSub.includes(subCat) && subCat !== 'Obutev' && subCat !== 'Igrače') {
+                addKidsClothesRows(imageNum);
+            }
+            else if(subCategory == 'Obutev'){
+                addKidsShoesRow(imageNum);
+            }
+            else if(subCategory == 'Igrače'){
+                addToysRow(imageNum);
+            }
+            else if(newCategory == 'Otroci perilo'){
+                addKidsClothesRows(imageNum);
+            }
+            else if(newCategory == 'Otroci obutev'){
+                addKidsShoesRow(imageNum);
+            }
+            else if(newCategory == 'Barve'){
+                addToysRow(imageNum);
+            }
+        }
+        else if(cate == 'Moški' || cate == 'Ženske'){
+            if(checkSub.includes(subCat) && subCat !== 'Obutev'){
+                addAdultsClothesRow(imageNum);
+            }
+            else if(subCat == 'Obutev'){
+                addAdultsShoesRow(imageNum);
+            }
+            else if(newCategory == 'Odrasli perilo'){
+                addAdultsClothesRow(imageNum);
+            }
+            else if(newCategory == 'Odrasli obutev'){
+                addAdultsShoesRow(imageNum);
+            }
+        }
+        else if(cate == 'Nakit'){
+                addToysRow(imageNum);
+        }
+        else{
+            if(newCategory == 'Odrasli perilo'){
+                addAdultsClothesRow(imageNum);
+            }
+            else if(newCategory == 'Odrasli obutev'){
+                addAdultsShoesRow(imageNum);
+            }
+            else if(newCategory == 'Otroci perilo'){
+                addKidsClothesRows(imageNum);
+            }
+            else if(newCategory == 'Otroci obutev'){
+                addKidsShoesRow(imageNum);
+            }
+            else if(newCategory == 'Barve'){
+                addToysRow(imageNum);
+            }
+        }
+    }
 };
