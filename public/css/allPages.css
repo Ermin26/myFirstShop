@@ -174,9 +174,7 @@ a:hover{
     text-decoration: none;
     color:inherit;
 }
-#searched{
-    width: 25%;
-}
+
 #checkBoxes{
     margin-left: auto;
     margin-right: auto;
@@ -206,7 +204,7 @@ a:hover{
         margin-left: auto;
     }
     #searched{
-        width: 100%;
+        width: 75%;
     }
 }
 
