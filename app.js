@@ -228,19 +228,18 @@ app.post('/search', async (req, res) => {
 
 app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
     let {id } = req.params;
-    console.log("This is id: ", id);
     const cart = req.session.cart;
     let randomProducts;
     let products = [];
     let sizes = [];
     let varijacijeSku;
     try{
-        console.log("Trying")
         const shirts = await functions.getProductDetails(id);
         const colors = await functions.getDistinctColors(id);
         let invt_sku = shirts.inventory_sku
         const subCat = shirts.subcategory;
         if(colors.length > 0) {
+            console.log("colors is array")
             for (let i = 0; i < colors.length; i++) {
                 const colorName = colors[i].color;
                 const size = await functions.getSizes(id, colorName, shirts);
@@ -269,7 +268,7 @@ app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
         const randomProducts = await functions.getRandomProducts(id);
         res.render('pages/productShow', { shirts, products, colors,dataMeta: JSON.stringify(metaData), productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
     }catch(err){
-        console.error("error here: ", err.message);
+        console.error("error here: ", err);
         req.flash('error', err.message);
         res.redirect('/');
     }
@@ -540,13 +539,14 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
                     await functions.addSingleProduct(year,varijacijePid,result, imgsUrl, product)
                 }
         }
-        req.flash('success',"Uspešno dodan produkt")
+        req.flash('success',"Uspešno dodan produkt");
+        res.redirect('/add')
         }catch(e){
             console.error("Error: " + e.message);
             req.flash('error',"Error: ", e.message);
+            res.send("This is error",e)
         }
 
-        res.redirect('/add')
 })
 
 app.get('/allOrders', async(req,res)=>{

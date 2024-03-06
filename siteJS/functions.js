@@ -54,9 +54,7 @@ async function getProductDetails(id){
 }
 
 async function getDistinctColors(id){
-    console.log("Trying get colors", id);
     const result = await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id=$1`,[id])
-    console.log("Result rows: ", result.rows)
     return colors = result.rows;
 }
 
@@ -73,6 +71,9 @@ async function getSizes(id, colorName, shirts){
     }
     if((shirts.category === 'Mens' || shirts.category === 'Womens') && !excludedSubcategories.includes(shirts.subcategory)) {
         query = `SELECT size,img_link, sku FROM varijacije WHERE product_id=$1 AND color=$2 ORDER BY CASE WHEN size = 'XS' THEN 1 WHEN size = 'S' THEN 2 WHEN size = 'M' THEN 3 WHEN size = 'L' THEN 4 WHEN size = 'XL' THEN 5 WHEN size = '2XL' THEN 6 WHEN size = '3XL' THEN 7 WHEN size = '4XL' THEN 8 WHEN size = '5XL' THEN 9 END`;
+    }
+    if((shirts.category === 'Mens' || shirts.category === 'Womens') && excludedSubcategories.includes(shirts.subcategory)) {
+        query = `SELECT size,img_link, sku FROM varijacije WHERE product_id=$1 AND color=$2`;
     }
     const sizesResult = await conn.query(query, [id, colorName]);
     return sizesResult.rows.map((row) => row);
