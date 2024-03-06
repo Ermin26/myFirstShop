@@ -1,5 +1,8 @@
+#container img{
+    width: 100%;
+}
 #rowColumn{
-    margin-bottom: 10vh;
+    margin-bottom: 15vh;
 }
 
 #colRow{
@@ -8,13 +11,7 @@
 #colRow > a{
     text-decoration: none;
 }
-#cardHome{
-    height: auto;
-}
 
-#rowColumn{
-    margin-bottom: 10vh;
-}
 #cardHome{
     height: auto;
     max-width: 260px;
