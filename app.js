@@ -225,9 +225,8 @@ app.post('/search', async (req, res) => {
     }
 
 })
-
 app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
-    let { id } = req.params;
+    let {category, subcategory, id } = req.params;
     const cart = req.session.cart;
     let randomProducts;
     let products = [];
