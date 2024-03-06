@@ -92,7 +92,7 @@ function removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothe
     }
     if(infoAdultClothes.length) {
         for(let i = 0; i < infoAdultClothes.length; i++){
-        infoAdultClothes[i].removeAttribute('disabled');
+        infoAdultClothes[i].setAttribute('disabled', true);
         }
         document.getElementById('addRow').innerHTML="";
     }

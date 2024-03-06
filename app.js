@@ -506,6 +506,7 @@ app.get('/add', async (req, res) => {
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     try{
         const product = await req.body;
+        console.log("this is body: ", product)
         let bgImage = req.files['bgImage'][0].path;
         let brutoPrice = Math.ceil(product.p_price * 0.18)
         let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
@@ -525,7 +526,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         invt_sku = resultt.invt_sku;
         console.log("Before inserting into inventory")
         const result = await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku, inventory_pid, description1, description2) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${inventoryPid}', '${product.description1}', '${product.description2}') RETURNING id`)
-        if(product.p_subcat !== 'Toys' && product.p_subcat !== 'Other' && product.p_cat !== 'Jewerly'){
+        if(product.p_subcat !== 'Igrače' && product.p_subcat !== 'Other' && product.p_cat !== 'Nakit'){
             console.log("Before add product function")
             await functions.addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product)
         }
