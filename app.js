@@ -225,6 +225,7 @@ app.post('/search', async (req, res) => {
     }
 
 })
+*/
 app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
     let {id } = req.params;
     console.log("This is id: ", id);
@@ -273,7 +274,7 @@ app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
         res.redirect('/');
     }
 })
-
+/*
 app.post('/add-to-cart', async (req, res) => {
     let { product_id, product_name, product_color, product_size, product_price, product_sku, invt_sku } = req.body;
     let user_id = randomUUID();
