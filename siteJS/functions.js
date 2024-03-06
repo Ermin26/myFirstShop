@@ -54,7 +54,9 @@ async function getProductDetails(id){
 }
 
 async function getDistinctColors(id){
+    console.log("Trying get colors", id);
     const result = await conn.query(`SELECT DISTINCT color FROM varijacije WHERE product_id=$1`,[id])
+    console.log("Result rows: ", result.rows)
     return colors = result.rows;
 }
 

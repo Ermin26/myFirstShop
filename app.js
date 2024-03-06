@@ -226,13 +226,15 @@ app.post('/search', async (req, res) => {
 
 })
 app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
-    let {category, subcategory, id } = req.params;
+    let {id } = req.params;
+    console.log("This is id: ", id);
     const cart = req.session.cart;
     let randomProducts;
     let products = [];
     let sizes = [];
     let varijacijeSku;
     try{
+        console.log("Trying")
         const shirts = await functions.getProductDetails(id);
         const colors = await functions.getDistinctColors(id);
         let invt_sku = shirts.inventory_sku
@@ -245,7 +247,7 @@ app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
             }
         }
         else{
-            await conn.query(`SELECT * FROM varijacije WHERE PRODUCT_id= '${id}'`,async (e, var_sku) => {
+            await conn.query(`SELECT * FROM varijacije WHERE product_id= '${id}'`,async (e, var_sku) => {
                 let result = var_sku.rows;
                 varijacijeSku = result;
             })
@@ -266,7 +268,7 @@ app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
         const randomProducts = await functions.getRandomProducts(id);
         res.render('pages/productShow', { shirts, products, colors,dataMeta: JSON.stringify(metaData), productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
     }catch(err){
-        console.error("error: ", err.message);
+        console.error("error here: ", err.message);
         req.flash('error', err.message);
         res.redirect('/');
     }

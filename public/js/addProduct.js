@@ -674,14 +674,14 @@ function addFieldSizes(imageNum){
     }
     
     else{
-        if(cate == 'Otroci'){
-            if (checkSub.includes(subCat) && subCat !== 'Obutev' && subCat !== 'Igrače') {
+        if(cate == 'Kids'){
+            if (checkSub.includes(subCat) && subCat !== 'Shoes' && subCat !== 'Toys') {
                 addKidsClothesRows(imageNum);
             }
-            else if(subCategory == 'Obutev'){
+            else if(subCategory == 'Shoes'){
                 addKidsShoesRow(imageNum);
             }
-            else if(subCategory == 'Igrače'){
+            else if(subCategory == 'Toys'){
                 addToysRow(imageNum);
             }
             else if(newCategory == 'Otroci perilo'){
@@ -694,11 +694,11 @@ function addFieldSizes(imageNum){
                 addToysRow(imageNum);
             }
         }
-        else if(cate == 'Moški' || cate == 'Ženske'){
-            if(checkSub.includes(subCat) && subCat !== 'Obutev'){
+        else if(cate == 'Mens' || cate == 'Womens'){
+            if(checkSub.includes(subCat) && subCat !== 'Shoes'){
                 addAdultsClothesRow(imageNum);
             }
-            else if(subCat == 'Obutev'){
+            else if(subCat == 'Shoes'){
                 addAdultsShoesRow(imageNum);
             }
             else if(newCategory == 'Odrasli perilo'){
@@ -708,7 +708,7 @@ function addFieldSizes(imageNum){
                 addAdultsShoesRow(imageNum);
             }
         }
-        else if(cate == 'Nakit'){
+        else if(cate == 'Jewerly'){
                 addToysRow(imageNum);
         }
         else{

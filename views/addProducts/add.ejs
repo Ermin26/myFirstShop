@@ -30,11 +30,11 @@
                             <select class="form-select" id="p_cat" name="p_cat" aria-label="Floating label select example"
                                 onchange="subSelected()">
                                 <option selected>Select Category</option>
-                                <option value="Moški">Moški</option>
-                                <option value="Ženske">Ženske</option>
-                                <option value="Otroci">Otroci</option>
-                                <option value="Nakit">Nakit</option>
-                                <option value="Ostalo">Ostalo</option>
+                                <option value="Mens">Moški</option>
+                                <option value="Womens">Ženske</option>
+                                <option value="Kids">Otroci</option>
+                                <option value="Jewerly">Nakit</option>
+                                <option value="Other">Ostalo</option>
                                 <option class="btn btn-sm btn-primary" id="newCat" value="NewCat">New Category</option>
                             </select>
                             <label for="p_cat"></label>
@@ -51,18 +51,18 @@
                             <select class="form-select" id="p_subcat" name="p_subcat"
                                 aria-label="Floating label select example" onchange="subSelected()">
                                 <option selected>Select Subcategory</option>
-                                <option value="Jakne" style="display: none;">Jakne</option>
-                                <option value="Majce" style="display: none;">Majce</option>
-                                <option value="Obleka" style="display: none;">Obleka</option>
-                                <option value="Hlače" style="display: none;">Hlače</option>
-                                <option value="Spodnje perilo" style="display: none;">Spodnje perilo</option>
-                                <option value="Obutev" style="display: none;">Obutev</option>
+                                <option value="Jackets" style="display: none;">Jakne</option>
+                                <option value="Shirts" style="display: none;">Majce</option>
+                                <option value="Dress" style="display: none;">Obleka</option>
+                                <option value="Pants" style="display: none;">Hlače</option>
+                                <option value="Underwear" style="display: none;">Spodnje perilo</option>
+                                <option value="Shoes" style="display: none;">Obutev</option>
                                 <option value="Bodi" style="display: none;">Bodi</option>
-                                <option value="Pižama" style="display: none;">Pižame</option>
-                                <option value="Verižica" style="display: none;">Verižica</option>
-                                <option value="Zapestnica" style="display: none;">Zapestnica</option>
-                                <option value="Ura" style="display: none;">Ura</option>
-                                <option value="Igrače" style="display: none;">Igrače</option>
+                                <option value="Pajamas" style="display: none;">Pižame</option>
+                                <option value="Chain" style="display: none;">Verižica</option>
+                                <option value="Bracelet" style="display: none;">Zapestnica</option>
+                                <option value="Clock" style="display: none;">Ura</option>
+                                <option value="Toys" style="display: none;">Igrače</option>
                                 <option class="btn btn-sm btn-primary" id="new" value="New">New</option>
                             </select>
                             <label for="p_subcat"></label>
@@ -651,9 +651,9 @@
         subCategory = "";
         imageNum = 2;
         let newCategory;
-        let checkSub = ['Jakne', 'Majce', 'Hlače', 'Obleka', 'Spodnje perilo', 'Pižama', 'Obutev', 'New']
-        let checkSubKids = ['Jakne', 'Majce', 'Hlače', 'Obleka', 'Spodnje perilo', 'Pižama','Bodi', 'Obutev', 'Igrače','New']
-        let checkJewerlySub = ['Verižica', 'Zapestnica', 'Ura', 'New'];
+        let checkSub = ['Jacket', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas', 'Shoes', 'New']
+        let checkSubKids = ['Jacket', 'Shirts', 'Pants', 'Dress', 'Underwear', 'Pajamas','Bodi', 'Shoes', 'Toys','New']
+        let checkJewerlySub = ['Chain', 'Bracelet', 'Clock', 'New'];
 
         const checkBoxes = document.querySelectorAll('input[type="checkbox"]');
         checkBoxes.forEach(checkbox =>{
@@ -695,7 +695,7 @@
             category = document.getElementById("p_cat").value;
             subCategory = document.getElementById("p_subcat").value;
             let allSubs = document.getElementById("p_subcat");
-            if (category == 'Moški' || category == 'Ženske') {
+            if (category == 'Mens' || category == 'Womens') {
                 hideAddButton()
                 for(let i = 1; i < allSubs.length; i++){
                     if(checkSub.includes(allSubs[i].value)){
@@ -711,17 +711,18 @@
 
                 if (subCategory !== 'Select Subcategory' && checkSub.includes(subCategory) && subCategory !== 'Obutev'  && subCategory !== 'New') {
                     imageNum = 2;
+                    removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
                     showAddButton()
                     addAdultClothes(infoAdultClothes);
                 }
-                if (subCategory == 'Obutev') {
+                if (subCategory == 'Shoes') {
                     imageNum = 2;
+                    removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
                     showAddButton()
-
                     addAdultShoes(infoAdultShoes);
                 }
             }
-            if (category == 'Otroci') {
+            if (category == 'Kids') {
                 for(let i = 1; i < allSubs.length; i++){
                     if(checkSubKids.includes(allSubs[i].value)){
                         allSubs[i].style.display = 'flex';
@@ -737,23 +738,26 @@
 
                 if(subCategory !== 'Select Subcategory' && checkSub.includes(subCategory) && subCategory !== 'Obutev' && subCategory !== 'Igrače'  && subCategory !== 'New') {
                     imageNum = 2;
+                    removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
                     showAddButton()
                     addKidsClothes(infoKidsClothes);
                 }
 
-                if(subCategory == 'Obutev') {
+                if(subCategory == 'Shoes') {
                     imageNum = 2;
+                    removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
                     showAddButton()
                     addKidsShoes(infoKidsShoes);
                 }
-                if(subCategory == 'Igrače'){
+                if(subCategory == 'Toys'){
                     imageNum = 2;
+                    removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
                     const btnDisable = document.getElementById('showAddBtn');
                     showAddButton()
                     addToysFields(infoToys, toysField);
             }
         }
-            if (category == 'Nakit'){
+            if (category == 'Jewerly'){
                 for(let i = 1; i < allSubs.length; i++){
                     if(checkJewerlySub.includes(allSubs[i].value)){
                         allSubs[i].style.display = 'flex';
@@ -769,6 +773,7 @@
 
                 if(subCategory !== 'Select Subcategory' && checkJewerlySub.includes(subCategory)){
                     imageNum = 2;
+                    removeFields(toysField, infoKidsClothes, infoKidsShoes, infoAdultClothes, infoAdultShoes, infoToys);
                     showAddButton()
                     addToysFields(infoToys, toysField);
                 }
