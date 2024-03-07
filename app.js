@@ -504,6 +504,33 @@ app.get('/add', async (req, res) => {
     res.render('addProducts/add', {cart})
 });
 
+//! PROBAJ TOLE
+
+/*
+app.post('/addProduct', (req, res) => {
+  const uploadFields = [];
+  for (let i = 1; i <= req.body.numberOfImages; i++) {
+    if (req.files[`image${i}`]) {
+      uploadFields.push({ name: `image${i}` });
+    }
+  }
+
+  // Nato uporabite upload.fields(uploadFields)
+  upload.fields(uploadFields)(req, res, (err) => {
+    if (err) {
+      // Obdelajte napako
+      return res.status(400).json({ error: 'Napaka pri nalaganju slik' });
+    }
+
+    // Tu lahko nadaljujete s kodo za obdelavo prejetih slik
+    res.status(200).json({ message: 'Slike so uspešno naložene' });
+  });
+});
+*/
+
+//!
+
+
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     try{
         const product = await req.body;
