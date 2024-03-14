@@ -122,7 +122,6 @@ async function editItemQty(req,id,cart,plus_btn, minus_btn){
                 if (cart[i].sku == id) {
                     let query = await conn.query(`SELECT qty FROM varijacije WHERE sku = '${cart[i].sku}'`);
                     let result = query.rows[0];
-                    console.log("Result", result)
                     if (cart[i].qty > 0 && cart[i].qty < result.qty) {
                         cart[i].qty = parseInt(cart[i].qty) + 1;
                     }else{
@@ -177,7 +176,6 @@ async function getOrdersAndInvoiceInfo(invoicePrefix){
     try{
         const orders = await conn.query(`SELECT * FROM orders`);
         let data = orders.rows;
-        console.log(data.length);
         if (!data.length) {
             invoice = invoicePrefix + "-" + 1
         } else {
@@ -187,7 +185,6 @@ async function getOrdersAndInvoiceInfo(invoicePrefix){
     }catch(err){
         console.error("Error get data from orders",err.message);
     }
-    console.log("This is invoice inside function: " ,invoice)
     return invoice;
 }
 
@@ -277,7 +274,6 @@ async function sendEmailOrder(nodemailer,yoo, shippingInfo, orderDate){
 }
 
 async function updateVarijacijeTable(product_sku,product_qtys){
-    console.log("Updating varijacije table")
     try{
         for (let j = 0; j < product_sku.length; j++) {
             await conn.query(`SELECT * FROM varijacije WHERE sku = '${product_sku[j]}'`, async (e, result) => {
@@ -347,7 +343,6 @@ async function showUserOrderInfo(stripe, cart, req,res){
             }
         })
     }catch(err){
-        console.log("Error on showUserOrderInfo")
         console.error("Error redirecting: ", err.message);
     }
 }
@@ -375,17 +370,14 @@ async function checkImages(req,firstCheck, imgTest, images, imgsUrl){
 }
 
 async function setInvtAndVarPid(day,month,year){
-        console.log("Starting working on pid");
         let inventoryPid;
         let varijacijePid;
         let invt_sku;
         const lastSku = await conn.query(`SELECT inventory_pid FROM inventory ORDER BY inventory_pid DESC LIMIT 1`);
         const pid = lastSku.rows[0];
         if (pid !== undefined) {
-            console.log("Check for invt sku");
             inventoryPid = parseInt(pid.inventory_pid) + 1;
         } else {
-            console.log("Set invt sku to 1");
             inventoryPid = "1";
         }
 
@@ -398,7 +390,6 @@ async function setInvtAndVarPid(day,month,year){
         }
 
         invt_sku = `${day}-${month}-${year}-${inventoryPid}`;
-        console.log("end working on pid",);
         const resultt = {
             inventoryPid: inventoryPid,
             varijacijePid: varijacijePid,
@@ -408,7 +399,6 @@ async function setInvtAndVarPid(day,month,year){
 }
 
 async function addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product){
-    console.log("Starting working on with sizes")
     try{
        for (let i = 0; i < product.color.length; i++) {
             for (let j = 0; j < product[`size${sizeCount}`].length; j++) {
@@ -416,7 +406,6 @@ async function addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,
                 if(product[`qty${sizeCount}`][j] > 0) {
                     await conn.query(`INSERT INTO varijacije(product_id, size, sku, img_link, qty,color, var_pid) VALUES('${result.rows[0].id}', '${product[`size${sizeCount}`][j]}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${product[`qty${sizeCount}`][j]}', '${product.color[i]}', '${parseInt(varijacijePid)}')`)
                     varijacijePid = parseInt(varijacijePid) + 1;
-                    console.log("Varijacije pid",varijacijePid)
                 }
             }
             sizeCount += 1;
@@ -424,34 +413,27 @@ async function addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,
     }catch(e){
         console.error("Error adding product with sizes", e.message);
     }
-    console.log("end working on with sizes")
 }
 
 async function addProductWithoutSizes(req,year, imgsUrl, varijacijePid,result, product){
-    console.log("Starting working on without sizes")
     try {
         for (let i = 0; i < product.color.length; i++) {
             let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year + "-" + varijacijePid;
             await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color, var_pid) VALUES('${result.rows[0].id}', '${sku}',array_to_json('{${imgsUrl[i]}}'::text[]), '${product.qty1[i]}', '${product.color[i]}', '${varijacijePid}')`)
             varijacijePid = parseInt(varijacijePid) + 1;
-            console.log("Varijacije pid",varijacijePid)
         }
     }catch(e){
         console.error("Error adding product without sizes:", e.message);
     }
-    console.log("end working on without sizes")
 }
 
 async function addSingleProduct(year,varijacijePid,result, imgsUrl, product){
-    console.log("Starting working on with single")
     try{
         let sku = parseInt(Math.random(12 * 35637) * 10000) + "-" + year + "-" + varijacijePid;
         await conn.query(`INSERT INTO varijacije(product_id, sku, img_link, qty,color, var_pid) VALUES('${result.rows[0].id}', '${sku}',array_to_json('{${imgsUrl}}'::text[]), '${product.qty1}', '${product.color}', '${varijacijePid}')`)
-        console.log("Single added product toys")
     }catch(e){
         console.error('Error single adding product: ', e.message);
     }
-    console.log("end working on with single")
 }
 
 async function getCategoryItems(category, subcategory, subcategory2){

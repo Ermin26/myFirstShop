@@ -633,7 +633,6 @@ app.get('/category/:mainCategory/:subCategory?/:subCategory2?',async(req,res)=>{
             res.render(`artikli/${category}/${category}`, {products, cart})
 
         }else{
-            console.log("This is products else",products);
             req.flash('error', "Trenutno nimamo izdelkov za izbrano kategorijo.")
             res.redirect('/')
         }

@@ -33,6 +33,7 @@
     <div id="container" class="d-flex flex-row">
         <img src="img/bgImage.jpg" class="img-fluid" alt="Wallpaper">
     </div>
+    <%- include('../../flash') %>
     <div id="rowColumn" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 d-flex flex-row flex-wrap justify-content-center">
         <% if(products.length){ %>
             <% for(let product of products) {%>
@@ -60,5 +61,12 @@
 </div>
 
 <%- include('../partials/footer.ejs') %>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+crossorigin="anonymous"></script>
 </body>
 </html>
