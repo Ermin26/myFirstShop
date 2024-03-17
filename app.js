@@ -337,7 +337,7 @@ app.post('/edit_qty', async (req, res) => {
         let plus_btn = req.body.plus;
         let minus_btn = req.body.minus;
         let cart = req.session.cart;
-        await functions.editItemQty(req,id,cart,plus_btn,minus_btn);
+        await functions.editItemQty(req,id,cart, qty, plus_btn, minus_btn);
         calculateTotal(cart, req)
         res.redirect('/cart');
     }catch (error) {

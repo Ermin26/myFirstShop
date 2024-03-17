@@ -115,9 +115,9 @@ async function getRemoveItemFromCart(id, cart){
     }
 }
 
-async function editItemQty(req,id,cart,plus_btn, minus_btn){
+async function editItemQty(req,id, cart, qty, plus_btn, minus_btn){
     try{
-        if(plus_btn){
+        if(req.body.operator === 'plus' || plus_btn){
             for (let i = 0; i < cart.length; i++) {
                 if (cart[i].sku == id) {
                     let query = await conn.query(`SELECT qty FROM varijacije WHERE sku = '${cart[i].sku}'`);
@@ -130,7 +130,7 @@ async function editItemQty(req,id,cart,plus_btn, minus_btn){
                 }
             }
         }
-        if(minus_btn){
+        if(req.body.operator === 'minus' || minus_btn){
             for (let i = 0; i < cart.length; i++) {
                 if (cart[i].sku == id) {
                     if (cart[i].qty > 1) {
