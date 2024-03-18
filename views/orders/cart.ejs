@@ -62,15 +62,18 @@
                                 </td>
                                 <td id="second" class="text-center align-middle p-0">
                                     <% for(qty of cart) {%>
+                                        <!--action="/edit_qty" method="post"-->
                                         <form class="qtyForm" action="/edit_qty" method="post">
                                             <% if(qty.sku==products.sku) {%>
-                                                <input type="hidden" value="<%= products.sku %>" name="id">
-                                                <input type="submit" id="<%= products.sku %>" name="minus" value="-">
+                                                <div id="<%= products.sku %>">
+                                                    <input type="hidden" value="<%= products.sku %>" name="id">
+                                                    <input type="submit" id="<%= products.sku %>" name="minus" value="-">
 
-                                                <input type="text" class="text-center rounded-circle" id="qty" name="qty"
-                                                    value="<%= qty.qty %>" readonly min="1" max="<%= products.qty %>">
+                                                    <input type="text" class="text-center rounded-circle" id="qty" name="qty"
+                                                        value="<%= qty.qty %>" readonly min="1" max="<%= products.qty %>">
 
-                                                    <input type="submit" id="<%= products.sku %>" name="plus" value="+">
+                                                        <input type="submit" id="<%= products.sku %>" name="plus" value="+">
+                                                </div>
                                                 <% } %>
                                         </form>
                                         <% } %>

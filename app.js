@@ -338,11 +338,15 @@ app.post('/edit_qty', async (req, res) => {
         let minus_btn = req.body.minus;
         let cart = req.session.cart;
         await functions.editItemQty(req,id,cart, qty, plus_btn, minus_btn);
-        calculateTotal(cart, req)
+        calculateTotal(cart, req);
+        let data = req.session.cart;
+        //console.log(data)
+        //res.json(data);
         res.redirect('/cart');
     }catch (error) {
         console.error(error);
-        res.redirect('/cart');
+        let message = "zadnji kos"
+        res.json(message);
     }
 })
 

@@ -3,7 +3,6 @@ const inputs = form.querySelectorAll('input[type= "submit"]');
 
 
 /*
-
 inputs.forEach(input =>{
     input.addEventListener('click', async(event)=>{
         event.preventDefault();
@@ -22,7 +21,14 @@ inputs.forEach(input =>{
                 throw new Error("Something went wrong.");
             }
             const data = await response.json();
-            console.log(data);
+            data.forEach(item =>{
+                if(item.sku === event.target.id){
+                    const editQty = document.getElementById(`${item.sku}`);
+                    const qtyInput = editQty.querySelector('#qty')
+                    qtyInput.value = item.qty
+
+                }
+            })
         }
         catch(e){
             console.log('Error', e.message);
