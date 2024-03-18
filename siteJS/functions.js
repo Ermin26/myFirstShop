@@ -138,7 +138,10 @@ async function editItemQty(req,id, cart, qty, plus_btn, minus_btn){
                     if (cart[i].qty > 1) {
                         cart[i].qty = parseInt(cart[i].qty) - 1;
                     }else{
-                        req.flash('error',`Minimalna količina za naročilo je 1`)
+                        if(!req.body.operator){
+
+                            req.flash('error',`Minimalna količina za naročilo je 1`)
+                        }
                     }
                 }
             }

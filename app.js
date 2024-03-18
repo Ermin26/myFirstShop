@@ -320,6 +320,27 @@ app.get('/cart', async (req, res) => {
         res.redirect('/');
     }
 })
+app.get('/testCart', async (req, res) => {
+    const cart = req.session.cart;
+
+    if (!cart || !cart.length) {
+        req.flash('error', "Košarica je prazna.")
+        return res.redirect('/');
+    }
+
+    try {
+        const items = await functions.getCartItemDetails(cart);
+        const ordered = items.flat();
+
+        calculateTotal(cart, req);
+
+        res.render('orders/testCart', { items, cart, ordered, s_pk });
+    } catch (error) {
+        console.error("Error:", error.message);
+        req.flash('error', error.message);
+        res.redirect('/');
+    }
+})
 
 app.get('/remove/:id', async (req, res) => {
     const { id } = req.params;
