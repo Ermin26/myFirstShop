@@ -115,34 +115,19 @@ async function getRemoveItemFromCart(id, cart){
     }
 }
 
-async function editItemQty(req,id, cart, qty, plus_btn, minus_btn){
+async function editItemQty(req,id, cart){
     try{
-        if(req.body.operator === 'plus' || plus_btn){
+        if(req.body.operator === 'plus'){
             for (let i = 0; i < cart.length; i++) {
                 if (cart[i].sku == id) {
-                    let query = await conn.query(`SELECT qty FROM varijacije WHERE sku = '${cart[i].sku}'`);
-                    let result = query.rows[0];
-                    if (cart[i].qty > 0 && cart[i].qty < result.qty) {
-                        cart[i].qty = parseInt(cart[i].qty) + 1;
-                    }else{
-                        if(!req.body.operator){
-                            req.flash('error',`Maximalna količina za naročilo je ${result.qty}`)
-                        }
-                    }
+                    cart[i].qty = parseInt(cart[i].qty) + 1;
                 }
             }
         }
-        if(req.body.operator === 'minus' || minus_btn){
+        if(req.body.operator === 'minus'){
             for (let i = 0; i < cart.length; i++) {
                 if (cart[i].sku == id) {
-                    if (cart[i].qty > 1) {
-                        cart[i].qty = parseInt(cart[i].qty) - 1;
-                    }else{
-                        if(!req.body.operator){
-
-                            req.flash('error',`Minimalna količina za naročilo je 1`)
-                        }
-                    }
+                    cart[i].qty = parseInt(cart[i].qty) - 1;
                 }
             }
         }

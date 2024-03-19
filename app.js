@@ -354,20 +354,15 @@ app.get('/remove/:id', async (req, res) => {
 app.post('/edit_qty', async (req, res) => {
     try {
         let id = req.body.id;
-        let qty = req.body.qty;
-        let plus_btn = req.body.plus;
-        let minus_btn = req.body.minus;
         let cart = req.session.cart;
-        await functions.editItemQty(req,id,cart, qty, plus_btn, minus_btn);
+        await functions.editItemQty(req,id, cart);
         calculateTotal(cart, req);
         let data = req.session.cart;
-        //console.log(data)
-        //res.json(data);
-        res.redirect('/cart');
+        res.json(data);
     }catch (error) {
-        console.error(error);
-        let message = "zadnji kos"
-        res.json(message);
+        console.error("Error at update qty on backend. ",error.message);
+        req.flash('error', error.message);
+        res.redirect('/cart');
     }
 })
 
