@@ -63,7 +63,11 @@ h3{
 }
 
 .carousel-control-prev-icon,.carousel-control-next-icon{
-    background-color: rgb(39, 90, 230);
+    background-color: rgba(39, 90, 230, 0.555);
+    border-radius: 5px;
+}
+.carousel-control-prev-icon:hover,.carousel-control-next-icon:hover{
+    background-color: rgb(22, 82, 248);
 }
 
 .add-to-cart{
@@ -119,18 +123,16 @@ h3{
 
 
 .size:hover,.color:hover {
-    background-color: #00b4d8;
+    background-color: #2063f3c7;
 }
 
-.size:focus {
-    background-color: green;
-}
+
 .selected{
     background-color: #1260c7;
     box-sizing: border-box;
     box-shadow: 5px 5px 5px #176fe2;
     color: white;
-    border-radius: 45% 5% 45% 0%;
+    border-radius: 20px 5% 20px 5%;
     -webkit-box-reflect: below 5px linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.3));
 }
 

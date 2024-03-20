@@ -13,60 +13,27 @@
             Kategorije
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/mens">Moški</a></li>
-            <li><a class="dropdown-item" href="/category/womens">Ženske</a></li>
-            <li><a class="dropdown-item" href="/category/jewerly">Nakit</a></li>
-            <li><a class="dropdown-item" href="/category/kids">Otroci</a></li>
-            <li><a class="dropdown-item" href="/category/baby">Baby</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/toys">Igrače</a></li>
-            <li><a class="dropdown-item" href="/category/other">Drugo</a></li>
+            <% categories.forEach(category => {%>
+              <li>
+                 <a class="dropdown-item" href="/category/<%= category.category %>"><%= category.category %></a> 
+              </li>
+              <% }) %>
           </ul>
         </li>
+        <% categories.forEach(category => { %>
         <li class="nav-item dropdown m-2">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Moški
+            <%= category.category %>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/mens/subcategory/shirts">Majce</a></li>
-            <li><a class="dropdown-item" href="/category/mens/subcategory/jackets">Jakne</a></li>
-            <li><a class="dropdown-item" href="/category/mens/subcategory/pants">Hlače</a></li>
-            <li><a class="dropdown-item" href="/category/mens/subcategory/underwear">Spodnje Perilo</a></li>
+            <% subCategories.forEach(subcategory =>{%>
+              <% if(category.category === subcategory.category) {%>
+                  <li><a class="dropdown-item" href="/category/<%= category.category%>/subcategory/<%= subcategory.subcategory %>"><%= subcategory.subcategory %></a></li>
+              <% } %>
+          <% })  %>
           </ul>
         </li>
-        <li class="nav-item dropdown m-2">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Ženske
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/womens/subcategory/shirts">Majce</a></li>
-            <li><a class="dropdown-item" href="/category/womens/subcategory/jackets">Jakne</a></li>
-            <li><a class="dropdown-item" href="/category/womens/subcategory/pants">Hlače</a></li>
-            <li><a class="dropdown-item" href="/category/womens/subcategory/underWear">Spodnje perilo</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown m-2">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Nakit
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/jewerly/subcategory/chain">Verižica</a></li>
-            <li><a class="dropdown-item" href="/category/jewerly/subcategory/bracelet">Zapestnica</a></li>
-            <li><a class="dropdown-item" href="/category/jewerly/subcategory/clock">Ura</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown m-2">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Otroci
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/category/kids/subcategory/shirts">Majce</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/jackets">Jakne</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/pants">Hlače</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/underwear">Spodnje Perilo</a></li>
-            <li><a class="dropdown-item" href="/category/kids/subcategory/toys">Igrače</a></li>
-            <li><a class="dropdown-item" href="/category/baby">Baby</a></li>
-          </ul>
-        </li>
+        <% })  %>
           <li class="nav-item ms-auto m-2">
             <a id="cartIcon" href="/cart">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-cart" viewBox="0 0 18 18">

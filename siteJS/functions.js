@@ -20,7 +20,7 @@ const conn = client;
 const connectToDB = async (req, res) => {
     try {
         await conn.connect()
-        console.log('Yeah! i am Connected to the', conn.database)
+        console.log('Connected', conn.database)
     }
     catch (e) {
         console.log(e.message)
@@ -36,6 +36,24 @@ async function getAllProducts(){
         return result.rows;
     }catch(e){
         console.error("Error: ", e.message)
+    }
+}
+
+async function getCategories(){
+    try{
+        const categories = await conn.query(`SELECT DISTINCT category FROM inventory`);
+        return categories.rows;
+    }catch(e){
+        console.log("Error: ", e.message);
+    }
+}
+
+async function getSubcategories(){
+    try{
+        const subCategories = await conn.query(`SELECT DISTINCT subcategory,category FROM inventory`);
+        return subCategories.rows;
+    }catch(e){
+        console.log("Error: ", e.message);
     }
 }
 
@@ -139,6 +157,8 @@ async function editItemQty(req,id, cart){
 async function getOrderData(cart, total, cart,items,count, s_pk, s_sk, publishableKey, totalPrice,res,req, totalPrice){
     try{
         for (let i = 0; i < cart.length; i++) {
+            const categories = await getCategories();
+            const subCategories = await getSubcategories();
             await conn.query(`SELECT * FROM varijacije WHERE varijacije.sku='${cart[i].sku}'`, async (err, product) => {
                 if (!err) {
                     count += 1;
@@ -147,7 +167,7 @@ async function getOrderData(cart, total, cart,items,count, s_pk, s_sk, publishab
                         await conn.query(`SELECT * FROM  orders WHERE user_id = '${cart[0].user_id}'`, async (er, user) => {
                             let userData = user.rows[0]
                             //! only testing, change it for order
-                            res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey, totalPrice });
+                            res.render('orders/makeOrder', { total, cart,items, userData, s_pk, s_sk, publishableKey, totalPrice, categories, subCategories });
                         })
                     }
                 } else {
@@ -300,6 +320,9 @@ async function deleteZeroQtyVariations(){
 
 async function showUserOrderInfo(stripe, cart, req,res){
     try{
+        
+        const categories = await getCategories();
+        const subCategories = await getSubcategories();
         const data = await stripe.paymentIntents.retrieve(req.session.payment);
         await conn.query(`SELECT * FROM orders WHERE user_id ='${data.metadata.user_id}' AND trackingNum = '${data.metadata.trackOrder_id}'`, async (error, order) => {
             if (error) {
@@ -328,7 +351,7 @@ async function showUserOrderInfo(stripe, cart, req,res){
                         items.push(item)
                         }
                     }
-                    res.render('orders/redirect', { myOrder,cart, items })
+                    res.render('orders/redirect', { myOrder,cart, items, categories, subCategories })
                 }
             }
         })
@@ -444,6 +467,8 @@ async function getCategoryItems(category, subcategory, subcategory2){
 
 module.exports ={
     getAllProducts,
+    getCategories,
+    getSubcategories,
     getVarijace,
     getProductDetails,
     getDistinctColors,

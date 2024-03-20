@@ -43,7 +43,6 @@ const client = new Client({
 });
 
 const conn = client;
-
 const connectToDB = async (req, res) => {
     try {
         await conn.connect()
@@ -164,56 +163,76 @@ app.get('/', async (req, res) => {
     try{
         const products = await functions.getAllProducts();
         const varijacije = await functions.getVarijace();
+        const categories = await functions.getCategories();
+        const subCategories = await functions.getSubcategories();
         if(!products.length){
             req.flash('error', "Nothing to display.")
-            res.render('pages/home',{products, varijacije, cart});
+            res.render('pages/home',{products, varijacije, cart, categories, subCategories});
         }else{
-            res.render('pages/home', {products, varijacije, cart});
+            res.render('pages/home', {products, varijacije, cart, categories, subCategories});
         }
     }catch(err){
         console.log("Error: ",err.message)
     }
 })
 
+
 app.get('/company', async (req, res) => {
     const cart = req.session.cart;
-    res.render('company/companyInfo', {cart})
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
+    res.render('company/companyInfo', {cart, categories, subCategories})
 })
 
 app.get('/privacy', async (req, res) => {
     const cart = req.session.cart;
-    res.render('company/privacy', {cart})
+        const categories = await functions.getCategories();
+        const subCategories = await functions.getSubcategories();
+    res.render('company/privacy', {cart, categories, subCategories})
 })
 app.get('/questions', async (req, res) => {
     const cart = req.session.cart;
-    res.render('company/questions', {cart})
+        const categories = await functions.getCategories();
+        const subCategories = await functions.getSubcategories();
+    res.render('company/questions', {cart, categories, subCategories})
 })
 app.get('/delivery', async (req, res) => {
     const cart = req.session.cart;
-    res.render('company/delivery', {cart})
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
+    res.render('company/delivery', {cart, categories, subCategories})
 })
 
 app.get('/contract', async (req, res) => {
     const cart = req.session.cart;
-    res.render('company/contract', {cart})
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
+    res.render('company/contract', {cart, categories, subCategories})
 })
 app.get('/verification', async (req, res) => {
-    res.render('verification')
+    const cart = req.session.cart;
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
+    res.render('verification', {cart, categories, subCategories})
 })
-
+/*
 app.get('/searched', async (req, res) => {
     const cart = req.session.cart;
-    res.render('pages/searched', {cart})
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
+    res.render('pages/searched', {cart, categories, subCategories})
 })
-
+*/
 app.post('/search', async (req, res) => {
     let data = req.body.searched;
     const cart = req.session.cart;
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
     try{
         const shirts = await conn.query(`SELECT * FROM inventory WHERE category ~* $1 OR name ~* $2 OR subcategory ~* $3 OR info ~* $4 OR description ~* $5`, [data,data,data,data,data])
         let products = shirts.rows;
         if(products.length){
-            res.render('pages/searched', { products,cart });
+            res.render('pages/searched', { products ,cart, categories, subCategories });
         }else{
             req.flash('error', "Ni najdenih izdelkov.");
             res.redirect('/');
@@ -236,10 +255,11 @@ app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
     try{
         const shirts = await functions.getProductDetails(id);
         const colors = await functions.getDistinctColors(id);
+        const categories = await functions.getCategories();
+        const subCategories = await functions.getSubcategories();
         let invt_sku = shirts.inventory_sku
         const subCat = shirts.subcategory;
         if(colors.length > 0) {
-            console.log("colors is array")
             for (let i = 0; i < colors.length; i++) {
                 const colorName = colors[i].color;
                 const size = await functions.getSizes(id, colorName, shirts);
@@ -266,7 +286,7 @@ app.get('/product/:category/:subcategory/:name/:id', async (req, res) => {
             image2: shirts.description2
         }
         const randomProducts = await functions.getRandomProducts(id);
-        res.render('pages/productShow', { shirts, products, colors,dataMeta: JSON.stringify(metaData), productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart });
+        res.render('pages/productShow', { shirts, products, colors,dataMeta: JSON.stringify(metaData), productsJSON: JSON.stringify(products), randomProducts,invt_SKU:JSON.stringify(invt_sku), subCat:JSON.stringify(subCat), checkCat:JSON.stringify(shirts.category), cart, categories, subCategories });
     }catch(err){
         console.error("error here: ", err);
         req.flash('error', err.message);
@@ -310,31 +330,12 @@ app.get('/cart', async (req, res) => {
     try {
         const items = await functions.getCartItemDetails(cart);
         const ordered = items.flat();
+        const categories = await functions.getCategories();
+        const subCategories = await functions.getSubcategories();
 
         calculateTotal(cart, req);
 
-        res.render('orders/cart', { items, cart, ordered, s_pk });
-    } catch (error) {
-        console.error("Error:", error.message);
-        req.flash('error', error.message);
-        res.redirect('/');
-    }
-})
-app.get('/testCart', async (req, res) => {
-    const cart = req.session.cart;
-
-    if (!cart || !cart.length) {
-        req.flash('error', "Košarica je prazna.")
-        return res.redirect('/');
-    }
-
-    try {
-        const items = await functions.getCartItemDetails(cart);
-        const ordered = items.flat();
-
-        calculateTotal(cart, req);
-
-        res.render('orders/testCart', { items, cart, ordered, s_pk });
+        res.render('orders/cart', { items, cart, ordered, s_pk, categories, subCategories });
     } catch (error) {
         console.error("Error:", error.message);
         req.flash('error', error.message);
@@ -431,7 +432,8 @@ app.get('/order', async (req, res) => {
         let count = 0
         const publishableKey = process.env.STRIPE_PK;
         try{
-            await functions.getOrderData(cart, total, cart,items,count, s_pk, s_sk, publishableKey, totalPrice,res,req, totalPrice)
+            await functions.getOrderData(cart, total, cart,items,count, s_pk, s_sk, publishableKey, totalPrice,res,req, totalPrice);
+
         }catch(e){
             console.error(e.message);
             res.redirect('/')
@@ -521,7 +523,9 @@ app.get('/redirect', async (req, res) => {
 
 app.get('/add', async (req, res) => {
     const cart = req.session.cart;
-    res.render('addProducts/add', {cart})
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
+    res.render('addProducts/add', {cart, categories, subCategories})
 });
 
 //! PROBAJ TOLE
@@ -598,6 +602,8 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
 
 app.get('/allOrders', async(req,res)=>{
     const cart = req.session.cart;
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
     await conn.query(`SELECT * FROM orders`, async(e, result)=>{
         if(!e){
             const orders = result.rows;
@@ -621,7 +627,7 @@ app.get('/allOrders', async(req,res)=>{
             ordersData.orders.push(orderInfo);
         }));
         //console.log(ordersData.orders[0].products);
-        res.render('orders/showOrders', { cart,orders, ordersData: JSON.stringify(ordersData) });
+        res.render('orders/showOrders', { cart,orders, ordersData: JSON.stringify(ordersData), categorie, subCategories });
         }else{
             console.log(e.message);
         }
@@ -642,15 +648,17 @@ app.get('/category/:mainCategory/:subCategory?/:subCategory2?',async(req,res)=>{
     const category = req.params.mainCategory;
     const subcategory = req.params.subCategory;
     const subcategory2 = req.params.subCategory2;
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
     try{
         let product = await functions.getCategoryItems(category, subcategory, subcategory2);
         const products = product.flat();
 
         if(category && subcategory2 && products[0] !== undefined){
-            res.render(`artikli/${category}/${subcategory2}`, {products, cart})
+            res.render(`artikli/${category}/${subcategory2}`, {products, cart, categories, subCategories});
 
         }else if(!subcategory2 && products[0] !== undefined && category){
-            res.render(`artikli/${category}/${category}`, {products, cart})
+            res.render(`artikli/${category}/${category}`, {products, cart, categories, subCategories});
 
         }else{
             req.flash('error', "Trenutno nimamo izdelkov za izbrano kategorijo.")
@@ -668,6 +676,8 @@ app.get('/category/:mainCategory/:subCategory?/:subCategory2?',async(req,res)=>{
 //?---------------------------------------------
 
 app.get('/register', async (req, res) => {
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
     /*
     res.render('users/register')
     */
@@ -675,7 +685,9 @@ app.get('/register', async (req, res) => {
     res.redirect('/')
 })
 
-app.get("/login", (req, res) => {
+app.get("/login",async (req, res) => {
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
     /*
     res.render('users/login')
     */
