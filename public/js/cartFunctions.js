@@ -1,4 +1,7 @@
 const forms = document.querySelectorAll('.qtyForm');
+const alerts = document.querySelector('.alert');
+
+console.log(alerts);
 
 let sku;
 let operator;
@@ -17,13 +20,25 @@ forms.forEach(form =>{
             const checkQty = editQty.querySelector('#qty');
             if(operator === 'minus'){
                 if(checkQty.value === '1'){
-                    window.alert('Quantity must be greater than 1!')
+                    alerts.classList.add('text-center', 'text-light', 'visible');
+                    alerts.classList.remove('alert');
+                    alerts.innerHTML = 'Minimalna količina za naročilo je 1 kos.';
+                    setTimeout(() =>{
+                        alerts.classList.add('alert');
+                        alerts.classList.remove('visible');
+                    },3000)
                 }else{
                     await updateQuantity();
                 }
             }else if(operator === 'plus'){
                 if(checkQty.value === checkQty.max){
-                    window.alert(`Maximum qty for this product is ${checkQty.max}`)
+                    alerts.classList.add('text-center', 'text-light', 'visible');
+                    alerts.classList.remove('alert');
+                    alerts.innerHTML = `Maximalna količina za naročilo je ${checkQty.max} kos.`;
+                    setTimeout(() =>{
+                        alerts.classList.add('alert');
+                        alerts.classList.remove('visible');
+                    },3000)
                 }else{
                     await updateQuantity();
                 }

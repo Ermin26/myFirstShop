@@ -1,6 +1,26 @@
 #homeContainer{
   padding: 0;
 }
+
+.alert{
+  padding: 5px;
+  margin: 15px 0;
+  transition: opacity 2s ease-in-out;
+  opacity: 0;
+  background-color: rgba(248, 4, 4, 0.705);
+  border-radius: 0;
+  border: none;
+}
+
+.visible{
+  padding: 5px;
+  margin: 15px 0;
+  transition: opacity 2s ease-in-out;
+  opacity: 1;
+  background-color: rgba(248, 4, 4, 0.705);
+  border-radius: 0;
+  border: none;
+}
 #cart{
     box-sizing: border-box;
 }
