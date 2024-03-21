@@ -7,6 +7,7 @@
       <span class="navbar-toggler-icon text-light"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-evenly" id="navbarSupportedContent">
+      <% if(categories) {%>
       <ul class="navbar-nav d-flex w-100 me-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown m-2">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,6 +59,7 @@
               </li>
               <% } %>
       </ul>
+      <% } %>
     </div>
   </div>
   <a id="smallCartIcon" href="/cart">

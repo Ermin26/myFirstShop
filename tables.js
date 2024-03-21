@@ -14,7 +14,8 @@ const bodyParser = require("body-parser");
 const override = require('method-override');
 const uuid = require('uuid');
 const PostgreSQLStore = require('connect-pg-simple')(session)
-const { Client } = require('pg')
+const { Client } = require('pg');
+const { Console } = require('console');
 
 
 app.set('views', path.join(__dirname, 'views'));
@@ -83,7 +84,9 @@ const create = async (req, res) => {
         //await conn.query("DROP TABLE IF EXISTS orders");
         //await conn.query("DROP TABLE IF EXISTS users");
         //await conn.query("DROP TABLE IF EXISTS varijacije");
+        //await conn.query("DROP TABLE IF EXISTS ADMINS");
 //
+        //await conn.query("CREATE TABLE admins (id serial, name VARCHAR (50), lastname VARCHAR (50),username VARCHAR (50), email VARCHAR (100),password VARCHAR (100), role VARCHAR (50),token VARCHAR (100), PRIMARY KEY(ID))")
         //await conn.query("CREATE TABLE bills (id BIGSERIAL,bill_number SERIAL, order_number_id VARCHAR(50),orders_product_ids TEXT,price VARCHAR(50),billDate TIMESTAMP, PRIMARY KEY(ID))");
         //await conn.query("CREATE TABLE deleted (id VARCHAR, sku VARCHAR, name VARCHAR, neto_price VARCHAR, info VARCHAR, description VARCHAR,category VARCHAR, subcategory VARCHAR, links TEXT)");
         //await conn.query("CREATE TABLE inventory (id BIGSERIAL, name VARCHAR, neto_price FLOAT, info VARCHAR, description TEXT,category VARCHAR, subcategory VARCHAR,bgImage VARCHAR, links json, created TEXT, inventory_sku VARCHAR, inventory_pid VARCHAR,dexription1 TEXT, description2 TEXT, PRIMARY KEY (id), UNIQUE (name))");

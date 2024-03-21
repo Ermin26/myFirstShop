@@ -42,7 +42,9 @@ async function getAllProducts(){
 async function getCategories(){
     try{
         const categories = await conn.query(`SELECT DISTINCT category FROM inventory`);
-        return categories.rows;
+        if(categories.length > 0){
+            return categories.rows;
+        }
     }catch(e){
         console.log("Error: ", e.message);
     }
@@ -51,7 +53,10 @@ async function getCategories(){
 async function getSubcategories(){
     try{
         const subCategories = await conn.query(`SELECT DISTINCT subcategory,category FROM inventory`);
-        return subCategories.rows;
+        if(subCategories.length > 0){
+
+            return subCategories.rows;
+        }
     }catch(e){
         console.log("Error: ", e.message);
     }
@@ -361,6 +366,7 @@ async function showUserOrderInfo(stripe, cart, req,res){
 }
 
 async function checkImages(req,firstCheck, imgTest, images, imgsUrl){
+    console.log("Checking images");
     let imgNum = 1
     if (imgTest.length <= 2) {
         const productImgs = req.files[`image${imgNum}`];
@@ -383,6 +389,7 @@ async function checkImages(req,firstCheck, imgTest, images, imgsUrl){
 }
 
 async function setInvtAndVarPid(day,month,year){
+    console.log("setInvtAndVarPid");
         let inventoryPid;
         let varijacijePid;
         let invt_sku;
@@ -412,6 +419,7 @@ async function setInvtAndVarPid(day,month,year){
 }
 
 async function addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product){
+    console.log("addProductWithSizes");
     try{
        for (let i = 0; i < product.color.length; i++) {
             for (let j = 0; j < product[`size${sizeCount}`].length; j++) {

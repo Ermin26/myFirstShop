@@ -17,7 +17,7 @@ const override = require('method-override');
 const PostgreSQLStore = require('connect-pg-simple')(session)
 const bcrypt = require('bcrypt')
 const { Client } = require('pg')
-const { isLoged, checkCart } = require('./utils/isLoged')
+const { isLoged, checkCart, checkAdmin } = require('./utils/isLoged')
 const { cloudinary } = require('./cloudinary/cloudConfig');
 const multer = require('multer');
 const { storage } = require('./cloudinary/cloudConfig');
@@ -558,7 +558,7 @@ app.post('/addProduct', (req, res) => {
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     try{
         const product = await req.body;
-        console.log("this is body: ", product)
+        console.log("this is body: ", req.files)
         let bgImage = req.files['bgImage'][0].path;
         let brutoPrice = Math.ceil(product.p_price * 0.18)
         let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
@@ -572,7 +572,9 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         images = [];
         let sizeCount = 1;
         await functions.checkImages(req, firstCheck, imgTest, images,imgsUrl);
-        const resultt = await functions.setInvtAndVarPid(day,month,year)
+        //await Promise.all(functions.checkImages(req, firstCheck, imgTest, images,imgsUrl));
+        //const resultt = await functions.setInvtAndVarPid(day,month,year)
+        const resultt = await Promise.all(functions.setInvtAndVarPid(day,month,year))
         inventoryPid = resultt.inventoryPid;
         varijacijePid = resultt.varijacijePid;
         invt_sku = resultt.invt_sku;
@@ -580,14 +582,14 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         const result = await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku, inventory_pid, description1, description2) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${inventoryPid}', '${product.description1}', '${product.description2}') RETURNING id`)
         if(product.p_subcat !== 'Igrače' && product.p_subcat !== 'Other' && product.p_cat !== 'Nakit'){
             console.log("Before add product function")
-            await functions.addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product)
+            await functions.addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product);
         }
         else{
                 if(Array.isArray(product.color) && product.color.length > 1){
                     await functions.addProductWithoutSizes(req,year, imgsUrl, varijacijePid,result, product);
                 }
                 else{
-                    await functions.addSingleProduct(year,varijacijePid,result, imgsUrl, product)
+                    await functions.addSingleProduct(year,varijacijePid,result, imgsUrl, product);
                 }
         }
         req.flash('success',"Uspešno dodan produkt");
@@ -595,7 +597,7 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         }catch(e){
             console.error("Error: " + e.message);
             req.flash('error',"Error: ", e.message);
-            res.send("This is error",e)
+            res.redirect('/add');
         }
 
 })
@@ -693,6 +695,15 @@ app.get("/login",async (req, res) => {
     */
     req.flash("success", "Get req working. Page not ready yet.")
     res.redirect('/')
+})
+app.get("/admin/login",async (req, res) => {
+    const categories = await functions.getCategories();
+    const subCategories = await functions.getSubcategories();
+    /*
+    res.render('users/login')
+    */
+    req.flash("success", "Get req working. Page not ready yet.")
+    res.redirect('admin/login')
 })
 
 //? WORKING ALL!!
