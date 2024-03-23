@@ -46,6 +46,7 @@ const conn = client;
 const connectToDB = async (req, res) => {
     try {
         await conn.connect()
+        console.log("Connection established")
     }
     catch (e) {
         console.log(e.message)
@@ -72,8 +73,8 @@ app.use(session({
         pool: client,             // Connection pool
         //tableName: 'session'   // Use another table-name than the default "session" one
         // Insert connect-pg-simple options here
+        errorLog: console.error,
     }),
-    name: 'session',
     secret: process.env.IGNORE_ME,
     resave: false,
     saveUninitialized: true,
@@ -159,20 +160,18 @@ function calculateTotal(cart, req) {
 
 app.get('/', async (req, res) => {
     const cart = req.session.cart;
-    await functions.deleteZeroQtyVariations();
     try{
         const products = await functions.getAllProducts();
-        const varijacije = await functions.getVarijace();
         const categories = await functions.getCategories();
         const subCategories = await functions.getSubcategories();
         if(!products.length){
             req.flash('error', "Nothing to display.")
-            res.render('pages/home',{products, varijacije, cart, categories, subCategories});
+            res.render('pages/home',{products, cart, categories, subCategories});
         }else{
-            res.render('pages/home', {products, varijacije, cart, categories, subCategories});
+            res.render('pages/home',{products, cart, categories, subCategories});
         }
     }catch(err){
-        console.log("Error: ",err.message)
+        console.log("Error /: ",err.message)
     }
 })
 
@@ -558,7 +557,6 @@ app.post('/addProduct', (req, res) => {
 app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, { name: 'image3' }, { name: 'image4' }, { name: 'image5' },{ name: 'image6' }, { name: 'image7' }, { name: 'image8' }, { name: 'image9' }, { name: 'image10' }, {name: 'bgImage'}]), async (req, res) => {
     try{
         const product = await req.body;
-        console.log("this is body: ", req.files)
         let bgImage = req.files['bgImage'][0].path;
         let brutoPrice = Math.ceil(product.p_price * 0.18)
         let netoPrice = parseFloat(brutoPrice) + parseFloat(product.p_price) + 0.99;
@@ -571,10 +569,10 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         let imgTest = Object.keys(req.files);
         images = [];
         let sizeCount = 1;
-        await functions.checkImages(req, firstCheck, imgTest, images,imgsUrl);
-        //await Promise.all(functions.checkImages(req, firstCheck, imgTest, images,imgsUrl));
+        //await functions.checkImages(req, firstCheck, imgTest, images,imgsUrl);
+        await Promise.all([functions.checkImages(req, firstCheck, imgTest, images,imgsUrl)]);
         //const resultt = await functions.setInvtAndVarPid(day,month,year)
-        const resultt = await Promise.all(functions.setInvtAndVarPid(day,month,year))
+        const resultt = await Promise.all([functions.setInvtAndVarPid(day,month,year)])
         inventoryPid = resultt.inventoryPid;
         varijacijePid = resultt.varijacijePid;
         invt_sku = resultt.invt_sku;
@@ -582,20 +580,20 @@ app.post('/addProduct', upload.fields([{ name: 'image1' }, { name: 'image2' }, {
         const result = await conn.query(`INSERT INTO inventory(name,neto_price, info, description,category, subcategory, bgImage, links, created, inventory_sku, inventory_pid, description1, description2) VALUES('${product.p_name}', '${total.toFixed(2)}', '${product.p_desc}', '${product.p_fulldescription}','${product.p_cat}', '${product.p_subcat}', '${bgImage}', array_to_json('{${imgsUrl}}'::text[]), '${date}', '${invt_sku}', '${inventoryPid}', '${product.description1}', '${product.description2}') RETURNING id`)
         if(product.p_subcat !== 'Igrače' && product.p_subcat !== 'Other' && product.p_cat !== 'Nakit'){
             console.log("Before add product function")
-            await functions.addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product);
+            await Promise.all([functions.addProductWithSizes(req, year, imgsUrl, sizeCount, varijacijePid,result, product)]);
         }
         else{
                 if(Array.isArray(product.color) && product.color.length > 1){
-                    await functions.addProductWithoutSizes(req,year, imgsUrl, varijacijePid,result, product);
+                    await Promise.all([functions.addProductWithoutSizes(req,year, imgsUrl, varijacijePid,result, product)]);
                 }
                 else{
-                    await functions.addSingleProduct(year,varijacijePid,result, imgsUrl, product);
+                    await Promise.all([addSingleProduct(year,varijacijePid,result, imgsUrl, product)]);
                 }
         }
         req.flash('success',"Uspešno dodan produkt");
         res.redirect('/add')
         }catch(e){
-            console.error("Error: " + e.message);
+            console.error("This is error in post route Error: " + e.message);
             req.flash('error',"Error: ", e.message);
             res.redirect('/add');
         }
@@ -766,6 +764,6 @@ app.get('/logout', (req, res, next) => {
 
 
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 app.listen(port,
     console.log(`listening on ${port}`))

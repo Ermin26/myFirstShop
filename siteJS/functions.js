@@ -42,7 +42,7 @@ async function getAllProducts(){
 async function getCategories(){
     try{
         const categories = await conn.query(`SELECT DISTINCT category FROM inventory`);
-        if(categories.length > 0){
+        if(categories.rows.length > 0){
             return categories.rows;
         }
     }catch(e){
@@ -53,7 +53,7 @@ async function getCategories(){
 async function getSubcategories(){
     try{
         const subCategories = await conn.query(`SELECT DISTINCT subcategory,category FROM inventory`);
-        if(subCategories.length > 0){
+        if(subCategories.rows.length > 0){
 
             return subCategories.rows;
         }

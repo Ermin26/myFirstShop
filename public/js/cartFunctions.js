@@ -1,7 +1,6 @@
 const forms = document.querySelectorAll('.qtyForm');
 const alerts = document.querySelector('.alert');
 
-console.log(alerts);
 
 let sku;
 let operator;

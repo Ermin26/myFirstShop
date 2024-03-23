@@ -3,28 +3,33 @@
 }
 
 .alert{
-  padding: 5px;
+  padding: 15px;
   margin: 15px 0;
+  width: 60%;
   transition: opacity 2s ease-in-out;
   opacity: 0;
   background-color: rgba(248, 4, 4, 0.705);
   border-radius: 0;
   border: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .visible{
-  padding: 5px;
+  padding: 15px;
   margin: 15px 0;
+  width: 60%;
   transition: opacity 2s ease-in-out;
   opacity: 1;
   background-color: rgba(248, 4, 4, 0.705);
   border-radius: 0;
   border: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 #cart{
     box-sizing: border-box;
 }
-
 
 #second{
   width: 25%;
@@ -219,5 +224,8 @@ input[name="plus"]:hover,input[name="minus"]:hover{
       margin: 0;
       margin-left: auto;
       margin-right: auto;
+    }
+    .alert, .visible{
+      width: 100%;
     }
 }
