@@ -6,6 +6,9 @@
     background-size: cover;
 }
 #rowColumn{
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 15vh;
 }
 
