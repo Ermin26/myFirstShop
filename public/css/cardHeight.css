@@ -1,5 +1,9 @@
-#container img{
-    width: 100%;
+#container{
+    height: auto;
+    background: url('../img/bgImage.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 #rowColumn{
     margin-bottom: 15vh;
