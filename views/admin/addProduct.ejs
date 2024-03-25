@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/productAdd.css">
+    <title>Dashboard</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/admin">Home</a></li>
+                <li>
+                    <a href="/admin/products">Products</a>
+                   <ul>
+                       <li><a href="/admin/products/add">Add product</a></li>
+                       <li><a href="/admin/products/edit">Edit product</a></li>
+                   </ul>
+               </li>
+              <li>
+                <a href="/admin/orders">Orders</a>
+                <ul>
+                       <li><a href="/admin/orders/sended">Sended</a></li>
+                       <li><a href="/admin/orders/notsended">Not sended</a></li>
+                   </ul>
+            </li>
+              <li>
+                <a href="/admin/users">Users</a>
+                <ul>
+                       <li><a href="/admin/users/add">Add user</a></li>
+                       <li><a href="/admin/users/edit">Edit user</a></li>
+                   </ul>
+            </li>
+            <li>
+                <a href="#">Log out</a>
+            </li>
+         </ul>
+   </nav>
+
+   <form action="/products" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div id="col1" class="col">
+            <div class="mb-3">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required placeholder="Name">
+            </div>
+            <div class="mb-3">
+                <label for="category">Category</label>
+                <input type="text" id="category" name="category" required>
+            </div>
+            <div class="mb-3">
+                <label for="subcategory">Subcategory</label>
+                <input type="text" id="subcategory" name="subcategory" required>
+            </div>
+            <div class="mb-3">
+                <label for="weight">Weight</label>
+                <input type="text" id="weight" name="weight" required>
+            </div>
+            <div class="mb-3">
+                <label for="price">Price</label>
+                <input type="float" id="price" name="price" required>
+            </div>
+            <div class="mb-3">
+                <label for="sale">Discount</label>
+                <select name="sale" id="sale" class="notSelected">
+                    <option selected>Select discount status</option>
+                    <option value="true">Discounted</option>
+                    <option value="false">Un discounted</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="percent">Discount percent</label>
+                <input type="number" id="percent" name="percent" value="0" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="status">Product status</label>
+                <select name="status" id="status" class="notSelected" required>
+                    <option selected>Select product status</option>
+                    <option value="New">New</option>
+                    <option value="onSale">On sale</option>
+                    <option value="NotOnSale">Not on sale</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="image">Image</label>
+                <input type="file" id="image" name="image" multiple required>
+            </div>
+            <div id="checkBoxes" class="checkBoxes">
+                <div class="mb-3">
+                    <label for="checkboxsize">Size</label>
+                    <input type="checkbox" id="checkboxsize" name="checkboxsize" value="size">
+                </div>
+                <div class="mb-3">
+                    <label for="checkboxcolor">Color</label>
+                    <input type="checkbox" id="checkboxcolor" name="checkboxcolor" value="color">
+                </div>
+            </div>
+            <div class="buttonRow">
+                <div id="addSize" onclick="addSize()">Add size</div>
+                <div id="add" onclick="add()">Add variations</div>
+            </div>
+        </div>
+
+        <div id="checkboxesDiv" class="col">
+            <div id="addVariations">
+            </div>
+        </div>
+        <div id="btnRow">
+            <button id="submit">Submit</button>
+        </div>
+    </div>
+</form>
+
+<script src="/js/ProductAdd.js"></script>
+</body>
+</html>

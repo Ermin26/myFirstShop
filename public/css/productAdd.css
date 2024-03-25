@@ -1,0 +1,187 @@
+
+form{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+.row{
+    display: grid;
+    grid-template-columns: minmax(200px, 25%) minmax(200px, 75%);
+    grid-template-areas: "left right right";
+    column-gap: 2px;
+    margin-bottom: 10vh;
+    width: 100%;
+}
+
+#col1{
+    grid-area: left;
+}
+
+.mb-3{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    text-align: start;
+    align-content: center;
+    color: white;
+    padding: 10px;
+    height: 80px;
+    max-width: 100%;
+    border: none;
+}
+.mb-3 input{
+    margin: 5px 0;
+    padding: 5px;
+    max-width: 200px;
+    width: 100%;
+    background-color: rgb(207, 209, 211);
+}
+select{
+    max-width: 200px;
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+    background-color: rgb(207, 209, 211);
+}
+main{
+    overflow-y: auto;
+}
+
+#checkboxesDiv{
+    grid-area: right;
+    grid-template-columns: 20% 20% 20% 20%;
+}
+
+.checkBoxes{
+    display: flex;
+    flex-direction: row;
+    text-align: start;
+    justify-content: start;
+}
+
+.checkBoxes div > input{
+    width: inline-flex;
+    width: fit-content;
+}
+
+
+#addVariations{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: start;
+    gap: 5px;
+    width: 100%;
+}
+
+#addVariations > div{
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    min-width: 200px;
+    width: fit-content;
+}
+
+
+#size, #color{
+    width: auto;
+    border: none;
+}
+
+.buttonRow{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: start;
+}
+
+#add, #addSize{
+    cursor: pointer;
+    width: fit-content;
+    height: auto;
+    margin: 15px 5px;
+    padding: 5px;
+    color: white;
+    border: 1px solid rgb(61, 61, 233);
+    box-shadow: 0px 0px 10px 2px rgb(61, 61, 233);
+    border-radius: 5px;
+}
+
+#add:hover, #addSize:hover{
+    background-color: rgb(61, 61, 233);
+}
+
+#submit{
+    width: fit-content;
+    height: auto;
+    margin: 15px 0;
+    padding: 10px;
+    color: white;
+    background-color: transparent;
+    box-shadow: 0px 0px 10px 2px #000000;
+    border-radius: 10px;
+    border: none;
+    font-size: large;
+}
+
+#submit:hover{
+    background-color: rgba(0, 0, 0, 0.764);
+    color: white;
+}
+
+input:invalid{
+    box-shadow: 0px 0px 10px 2px rgb(226, 21, 21);
+}
+input:valid{
+    box-shadow: none;
+}
+
+input[type="checkbox"]:checked{
+    box-shadow: 0px 0px 10px 2px rgb(28, 226, 21);
+}
+
+.notSelected{
+    box-shadow: 0px 0px 10px 2px rgb(226, 21, 21);
+}
+
+@media(max-width: 500px){
+    .row{
+        overflow: hidden;
+        grid-template-columns: 1fr;
+        grid-template-areas: "left left left" "right right right";
+    }
+
+    #col1{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .mb-3{
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 250px;
+        width: 100%;
+    }
+
+    .mb-3 > input, input[type="file"], select{
+        width: 100%;
+    }
+    .sizes{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #btnRow{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+}

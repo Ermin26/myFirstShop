@@ -27,6 +27,7 @@ const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SK)
 const nodemailer = require('nodemailer');
 const functions = require('./siteJS/functions');
+const adminRoutes = require('./routes/adminRoutes');
 //const upload = multer({ dest: 'uploads/' })
 
 const yoo = process.env.YOO;
@@ -62,6 +63,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(override('_method'))
+app.use('/admin', adminRoutes);
 
 
 const s_sk = process.env.STRIPE_SK;
@@ -694,6 +696,8 @@ app.get("/login",async (req, res) => {
     req.flash("success", "Get req working. Page not ready yet.")
     res.redirect('/')
 })
+
+
 app.get("/admin/login",async (req, res) => {
     const categories = await functions.getCategories();
     const subCategories = await functions.getSubcategories();
