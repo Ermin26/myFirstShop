@@ -16,7 +16,7 @@
           <ul class="dropdown-menu">
             <% categories.forEach(category => {%>
               <li>
-                 <a class="dropdown-item" href="/category/<%= category.category %>"><%= category.category %></a>
+                 <a class="dropdown-item" href="/category/<%= category.category.toLowerCase() %>"><%= category.category %></a>
               </li>
               <% }) %>
           </ul>
@@ -29,7 +29,7 @@
           <ul class="dropdown-menu">
             <% subCategories.forEach(subcategory =>{%>
               <% if(category.category === subcategory.category) {%>
-                  <li><a class="dropdown-item" href="/category/<%= category.category%>/subcategory/<%= subcategory.subcategory %>"><%= subcategory.subcategory %></a></li>
+                  <li><a class="dropdown-item" href="/category/<%= category.category.toLowerCase()%>/subcategory/<%= subcategory.subcategory.toLowerCase() %>"><%= subcategory.subcategory %></a></li>
               <% } %>
           <% })  %>
           </ul>
