@@ -50,7 +50,7 @@ const connectToDB = async (req, res) => {
         console.log("Connection established")
     }
     catch (e) {
-        console.log("tHIS IS ERROR",e.message)
+        console.log("Error on conect: ",e.message)
     }
 
 }

@@ -26,11 +26,6 @@ body{
     position: sticky;
     background-color: #023e8a;
     color: white;
-    top: 0;
-    padding: 0;
-    height: 60px;
-    z-index: 9999999 !important;
-    max-width: 100%;
 }
 
 
@@ -39,7 +34,9 @@ body{
     padding: 0;
     border: none;
     background-color: #023e8a;
-    z-index: 999998;
+}
+.navbar-nav{
+    margin-top: 20px;
 }
 #navbar ul > li {
     background-color: #023e8a;
@@ -49,18 +46,15 @@ body{
 }
 #navbar ul > li > ul > li a:hover {
     background-color: #1a9ce7;
-    border-radius: 25% 2% 25% 2%;
-    -webkit-border-radius: 25% 2% 25% 2%;
-    -moz-border-radius: 25% 2% 25% 2%;
-    -ms-border-radius: 25% 2% 25% 2%;
-    -o-border-radius: 25% 2% 25% 2%;
+    border-radius: 25px;
 }
 .navbar-brand, .navbar-collapse{
     color: white;
 }
 
-.custom-toggler,.navbar-toggler{
+.custom-toggler,.navbar-toggler, #navBtn{
     color: white;
+    box-shadow: none;
 }
 
 #navbar a{
@@ -68,13 +62,66 @@ body{
     background-color: #023e8a;
 }
 
+
+#homeContainer{
+    margin-bottom: 30vh;
+}
+#searchBar{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex-wrap: wrap;
+    top: 60px;
+    position: sticky;
+    background-color: #e5e5e5;
+    width: 100%;
+
+}
+#postnina{
+    width: 250px;
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: blue;
+    text-shadow: 0px 0px 15px cyan, 0px 0px 35px cyan, 0px 0px 50px cyan, 0px 0px 100px cyan;
+    text-wrap: nowrap !important;
+    animation: flashing 1.8s linear infinite;
+}
+#postnina strong{
+    margin-left: auto;
+    margin-right: auto;
+    text-wrap: nowrap !important;
+}
+
+.formWrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: auto;
+}
+
+.cart{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+}
+
 #cartIcon{
     display: flex;
-    position: relative;
-    top: 10px;
-    right: 10px;
+    flex-direction: row;
     justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
 }
 
 #cartNotifications{
@@ -98,39 +145,6 @@ body{
     margin-left: auto;
     margin-right: auto;
     border-radius: 50%;
-}
-#smallCartIcon, #SmallCartNotifications{
-    display: none;
-}
-#homeContainer{
-    margin-bottom: 30vh;
-}
-#searchBar{
-    display: inline-flex;
-    flex-wrap: wrap;
-    top: 60px;
-    position: sticky;
-    background-color: #e5e5e5;
-    width: 100%;
-    z-index: 99999;
-
-}
-#postnina{
-    width: 250px;
-    max-width: 100%;
-    text-align: center;
-    align-items: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: blue;
-    text-shadow: 0px 0px 15px cyan, 0px 0px 35px cyan, 0px 0px 50px cyan, 0px 0px 100px cyan;
-    text-wrap: nowrap !important;
-    animation: flashing 1.8s linear infinite;
-}
-#postnina strong{
-    margin-left: auto;
-    margin-right: auto;
-    text-wrap: nowrap !important;
 }
 
 @keyframes flashing{
@@ -190,7 +204,6 @@ a:hover{
 @media(max-width: 3000px){
     #searchBar form{
         width: 25%;
-        margin-left: auto;
     }
     #searched{
         width: 100%;
@@ -198,77 +211,20 @@ a:hover{
 }
 
 @media(max-width: 1200px){
-    #searchBar form{
-        width: 50%;
-        margin-left: auto;
-    }
-    #searched{
-        width: 75%;
-    }
+
 }
 
 @media(max-width:990px){
 
-    .container-fluid{
-        position: fixed;
-        top: 10px;
-        width: 95%;
-    }
-    #navbar button{
-        position: relative;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    #navbar ul{
-        margin-top: 10px;
-    }
-    #cartIcon{
-        display: none;
-    }
-    #smallCartIcon{
-        display: block;
-        position: relative;
-        top: 3px;
-        margin-left: auto;
-        margin-right: 20px;
-
-    }
-    #SmallCartNotifications{
-    display: block;
-    position: relative;
-    top: -27px;
-    left: 15px;
-    margin: 0;
-    background-color: rgba(247, 51, 51, 0.89);
-    color:white;
-    font-size: 10px;
-    font-weight: 600;
-    width: 13px;
-    border-radius: 50%;
-    text-align: center;
-    }
-    #alter{
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-    }
 }
 
 @media(max-width: 600px){
+    #searchBar{
+        display: grid;
+        grid-template-columns: 1fr;
+    }
     #searchBar form{
         width: 100%;
-    }
-    #searched{
-        width: 100%;
-    }
-    #poštnina{
-        margin-left: 100px;
-        margin-right: auto;
-    }
-    #alter{
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
     }
 }
 
