@@ -68,12 +68,12 @@
         {
             "pgOptions": {
                 "ssl": {
-                    "cert": "C:\\Users\\Uporabnik\\Desktop\\Apps\\myFirstShop\\root.crt",
-                    "ca": "C:\\Users\\Uporabnik\\Desktop\\Apps\\myFirstShop\\root.crt"
+                    "cert": "C:\\Users\\MBwarehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt",
+                    "ca": "C:\\Users\\MBwarehouseManager\\Desktop\\Apps\\myFirstShop\\root.crt"
                 },
                 "max": 100
             },
-            "previewLimit": 50,
+            "previewLimit": 100,
             "server": "eu-central-1.7a16df83-8f42-420a-9dc7-e123485125f7.aws.ybdb.io",
             "port": 5433,
             "askForPassword": true,

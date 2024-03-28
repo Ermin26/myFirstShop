@@ -55,17 +55,6 @@ const connection = async (req, res) => {
 connection();
 
 
-/*
-conn.query("CREATE TABLE IF NOT EXISTS demo(id serial PRIMARY KEY,fName VARCHAR(10),lName VARCHAR(10))", (err, res) => {
-    if (err) {
-        console.error(err.message, "some error occurred");
-        conn.end();
-    } else {
-        console.log('Table is successfully created');
-        conn.end();
-    }
-});
-*/
 const create = async (req, res) => {
 
     try {

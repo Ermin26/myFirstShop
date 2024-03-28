@@ -50,7 +50,7 @@ const connectToDB = async (req, res) => {
         console.log("Connection established")
     }
     catch (e) {
-        console.log(e.message)
+        console.log("tHIS IS ERROR",e.message)
     }
 
 }
@@ -168,9 +168,9 @@ app.get('/', async (req, res) => {
         const subCategories = await functions.getSubcategories();
         if(!products.length){
             req.flash('error', "Nothing to display.")
-            res.render('pages/home',{products, cart, categories, subCategories});
+            res.render('pages/test',{products, cart, categories, subCategories});
         }else{
-            res.render('pages/home',{products, cart, categories, subCategories});
+            res.render('pages/test',{products, cart, categories, subCategories});
         }
     }catch(err){
         console.log("Error /: ",err.message)
