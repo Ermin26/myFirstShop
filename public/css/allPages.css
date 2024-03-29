@@ -247,6 +247,9 @@ a:hover{
     #searchBar form{
         width: 100%;
     }
+    #alter{
+        width: 100%;
+    }
 }
 
 @media print{
