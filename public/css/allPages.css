@@ -24,8 +24,10 @@ body{
 
 #navbar{
     position: sticky;
+    top: 0;
     background-color: #023e8a;
     color: white;
+    z-index: 2;
 }
 
 
@@ -43,6 +45,10 @@ body{
     margin: 0;
     padding: 0;
     border: none;
+}
+
+#navbar ul > li > ul > li{
+    padding: 10px;
 }
 #navbar ul > li > ul > li a:hover {
     background-color: #1a9ce7;
@@ -63,17 +69,16 @@ body{
 }
 
 
-#homeContainer{
-    margin-bottom: 30vh;
-}
+
 #searchBar{
     display: grid;
     grid-template-columns: 1fr 1fr;
     flex-wrap: wrap;
-    top: 60px;
+    top: 72px;
     position: sticky;
     background-color: #e5e5e5;
     width: 100%;
+    z-index: 1;
 
 }
 #postnina{
@@ -186,6 +191,11 @@ a{
 a:hover{
     text-decoration: none;
     color:inherit;
+}
+
+.container{
+    position: relative;
+    top: 10px;
 }
 
 #checkBoxes{
