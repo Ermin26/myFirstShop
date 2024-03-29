@@ -462,10 +462,10 @@ async function getCategoryItems(category, subcategory, subcategory2){
     try {
         if(category && subcategory2){
             const data = await conn.query(`SELECT * FROM inventory WHERE category ILIKE '${category}' AND subcategory ILIKE '${subcategory2}'`)
-            product.push(data.rows[0]);
+            product.push(data.rows);
         }else if(category && !subcategory2){
             const data = await conn.query(`SELECT * FROM inventory WHERE category ILIKE '${category}'`)
-            product.push(data.rows[0]);
+            product.push(data.rows);
         }
     }catch(e){
         console.error("Error: ", e.message)

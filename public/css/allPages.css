@@ -68,7 +68,9 @@ body{
     background-color: #023e8a;
 }
 
-
+#homeContainer{
+    margin-bottom: 20vh;
+}
 
 #searchBar{
     display: grid;
@@ -228,7 +230,16 @@ a:hover{
 
 }
 
-@media(max-width: 600px){
+@media(max-width: 767px){
+    #searchBar{
+        top: 56px;
+    }
+    #searchBar form{
+        width: 100%;
+    }
+}
+
+@media(max-width: 560px){
     #searchBar{
         display: grid;
         grid-template-columns: 1fr;
