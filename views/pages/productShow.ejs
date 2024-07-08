@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate') %>
-    <link rel="stylesheet" href="/css/show.css">
-    <link rel="stylesheet" href="/css/allPages.css">
+<link rel="stylesheet" href="/css/allPages.css">
+<link rel="stylesheet" href="/css/show.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Raziskujte našo ponudbo otroških dresov, igrač in oblačil za otroke, odrasle, moške, ženske, nosećnice in še še veliko tega.. Vse kaj potrebujete na enem mestu. Uživajte v veliki izbiri različnih produktov ter se prepustite užitku nakupovanja.">
     <!-- OG Tags za družabna omrežja -->
@@ -183,7 +183,7 @@
         btnInfo.setAttribute('disabled', 'true');
         let invt_sku = JSON.parse('<%- invt_SKU %>');
         let sub_cat = JSON.parse('<%- subCat %>');
-        let metaData = JSON.parse('<%- dataMeta %>')
+        //let metaData = JSON.parse('<%- dataMeta %>')
         document.addEventListener('DOMContentLoaded', function () {
           function addMeta(){
             const data = document.getElementsByTagName('head')[0];
@@ -206,7 +206,7 @@
             data.appendChild(imageMeta)
             data.appendChild(pageUrl)
           }
-          addMeta();
+          //addMeta();
           const colorSection = document.getElementById('colorSection');
           const sizeSection = document.getElementById('sizeSection');
           const products = JSON.parse('<%- productsJSON %>');

@@ -212,6 +212,7 @@ h3{
     max-width: 300px;
     height: 100%;
     margin:5px;
+    border: none;
 }
 
 .card-header{
@@ -234,7 +235,7 @@ h3{
 }
 
 .card-body{
-    height: 200px;
+    height: auto;
 }
 
 
